@@ -1,0 +1,85 @@
+{
+  "common": {
+    "login": "Anmelden",
+    "home": "Startseite",
+    "results": "Ergebnisse",
+    "sports": "Sportarten",
+    "medalTable": "Medaillenspiegel",
+    "countries": "Länder",
+    "welcomeBack": "Willkommen zurück",
+    "loginDescription": "Melden Sie sich an, um auf das Kampfrichter-Dashboard zuzugreifen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen",
+    "loginAction": "Anmelden",
+    "forgotPasswordTitle": "Passwort vergessen",
+    "emailSentTitle": "E-Mail gesendet",
+    "enterEmailForReset": "Geben Sie Ihre E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen",
+    "resetLinkSent": "Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail-Adresse gesendet",
+    "backToLogin": "Zurück zum Login",
+    "sending": "Wird gesendet...",
+    "authenticating": "Wird angemeldet...",
+    "language": "Sprache",
+    "selectLanguage": "Sprache auswählen",
+    "lastUpdate": "Letztes Update",
+    "disclaimer": "Alle Ergebnisse sind offizielle Daten des Internationalen Olympischen Komitees (IOC).",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum",
+    "accessibility": "Barrierefreiheit",
+    "copyright": "© 2026 Olympia 2026 Results Portal. Alle Rechte vorbehalten.",
+    "events": "Wettbewerbe",
+    "nations": "Nationen",
+    "medals": "Medaillen"
+  },
+  "hero": {
+    "headline": "Ergebnisse der Olympischen Spiele 2026",
+    "subtitle": "Alle Wettkämpfe. Alle Medaillen. Live.",
+    "searchPlaceholder": "Athlet, Land, Disziplin oder Event suchen...",
+    "cta": "Zu den Ergebnissen"
+  },
+  "highlights": {
+    "title": "Highlights",
+    "subtitle": "Die neuesten Medaillenmomente",
+    "viewAll": "Alle Highlights",
+    "watchVideo": "Video ansehen"
+  },
+  "liveResults": {
+    "title": "Live-Ergebnisse",
+    "subtitle": "Biathlon - 10km Sprint Herren",
+    "rank": "Platz",
+    "athlete": "Athlet/Team",
+    "country": "Land",
+    "result": "Ergebnis",
+    "medal": "Medaille",
+    "viewAll": "Alle Ergebnisse anzeigen",
+    "status": {
+      "live": "Live",
+      "final": "Final",
+      "corrected": "Korrigiert"
+    }
+  },
+  "medalTable": {
+    "title": "Medaillenspiegel",
+    "subtitle": "Top 10 Nationen",
+    "rank": "Rang",
+    "country": "Land",
+    "gold": "Gold",
+    "silver": "Silber",
+    "bronze": "Bronze",
+    "total": "Gesamt",
+    "viewAll": "Alle anzeigen"
+  },
+  "sports": {
+    "title": "Sportarten",
+    "subtitle": "Wählen Sie eine Sportart, um die Ergebnisse zu sehen",
+    "items": {
+      "biathlon": "Biathlon",
+      "iceHockey": "Eishockey",
+      "crossCountrySkiing": "Skilanglauf",
+      "skiJumping": "Skispringen",
+      "bobsled": "Bobsport",
+      "figureSkating": "Eiskunstlauf",
+      "curling": "Curling"
+    }
+  }
+}

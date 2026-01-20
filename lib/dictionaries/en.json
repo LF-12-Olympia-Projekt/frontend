@@ -1,0 +1,85 @@
+{
+  "common": {
+    "login": "Login",
+    "home": "Home",
+    "results": "Results",
+    "sports": "Sports",
+    "medalTable": "Medal Table",
+    "countries": "Countries",
+    "welcomeBack": "Welcome back",
+    "loginDescription": "Sign in to access the judge dashboard",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password",
+    "loginAction": "Sign In",
+    "forgotPasswordTitle": "Forgot password",
+    "emailSentTitle": "Email sent",
+    "enterEmailForReset": "Enter your email address to reset your password",
+    "resetLinkSent": "A password reset link has been sent to your email address",
+    "backToLogin": "Back to login",
+    "sending": "Sending...",
+    "authenticating": "Authenticating...",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "lastUpdate": "Last Update",
+    "disclaimer": "All results are official data from the International Olympic Committee (IOC).",
+    "privacy": "Privacy",
+    "imprint": "Imprint",
+    "accessibility": "Accessibility",
+    "copyright": "© 2026 Olympia 2026 Results Portal. All rights reserved.",
+    "events": "Events",
+    "nations": "Nations",
+    "medals": "Medals"
+  },
+  "hero": {
+    "headline": "Results of the Olympic Games 2026",
+    "subtitle": "All competitions. All medals. Live.",
+    "searchPlaceholder": "Search athlete, country, discipline or event...",
+    "cta": "View Results"
+  },
+  "highlights": {
+    "title": "Highlights",
+    "subtitle": "Latest medal moments",
+    "viewAll": "All Highlights",
+    "watchVideo": "Watch Video"
+  },
+  "liveResults": {
+    "title": "Live Results",
+    "subtitle": "Biathlon - 10km Sprint Men",
+    "rank": "Rank",
+    "athlete": "Athlete/Team",
+    "country": "Country",
+    "result": "Result",
+    "medal": "Medal",
+    "viewAll": "View All Results",
+    "status": {
+      "live": "Live",
+      "final": "Final",
+      "corrected": "Corrected"
+    }
+  },
+  "medalTable": {
+    "title": "Medal Table",
+    "subtitle": "Top 10 Nations",
+    "rank": "Rank",
+    "country": "Country",
+    "gold": "Gold",
+    "silver": "Silver",
+    "bronze": "Bronze",
+    "total": "Total",
+    "viewAll": "View All"
+  },
+  "sports": {
+    "title": "Sports",
+    "subtitle": "Select a sport to view results",
+    "items": {
+      "biathlon": "Biathlon",
+      "iceHockey": "Ice Hockey",
+      "crossCountrySkiing": "Cross-Country Skiing",
+      "skiJumping": "Ski Jumping",
+      "bobsled": "Bobsled",
+      "figureSkating": "Figure Skating",
+      "curling": "Curling"
+    }
+  }
+}

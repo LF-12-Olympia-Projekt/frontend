@@ -1,0 +1,85 @@
+{
+  "common": {
+    "login": "O'mölon",
+    "home": "Dahoam",
+    "results": "Ergebnisse",
+    "sports": "Sportoatn",
+    "medalTable": "Medaillenspiagl",
+    "countries": "Lända",
+    "welcomeBack": "Servus wieda do",
+    "loginDescription": "Meld di o, damit'st zum Kampfrichda-Dashboard kimmst",
+    "email": "E-Mail",
+    "password": "Passwoat",
+    "forgotPassword": "Passwoat vagessn",
+    "loginAction": "O'mölon",
+    "forgotPasswordTitle": "Passwoat vagessn",
+    "emailSentTitle": "E-Mail is raus",
+    "enterEmailForReset": "Gib dei E-Mail ei, damit dei Passwoat wieda herrichtn kannst",
+    "resetLinkSent": "A Link zum Passwoat wieda herrichtn is an dei E-Mail gschickt woarn",
+    "backToLogin": "Zruck zum O'mölon",
+    "sending": "Wird gschickt...",
+    "authenticating": "Wird o'gmölt...",
+    "language": "Sproch",
+    "selectLanguage": "Sproch aussuacha",
+    "lastUpdate": "Letztes Update",
+    "disclaimer": "Alle Ergebnisse san offizielle Daten vom Internationalen Olympischen Komitee (IOC).",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum",
+    "accessibility": "Barrierefreiheit",
+    "copyright": "© 2026 Olympia 2026 Results Portal. Alle Rechte voabehalten.",
+    "events": "Wettbewerbe",
+    "nations": "Nationan",
+    "medals": "Medaljn"
+  },
+  "hero": {
+    "headline": "Ergebnisse vo de Olympischn Spüle 2026",
+    "subtitle": "Alle Wettkämpf. Alle Medaljn. Live.",
+    "searchPlaceholder": "Athlet, Land, Disziplin oder Event suachn...",
+    "cta": "Zu de Ergebnisse"
+  },
+  "highlights": {
+    "title": "Highlights",
+    "subtitle": "Die neuesten Medaljnmomente",
+    "viewAll": "Alle Highlights",
+    "watchVideo": "Video o'schaun"
+  },
+  "liveResults": {
+    "title": "Live-Ergebnisse",
+    "subtitle": "Biathlon - 10km Sprint Herren",
+    "rank": "Plotz",
+    "athlete": "Athlet/Team",
+    "country": "Land",
+    "result": "Ergebnis",
+    "medal": "Medalj",
+    "viewAll": "Alle Ergebnisse o'zoagn",
+    "status": {
+      "live": "Live",
+      "final": "Final",
+      "corrected": "Korrigiert"
+    }
+  },
+  "medalTable": {
+    "title": "Medaillenspiagl",
+    "subtitle": "Top 10 Nationan",
+    "rank": "Rang",
+    "country": "Land",
+    "gold": "Gold",
+    "silver": "Sülba",
+    "bronze": "Bronze",
+    "total": "Gsamt",
+    "viewAll": "Alle o'zoagn"
+  },
+  "sports": {
+    "title": "Sportoatn",
+    "subtitle": "Suach da a Sportoat aus, damit'st de Ergebnisse siachst",
+    "items": {
+      "biathlon": "Biathlon",
+      "iceHockey": "Eishockey",
+      "crossCountrySkiing": "Skilanglauf",
+      "skiJumping": "Skispringan",
+      "bobsled": "Bobsport",
+      "figureSkating": "Eiskunstlauf",
+      "curling": "Curling"
+    }
+  }
+}

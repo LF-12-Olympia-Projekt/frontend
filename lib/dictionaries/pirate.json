@@ -1,0 +1,85 @@
+{
+  "common": {
+    "login": "Board the Ship",
+    "home": "Home Port",
+    "results": "Bounty",
+    "sports": "Challenges",
+    "medalTable": "Treasure Map",
+    "countries": "Factions",
+    "welcomeBack": "Ahoy, welcome back",
+    "loginDescription": "Sign in to access the captain's log",
+    "email": "Messenger Pigeon",
+    "password": "Secret Word",
+    "forgotPassword": "Lost your way?",
+    "loginAction": "Set Sail",
+    "forgotPasswordTitle": "Lost your way?",
+    "emailSentTitle": "Pigeon Sent",
+    "enterEmailForReset": "Tell us your pigeon's nest to reset your secret word",
+    "resetLinkSent": "A secret scroll has been sent to your pigeon's nest",
+    "backToLogin": "Back to the ship",
+    "sending": "Rowing...",
+    "authenticating": "Verifying your mark...",
+    "language": "Tongue",
+    "selectLanguage": "Choose your Tongue",
+    "lastUpdate": "Latest Sighting",
+    "disclaimer": "All bounty is verified by the High Seas Committee.",
+    "privacy": "Pirate's Code",
+    "imprint": "The Ledger",
+    "accessibility": "Plank Accessibility",
+    "copyright": "© 2026 The Pirate Fleet. All rights plundered.",
+    "events": "Skirmishes",
+    "nations": "Crews",
+    "medals": "Doubloons"
+  },
+  "hero": {
+    "headline": "Bounty of the Grand Games 2026",
+    "subtitle": "All skirmishes. All doubloons. Live from the crows nest.",
+    "searchPlaceholder": "Search for a matey, crew, or skirmish...",
+    "cta": "See the Bounty"
+  },
+  "highlights": {
+    "title": "Greatest Deeds",
+    "subtitle": "Latest golden moments",
+    "viewAll": "All Tall Tales",
+    "watchVideo": "Peer through Spyglass"
+  },
+  "liveResults": {
+    "title": "Live Skirmishes",
+    "subtitle": "Biathlon - 10km Sprint Men",
+    "rank": "Order",
+    "athlete": "Matey/Crew",
+    "country": "Crew",
+    "result": "Mark",
+    "medal": "Doubloon",
+    "viewAll": "See All Bounty",
+    "status": {
+      "live": "Happening Now",
+      "final": "Settled",
+      "corrected": "Re-plundered"
+    }
+  },
+  "medalTable": {
+    "title": "Treasure Map",
+    "subtitle": "Top 10 Crews",
+    "rank": "Order",
+    "country": "Crew",
+    "gold": "Gold Doubloons",
+    "silver": "Silver Doubloons",
+    "bronze": "Bronze Doubloons",
+    "total": "Total Loot",
+    "viewAll": "See All Loot"
+  },
+  "sports": {
+    "title": "Skirmishes",
+    "subtitle": "Pick a skirmish to see the bounty",
+    "items": {
+      "biathlon": "Biathlon",
+      "iceHockey": "Ice Hockey",
+      "crossCountrySkiing": "Cross-Country Skiing",
+      "skiJumping": "Ski Jumping",
+      "bobsled": "Bobsled",
+      "figureSkating": "Figure Skating",
+      "curling": "Curling"
+    }
+  }
+}
