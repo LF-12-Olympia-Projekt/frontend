@@ -52,7 +52,7 @@ export function LiveResults() {
   }
 
   return (
-    <section id="results" className="flex min-h-screen items-center justify-center bg-muted/50 px-4 py-16 sm:px-6 lg:px-8">
+    <section id="results" className="flex min-h-screen items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-7xl">
         <Card className="overflow-hidden border-0 shadow-lg">
           <CardHeader className="border-b bg-card">

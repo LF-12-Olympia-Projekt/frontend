@@ -8,9 +8,18 @@ interface ScrollSectionsProps {
   className?: string
 }
 
+const sectionBackgrounds = [
+  "bg-gradient-to-b from-background to-muted/30", // Hero
+  "bg-background", // Sports
+  "bg-muted/50", // Live Results
+  "bg-background", // Medal Table
+  "bg-muted/50", // Highlights
+]
+
 export function ScrollSections({ children, className }: ScrollSectionsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const sectionsRef = useRef<HTMLDivElement[]>([])
+  const contentRefs = useRef<HTMLDivElement[]>([])
 
   useEffect(() => {
     const container = containerRef.current
@@ -20,7 +29,10 @@ export function ScrollSections({ children, className }: ScrollSectionsProps) {
       const scrollPosition = container.scrollTop
       const windowHeight = container.clientHeight
 
-      sectionsRef.current.forEach((section) => {
+      contentRefs.current.forEach((content) => {
+        if (!content) return
+
+        const section = content.parentElement
         if (!section) return
 
         const sectionTop = section.offsetTop
@@ -32,18 +44,17 @@ export function ScrollSections({ children, className }: ScrollSectionsProps) {
         const distanceFromCenter = sectionCenter - viewportCenter
         const normalizedDistance = Math.min(Math.max(distanceFromCenter / windowHeight, -1.5), 1.5)
         
-        // Subtle scale effect (0.92 to 1)
-        const scale = 1 - Math.abs(normalizedDistance) * 0.08
+        // Subtle scale effect (0.94 to 1)
+        const scale = 1 - Math.abs(normalizedDistance) * 0.06
         
-        // Subtle opacity effect (0.6 to 1)
-        const opacity = Math.max(0.6, 1 - Math.abs(normalizedDistance) * 0.4)
+        // Subtle opacity effect (0.7 to 1)
+        const opacity = Math.max(0.7, 1 - Math.abs(normalizedDistance) * 0.3)
         
         // Subtle depth effect
-        const translateZ = normalizedDistance * -150
-        const translateY = normalizedDistance * 20
+        const translateZ = normalizedDistance * -100
         
-        section.style.transform = `scale(${scale}) translateZ(${translateZ}px) translateY(${translateY}px)`
-        section.style.opacity = `${opacity}`
+        content.style.transform = `scale(${scale}) translateZ(${translateZ}px)`
+        content.style.opacity = `${opacity}`
       })
     }
 
@@ -87,14 +98,23 @@ export function ScrollSections({ children, className }: ScrollSectionsProps) {
             ref={(el) => {
               if (el) sectionsRef.current[index] = el
             }}
-            className="transition-all duration-300 ease-out"
+            className={cn("relative", sectionBackgrounds[index])}
             style={{
               minHeight: "100vh",
-              transformStyle: "preserve-3d",
-              willChange: "transform, opacity",
             }}
           >
-            {child}
+            <div
+              ref={(el) => {
+                if (el) contentRefs.current[index] = el
+              }}
+              className="transition-all duration-300 ease-out"
+              style={{
+                transformStyle: "preserve-3d",
+                willChange: "transform, opacity",
+              }}
+            >
+              {child}
+            </div>
           </div>
         ))}
       </div>
