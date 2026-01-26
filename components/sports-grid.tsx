@@ -35,8 +35,8 @@ export function SportsGrid() {
   ]
 
   return (
-    <section id="sports" className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <section id="sports" className="flex min-h-screen items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl">
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t.title}

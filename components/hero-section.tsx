@@ -13,7 +13,7 @@ export function HeroSection() {
   const common = dictionary.common || {}
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted/30 px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-b from-background to-muted/30 px-4 py-16 sm:px-6 lg:px-8">
       {/* Decorative Olympic ring pattern */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-5">
         <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full border-[20px] border-sky-500" />
