@@ -71,8 +71,8 @@ export function HighlightsSection() {
   const t = dictionary.highlights || {}
 
   return (
-    <section id="highlights" className="bg-muted/50 px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <section id="highlights" className="flex min-h-screen items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400/20">

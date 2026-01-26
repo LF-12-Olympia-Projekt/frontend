@@ -64,8 +64,8 @@ export function MedalTable() {
   )
 
   return (
-    <section id="medals" className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <section id="medals" className="flex min-h-screen items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl">
         <Card className="overflow-hidden border-0 shadow-lg">
           <CardHeader className="border-b bg-card">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
