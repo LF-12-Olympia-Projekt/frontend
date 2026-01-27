@@ -83,7 +83,62 @@
       "skiJumping": "Ski Jumping",
       "bobsled": "Bobsled",
       "figureSkating": "Figure Skating",
-      "curling": "Curling"
+      "curling": "Curling",
+      "luge": "Luge",
+      "nordicCombined": "Nordic Combined",
+      "shortTrack": "Short Track",
+      "skeleton": "Skeleton",
+      "alpineSkiing": "Alpine Skiing",
+      "freestyle": "Freestyle Skiing",
+      "snowboard": "Snowboard",
+      "speedSkating": "Speed Skating"
+    },
+    "overview": {
+      "title": "Sports",
+      "subtitle": "All 15 Olympic winter sports",
+      "searchPlaceholder": "Search sport...",
+      "totalSports": "Sports",
+      "totalEvents": "Events",
+      "totalMedals": "Medals",
+      "totalNations": "Nations",
+      "events": "Events",
+      "medals": "Medals"
+    },
+    "detail": {
+      "breadcrumb": "Sports",
+      "eventsAndResults": "Schedule & Results",
+      "disciplines": "Disciplines",
+      "disciplinesCount": "Disciplines",
+      "medalsCount": "Medals",
+      "description": {
+        "biathlon": "Combination of cross-country skiing and shooting",
+        "bobsled": "Speed on ice",
+        "crossCountrySkiing": "Endurance in snow",
+        "curling": "Precision on ice",
+        "figureSkating": "Art and athletics",
+        "iceHockey": "Speed and teamwork",
+        "luge": "Racing on runners",
+        "nordicCombined": "Jumping and cross-country",
+        "shortTrack": "Speed on short track",
+        "skeleton": "Headfirst to the finish",
+        "alpineSkiing": "Speed on the mountain",
+        "skiJumping": "Flying through the air",
+        "freestyle": "Tricks and stunts",
+        "snowboard": "Style on the board",
+        "speedSkating": "Speed on the long track"
+      },
+      "eventInfo": {
+        "date": "Date",
+        "time": "Time",
+        "location": "Location",
+        "status": {
+          "live": "Live",
+          "final": "Final",
+          "draft": "Draft",
+          "scheduled": "Scheduled"
+        },
+        "viewResults": "Results"
+      }
     }
   },
   "nations": {
