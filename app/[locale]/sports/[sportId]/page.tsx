@@ -6,16 +6,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { SportHero } from "@/components/sport-hero"
 import { SportEventsList } from "@/components/sport-events-list"
 import { Clipboard } from "lucide-react"
-import { notFound } from "next/navigation"
+import { notFound, useParams } from "next/navigation"
 
-interface SportDetailPageProps {
-  params: {
-    locale: string
-    sportId: string
-  }
-}
-
-export default function SportDetailPage({ params }: SportDetailPageProps) {
+export default function SportDetailPage() {
+  const params = useParams()
   const { dictionary, locale } = useTranslation()
   const t = dictionary.sports || {}
   const tItems = t.items || {}
@@ -25,7 +19,7 @@ export default function SportDetailPage({ params }: SportDetailPageProps) {
   const tStatus = tEventInfo.status || {}
   const tCommon = dictionary.common || {}
 
-  const { sportId } = params
+  const sportId = params.sportId as string
 
   // Mock data for sports
   const sportsData: Record<string, { name: string; description: string; events: number; medals: number; mockEvents: any[] }> = {
