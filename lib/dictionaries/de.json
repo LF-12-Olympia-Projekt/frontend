@@ -29,7 +29,11 @@
     "copyright": "© 2026 Olympia 2026 Results Portal. Alle Rechte vorbehalten.",
     "events": "Wettbewerbe",
     "nations": "Nationen",
-    "medals": "Medaillen"
+    "medals": "Medaillen",
+    "athletes": "Athleten",
+    "noMedalsYet": "Noch keine Medaillen",
+    "noResults": "Keine Ergebnisse gefunden",
+    "tryDifferentSearch": "Versuchen Sie einen anderen Suchbegriff"
   },
   "hero": {
     "headline": "Ergebnisse der Olympischen Spiele 2026",
@@ -103,6 +107,19 @@
     },
     "topAthletes": "Top-Athleten",
     "showAllAthletes": "Alle Athleten anzeigen",
-    "medalTimeline": "Medaillen-Timeline"
+    "medalTimeline": "Medaillen-Timeline",
+    "overview": {
+      "title": "Alle teilnehmenden Nationen",
+      "subtitle": "Teilnehmende Länder bei den Olympischen Winterspielen 2026",
+      "searchPlaceholder": "Nach Land oder Code suchen...",
+      "sortBy": "Sortieren nach",
+      "sortByName": "Name",
+      "sortByMedals": "Medaillen",
+      "filterByMedals": "Medaillen filtern",
+      "withMedals": "Mit Medaillen",
+      "allCountries": "Alle Länder",
+      "participatingNations": "Teilnehmende Nationen",
+      "viewDetails": "Details anzeigen"
+    }
   }
 }

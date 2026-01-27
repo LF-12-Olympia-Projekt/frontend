@@ -29,7 +29,11 @@
     "copyright": "© 2026 The Pirate Fleet. All rights plundered.",
     "events": "Skirmishes",
     "nations": "Crews",
-    "medals": "Doubloons"
+    "medals": "Doubloons",
+    "athletes": "Mateys",
+    "noMedalsYet": "No doubloons yet",
+    "noResults": "No bounty found",
+    "tryDifferentSearch": "Try a different search, matey"
   },
   "hero": {
     "headline": "Bounty of the Grand Games 2026",
@@ -103,6 +107,19 @@
     },
     "topAthletes": "Top Scallywags",
     "showAllAthletes": "Show all scallywags",
-    "medalTimeline": "Doubloon Chronicle"
+    "medalTimeline": "Doubloon Chronicle",
+    "overview": {
+      "title": "All Sailin' Crews",
+      "subtitle": "Crews battlin' at the 2026 Winter Games",
+      "searchPlaceholder": "Search fer crew or flag...",
+      "sortBy": "Sort by",
+      "sortByName": "Name",
+      "sortByMedals": "Doubloons",
+      "filterByMedals": "Filter doubloons",
+      "withMedals": "With Doubloons",
+      "allCountries": "All Crews",
+      "participatingNations": "Sailin' Crews",
+      "viewDetails": "See the Details"
+    }
   }
 }
