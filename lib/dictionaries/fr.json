@@ -69,6 +69,17 @@
     "total": "Total",
     "viewAll": "Voir tout"
   },
+  "medalTableDetail": {
+    "title": "Tableau des médailles",
+    "subtitle": "Classement complet de toutes les nations participantes",
+    "allNations": "Toutes les nations",
+    "searchPlaceholder": "Rechercher un pays...",
+    "compare": "Comparer",
+    "showing": "Affichage",
+    "to": "à",
+    "of": "de",
+    "nations": "nations"
+  },
   "sports": {
     "title": "Sports",
     "subtitle": "Sélectionnez un sport pour voir les résultats",

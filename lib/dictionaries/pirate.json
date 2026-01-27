@@ -69,6 +69,17 @@
     "total": "Total Loot",
     "viewAll": "See All Loot"
   },
+  "medalTableDetail": {
+    "title": "Treasure Map",
+    "subtitle": "Complete rankin' o' all sailin' crews",
+    "allNations": "All Crews",
+    "searchPlaceholder": "Search fer a crew...",
+    "compare": "Compare Plunder",
+    "showing": "Showin'",
+    "to": "to",
+    "of": "of",
+    "nations": "crews"
+  },
   "sports": {
     "title": "Skirmishes",
     "subtitle": "Pick a skirmish to see the bounty",

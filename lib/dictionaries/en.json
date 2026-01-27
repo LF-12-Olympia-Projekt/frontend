@@ -69,6 +69,17 @@
     "total": "Total",
     "viewAll": "View All"
   },
+  "medalTableDetail": {
+    "title": "Medal Table",
+    "subtitle": "Complete ranking of all participating nations",
+    "allNations": "All Nations",
+    "searchPlaceholder": "Search country...",
+    "compare": "Compare",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "nations": "nations"
+  },
   "sports": {
     "title": "Sports",
     "subtitle": "Select a sport to view results",
