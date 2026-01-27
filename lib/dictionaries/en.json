@@ -29,7 +29,11 @@
     "copyright": "© 2026 Olympia 2026 Results Portal. All rights reserved.",
     "events": "Events",
     "nations": "Nations",
-    "medals": "Medals"
+    "medals": "Medals",
+    "athletes": "Athletes",
+    "noMedalsYet": "No medals yet",
+    "noResults": "No results found",
+    "tryDifferentSearch": "Try a different search term"
   },
   "hero": {
     "headline": "Results of the Olympic Games 2026",
@@ -80,6 +84,42 @@
       "bobsled": "Bobsled",
       "figureSkating": "Figure Skating",
       "curling": "Curling"
+    }
+  },
+  "nations": {
+    "title": "Countries",
+    "subtitle": "Olympic Winter Games Milano-Cortina 2026",
+    "breadcrumb": "Countries",
+    "totalMedals": "Total",
+    "allResults": "All Results",
+    "searchPlaceholder": "Search...",
+    "filters": {
+      "allSports": "All Sports",
+      "all": "All",
+      "date": "Date"
+    },
+    "table": {
+      "sport": "Sport / Discipline",
+      "athlete": "Athlete",
+      "result": "Result",
+      "medal": "Medal",
+      "status": "Status"
+    },
+    "topAthletes": "Top Athletes",
+    "showAllAthletes": "Show all athletes",
+    "medalTimeline": "Medal Timeline",
+    "overview": {
+      "title": "All Participating Nations",
+      "subtitle": "Countries competing at the 2026 Winter Olympics",
+      "searchPlaceholder": "Search by country or code...",
+      "sortBy": "Sort by",
+      "sortByName": "Name",
+      "sortByMedals": "Medals",
+      "filterByMedals": "Filter medals",
+      "withMedals": "With Medals",
+      "allCountries": "All Countries",
+      "participatingNations": "Participating Nations",
+      "viewDetails": "View Details"
     }
   }
 }

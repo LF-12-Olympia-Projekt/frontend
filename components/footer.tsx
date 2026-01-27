@@ -1,5 +1,6 @@
 ﻿"use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Clock } from "lucide-react"
 import {ModeToggle} from "@/components/custom/theme-switcher";
@@ -9,15 +10,19 @@ import { useTranslation } from "@/lib/locale-context"
 export function Footer() {
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common || {}
+    const [lastUpdate, setLastUpdate] = useState("")
 
-    // Mock timestamp
-    const lastUpdate = new Date().toLocaleString(locale === "de" || locale === "de-BA" ? "de-DE" : locale === "fr" ? "fr-FR" : "en-US", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    })
+    // Generate timestamp on client side only to avoid hydration mismatch
+    useEffect(() => {
+        const timestamp = new Date().toLocaleString(locale === "de" || locale === "de-BA" ? "de-DE" : locale === "fr" ? "fr-FR" : "en-US", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+        setLastUpdate(timestamp)
+    }, [locale])
 
     return (
         <footer className="border-t bg-card">
@@ -26,12 +31,14 @@ export function Footer() {
                 <div className="flex flex-col gap-6 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
                     {/* Last update & disclaimer */}
                     <div className="max-w-xl">
-                        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock className="h-4 w-4" />
-                            <span>
-                                {t.lastUpdate}: {lastUpdate}
-                            </span>
-                        </div>
+                        {lastUpdate && (
+                            <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
+                                <Clock className="h-4 w-4" />
+                                <span>
+                                    {t.lastUpdate}: {lastUpdate}
+                                </span>
+                            </div>
+                        )}
                         <p className="text-sm text-muted-foreground">{t.disclaimer}</p>
                     </div>
 
