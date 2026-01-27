@@ -81,5 +81,28 @@
       "figureSkating": "Figure Skating",
       "curling": "Curling"
     }
+  },
+  "nations": {
+    "title": "Lands o' the Seven Seas",
+    "subtitle": "Olympic Winter Games Milano-Cortina 2026",
+    "breadcrumb": "Lands",
+    "totalMedals": "Total Booty",
+    "allResults": "All Results, Arr!",
+    "searchPlaceholder": "Search fer treasure...",
+    "filters": {
+      "allSports": "All Skirmishes",
+      "all": "All",
+      "date": "Date"
+    },
+    "table": {
+      "sport": "Skirmish / Type",
+      "athlete": "Matey",
+      "result": "Mark",
+      "medal": "Doubloon",
+      "status": "Status"
+    },
+    "topAthletes": "Top Scallywags",
+    "showAllAthletes": "Show all scallywags",
+    "medalTimeline": "Doubloon Chronicle"
   }
 }

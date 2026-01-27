@@ -81,5 +81,28 @@
       "figureSkating": "Patinage artistique",
       "curling": "Curling"
     }
+  },
+  "nations": {
+    "title": "Pays",
+    "subtitle": "Jeux olympiques d'hiver Milano-Cortina 2026",
+    "breadcrumb": "Pays",
+    "totalMedals": "Total",
+    "allResults": "Tous les résultats",
+    "searchPlaceholder": "Rechercher...",
+    "filters": {
+      "allSports": "Tous les sports",
+      "all": "Tous",
+      "date": "Date"
+    },
+    "table": {
+      "sport": "Sport / Discipline",
+      "athlete": "Athlète",
+      "result": "Résultat",
+      "medal": "Médaille",
+      "status": "Statut"
+    },
+    "topAthletes": "Meilleurs athlètes",
+    "showAllAthletes": "Afficher tous les athlètes",
+    "medalTimeline": "Chronologie des médailles"
   }
 }

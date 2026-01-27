@@ -81,5 +81,28 @@
       "figureSkating": "Eiskunstlauf",
       "curling": "Curling"
     }
+  },
+  "nations": {
+    "title": "Länder",
+    "subtitle": "Olympische Winterspiele Milano-Cortina 2026",
+    "breadcrumb": "Länder",
+    "totalMedals": "Gesamt",
+    "allResults": "Alle Ergebnisse",
+    "searchPlaceholder": "Suchen...",
+    "filters": {
+      "allSports": "Alle Sportarten",
+      "all": "Alle",
+      "date": "Datum"
+    },
+    "table": {
+      "sport": "Sportart / Disziplin",
+      "athlete": "Athlet",
+      "result": "Ergebnis",
+      "medal": "Medaille",
+      "status": "Status"
+    },
+    "topAthletes": "Top-Athleten",
+    "showAllAthletes": "Alle Athleten anzeigen",
+    "medalTimeline": "Medaillen-Timeline"
   }
 }

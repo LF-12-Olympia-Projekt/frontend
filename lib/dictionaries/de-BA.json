@@ -81,5 +81,28 @@
       "figureSkating": "Eiskunstlauf",
       "curling": "Curling"
     }
+  },
+  "nations": {
+    "title": "Lända",
+    "subtitle": "Olympische Wintaspüle Milano-Cortina 2026",
+    "breadcrumb": "Lända",
+    "totalMedals": "Gsamt",
+    "allResults": "Alle Ergebnisse",
+    "searchPlaceholder": "Suachn...",
+    "filters": {
+      "allSports": "Alle Sportoatn",
+      "all": "Alle",
+      "date": "Datum"
+    },
+    "table": {
+      "sport": "Sportoat / Disziplin",
+      "athlete": "Athlet",
+      "result": "Ergebnis",
+      "medal": "Medalj",
+      "status": "Status"
+    },
+    "topAthletes": "Top-Athletn",
+    "showAllAthletes": "Alle Athletn o'zoagn",
+    "medalTimeline": "Medaljn-Timeline"
   }
 }
