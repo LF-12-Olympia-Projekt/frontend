@@ -73,6 +73,17 @@
     "total": "Gsamt",
     "viewAll": "Alle o'zoagn"
   },
+  "medalTableDetail": {
+    "title": "Medaillenspiagl",
+    "subtitle": "Vollständige Ranglistn vo olle teilnehmenden Nationan",
+    "allNations": "Alle Nationan",
+    "searchPlaceholder": "Land suachn...",
+    "compare": "Vagleichn",
+    "showing": "Zoag",
+    "to": "bis",
+    "of": "vo",
+    "nations": "Nationan"
+  },
   "sports": {
     "title": "Sportoatn",
     "subtitle": "Suach da a Sportoat aus, damit'st de Ergebnisse siachst",
