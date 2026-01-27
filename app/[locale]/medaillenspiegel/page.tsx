@@ -7,10 +7,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { Trophy, Search, Scale } from "lucide-react"
+import { Trophy, Search, Scale, X, Check } from "lucide-react"
 import { getMedals, type MedalEntry } from "@/lib/api/medals"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
+import { Badge } from "@/components/ui/badge"
 
 export default function MedalTableDetailPage() {
   const { dictionary, locale } = useTranslation()
@@ -22,6 +23,8 @@ export default function MedalTableDetailPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
+  const [compareMode, setCompareMode] = useState(false)
+  const [selectedCountries, setSelectedCountries] = useState<MedalEntry[]>([])
   const limit = 10
 
   const loadMedals = async (searchTerm: string, page: number) => {
@@ -46,6 +49,30 @@ export default function MedalTableDetailPage() {
   const totalPages = Math.ceil(total / limit)
   const startItem = total > 0 ? (currentPage - 1) * limit + 1 : 0
   const endItem = Math.min(currentPage * limit, total)
+
+  const toggleCountrySelection = (entry: MedalEntry) => {
+    setSelectedCountries((prev) => {
+      const isSelected = prev.some((c) => c.rank === entry.rank)
+      if (isSelected) {
+        return prev.filter((c) => c.rank !== entry.rank)
+      } else {
+        if (prev.length >= 5) {
+          toast.error("Maximum 5 countries can be compared")
+          return prev
+        }
+        return [...prev, entry]
+      }
+    })
+  }
+
+  const clearComparison = () => {
+    setSelectedCountries([])
+    setCompareMode(false)
+  }
+
+  const isCountrySelected = (entry: MedalEntry) => {
+    return selectedCountries.some((c) => c.rank === entry.rank)
+  }
 
   return (
     <PageWrapper>
@@ -108,13 +135,103 @@ export default function MedalTableDetailPage() {
             </div>
 
             {/* Compare Button */}
-            <Button variant="outline" className="gap-2">
+            <Button
+              variant={compareMode ? "default" : "outline"}
+              className={`gap-2 ${compareMode ? "bg-sky-600 hover:bg-sky-700" : ""}`}
+              onClick={() => {
+                if (compareMode && selectedCountries.length === 0) {
+                  setCompareMode(false)
+                } else {
+                  setCompareMode(!compareMode)
+                }
+              }}
+            >
               <Scale className="h-4 w-4" />
               {t.compare}
+              {selectedCountries.length > 0 && (
+                <Badge variant="secondary" className="ml-1 px-1.5 py-0">
+                  {selectedCountries.length}
+                </Badge>
+              )}
             </Button>
           </div>
         </div>
       </section>
+
+      {/* Comparison View */}
+      {compareMode && selectedCountries.length > 0 && (
+        <section className="bg-sky-50 px-4 py-6 dark:bg-sky-950/20 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Scale className="h-5 w-5 text-sky-600" />
+                <h3 className="text-lg font-semibold">
+                  Comparing {selectedCountries.length} {selectedCountries.length === 1 ? "Country" : "Countries"}
+                </h3>
+              </div>
+              <Button variant="ghost" size="sm" onClick={clearComparison}>
+                <X className="h-4 w-4" />
+                Clear
+              </Button>
+            </div>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {selectedCountries.map((country) => (
+                <Card key={country.rank} className="overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold">{country.rank}</span>
+                          <span className="text-sm text-muted-foreground">{country.countryCode}</span>
+                        </div>
+                        <h4 className="mt-1 font-semibold">{country.countryName}</h4>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => toggleCountrySelection(country)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                      <div>
+                        <div
+                          className="mx-auto flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+                          style={{ backgroundColor: "oklch(0.55 0.12 70)" }}
+                        >
+                          {country.gold}
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">Gold</p>
+                      </div>
+                      <div>
+                        <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-gray-500 text-xs font-bold text-white">
+                          {country.silver}
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">Silver</p>
+                      </div>
+                      <div>
+                        <div
+                          className="mx-auto flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+                          style={{ backgroundColor: "oklch(0.50 0.10 40)" }}
+                        >
+                          {country.bronze}
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">Bronze</p>
+                      </div>
+                    </div>
+                    <div className="mt-3 border-t pt-3 text-center">
+                      <p className="text-2xl font-bold">{country.total}</p>
+                      <p className="text-xs text-muted-foreground">Total</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Medal Table */}
       <section className="px-4 py-8 sm:px-6 lg:px-8">
@@ -179,10 +296,30 @@ export default function MedalTableDetailPage() {
                       medals.map((entry) => (
                         <tr
                           key={entry.rank}
-                          className="border-b border-border transition-colors hover:bg-muted/50"
+                          className={`border-b border-border transition-colors ${
+                            compareMode ? "cursor-pointer" : ""
+                          } ${
+                            isCountrySelected(entry)
+                              ? "bg-sky-100 dark:bg-sky-950/30"
+                              : "hover:bg-muted/50"
+                          }`}
+                          onClick={() => compareMode && toggleCountrySelection(entry)}
                         >
-                          <td className="px-4 py-5 text-lg font-semibold sm:px-6">
-                            {entry.rank}
+                          <td className="px-4 py-5 sm:px-6">
+                            <div className="flex items-center gap-2">
+                              {compareMode && (
+                                <div
+                                  className={`flex h-5 w-5 items-center justify-center rounded border-2 ${
+                                    isCountrySelected(entry)
+                                      ? "border-sky-600 bg-sky-600"
+                                      : "border-muted-foreground/30"
+                                  }`}
+                                >
+                                  {isCountrySelected(entry) && <Check className="h-3 w-3 text-white" />}
+                                </div>
+                              )}
+                              <span className="text-lg font-semibold">{entry.rank}</span>
+                            </div>
                           </td>
                           <td className="px-4 py-5 sm:px-6">
                             <div className="flex items-center gap-3">
