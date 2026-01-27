@@ -6,6 +6,10 @@
     "sports": "Sportoatn",
     "medalTable": "Medaillenspiagl",
     "countries": "Lända",
+    "athletes": "Athletn",
+    "noMedalsYet": "Noch keine Medaljn",
+    "noResults": "Keine Ergebnisse gfundn",
+    "tryDifferentSearch": "Probier an andern Suachbegriff",
     "welcomeBack": "Servus wieda do",
     "loginDescription": "Meld di o, damit'st zum Kampfrichda-Dashboard kimmst",
     "email": "E-Mail",
@@ -91,6 +95,42 @@
       "bobsled": "Bobsport",
       "figureSkating": "Eiskunstlauf",
       "curling": "Curling"
+    }
+  },
+  "nations": {
+    "title": "Lända",
+    "subtitle": "Olympische Wintaspüle Milano-Cortina 2026",
+    "breadcrumb": "Lända",
+    "totalMedals": "Gsamt",
+    "allResults": "Alle Ergebnisse",
+    "searchPlaceholder": "Suachn...",
+    "filters": {
+      "allSports": "Alle Sportoatn",
+      "all": "Alle",
+      "date": "Datum"
+    },
+    "table": {
+      "sport": "Sportoat / Disziplin",
+      "athlete": "Athlet",
+      "result": "Ergebnis",
+      "medal": "Medalj",
+      "status": "Status"
+    },
+    "topAthletes": "Top-Athletn",
+    "showAllAthletes": "Alle Athletn o'zoagn",
+    "medalTimeline": "Medaljn-Timeline",
+    "overview": {
+      "title": "Alle teilnehmenden Nationan",
+      "subtitle": "Lända bei de Olympischn Wintaspüle 2026",
+      "searchPlaceholder": "Noch Land oder Code suachn...",
+      "sortBy": "Sortian noch",
+      "sortByName": "Nama",
+      "sortByMedals": "Medaljn",
+      "filterByMedals": "Medaljn filtan",
+      "withMedals": "Mit Medaljn",
+      "allCountries": "Alle Lända",
+      "participatingNations": "Teilnehmende Nationan",
+      "viewDetails": "Details o'zoagn"
     }
   }
 }

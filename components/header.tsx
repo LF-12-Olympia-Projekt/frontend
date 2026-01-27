@@ -16,7 +16,7 @@ export function Header() {
         { name: dictionary.common?.results, href: `/${locale}#results` },
         { name: dictionary.common?.sports, href: `/${locale}#sports` },
         { name: dictionary.common?.medalTable, href: `/${locale}/medaillenspiegel` },
-        { name: dictionary.common?.countries, href: `/${locale}#highlights` },
+        { name: dictionary.common?.countries, href: `/${locale}/nations` },
     ]
 
     return (
