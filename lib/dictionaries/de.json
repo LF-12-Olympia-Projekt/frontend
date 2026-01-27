@@ -94,7 +94,62 @@
       "skiJumping": "Skispringen",
       "bobsled": "Bobsport",
       "figureSkating": "Eiskunstlauf",
-      "curling": "Curling"
+      "curling": "Curling",
+      "luge": "Rennrodeln",
+      "nordicCombined": "Nordische Kombination",
+      "shortTrack": "Shorttrack",
+      "skeleton": "Skeleton",
+      "alpineSkiing": "Alpiner Skisport",
+      "freestyle": "Freestyle-Skiing",
+      "snowboard": "Snowboard",
+      "speedSkating": "Eisschnelllauf"
+    },
+    "overview": {
+      "title": "Sportarten",
+      "subtitle": "Alle 15 olympischen Wintersportarten",
+      "searchPlaceholder": "Sportart suchen...",
+      "totalSports": "Sportarten",
+      "totalEvents": "Wettbewerbe",
+      "totalMedals": "Medaillen",
+      "totalNations": "Nationen",
+      "events": "Wettbewerbe",
+      "medals": "Medaillen"
+    },
+    "detail": {
+      "breadcrumb": "Sportarten",
+      "eventsAndResults": "Wettkampfplan & Ergebnisse",
+      "disciplines": "Disziplinen",
+      "disciplinesCount": "Disziplinen",
+      "medalsCount": "Medaillen",
+      "description": {
+        "biathlon": "Kombination aus Skilanglauf und Schießen",
+        "bobsled": "Geschwindigkeit auf Eis",
+        "crossCountrySkiing": "Ausdauer im Schnee",
+        "curling": "Präzision auf dem Eis",
+        "figureSkating": "Kunst und Athletik",
+        "iceHockey": "Schnelligkeit und Teamwork",
+        "luge": "Rasant auf Kufen",
+        "nordicCombined": "Springen und Langlauf",
+        "shortTrack": "Geschwindigkeit auf kurzer Bahn",
+        "skeleton": "Kopfüber ins Ziel",
+        "alpineSkiing": "Geschwindigkeit am Berg",
+        "skiJumping": "Fliegen durch die Luft",
+        "freestyle": "Tricks und Stunts",
+        "snowboard": "Style auf dem Board",
+        "speedSkating": "Tempo auf der langen Bahn"
+      },
+      "eventInfo": {
+        "date": "Datum",
+        "time": "Zeit",
+        "location": "Ort",
+        "status": {
+          "live": "Live",
+          "final": "Final",
+          "draft": "Entwurf",
+          "scheduled": "Geplant"
+        },
+        "viewResults": "Ergebnisse"
+      }
     }
   },
   "nations": {
