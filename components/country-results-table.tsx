@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Trophy, Search, Filter, ArrowUpDown } from "lucide-react"
+import { Trophy, Search, Filter, ArrowUpDown, ChevronDown } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 interface CountryResultsTableProps {
   countryCode: string
@@ -29,6 +30,9 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
   const liveResults = dictionary.liveResults || {}
   
   const [searchQuery, setSearchQuery] = useState("")
+  const [selectedSport, setSelectedSport] = useState<string>("all")
+  const [selectedMedal, setSelectedMedal] = useState<string>("all")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
   // Mock data - in real app this would come from API
   const results: Result[] = [
@@ -106,11 +110,44 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
     }
   ]
 
-  const filteredResults = results.filter(result => 
-    result.athlete.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    result.sport.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    result.discipline.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Get unique sports for filter dropdown
+  const uniqueSports = useMemo(() => {
+    const sports = [...new Set(results.map(r => r.sport))].sort()
+    return sports
+  }, [results])
+
+  // Filter and sort results
+  const filteredResults = useMemo(() => {
+    let filtered = results
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(result => 
+        result.athlete.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        result.sport.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        result.discipline.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Apply sport filter
+    if (selectedSport !== "all") {
+      filtered = filtered.filter(result => result.sport === selectedSport)
+    }
+
+    // Apply medal filter
+    if (selectedMedal !== "all") {
+      filtered = filtered.filter(result => result.medal === selectedMedal)
+    }
+
+    // Apply date sorting
+    const sorted = [...filtered].sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB
+    })
+
+    return sorted
+  }, [results, searchQuery, selectedSport, selectedMedal, sortOrder])
 
   const getMedalBadge = (medal: string) => {
     const styles = {
@@ -155,16 +192,73 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
 
         {/* Filter Bar */}
         <div className="flex flex-wrap gap-2 pt-4">
-          <Button variant="outline" size="sm" className="gap-2">
-            <Filter className="h-4 w-4" />
-            {t.filters?.allSports || "All Sports"}
-          </Button>
-          <Button variant="outline" size="sm">
-            {t.filters?.all || "All"}
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          {/* Sport Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Filter className="h-4 w-4" />
+                {selectedSport === "all" 
+                  ? (t.filters?.allSports || "All Sports")
+                  : selectedSport
+                }
+                <ChevronDown className="h-3 w-3 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={() => setSelectedSport("all")}>
+                {t.filters?.allSports || "All Sports"}
+              </DropdownMenuItem>
+              {uniqueSports.map((sport) => (
+                <DropdownMenuItem key={sport} onClick={() => setSelectedSport(sport)}>
+                  {sport}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Medal Filter */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                {selectedMedal === "all" 
+                  ? (t.filters?.all || "All")
+                  : selectedMedal === "gold"
+                  ? (dictionary.medalTable?.gold || "Gold")
+                  : selectedMedal === "silver"
+                  ? (dictionary.medalTable?.silver || "Silver")
+                  : (dictionary.medalTable?.bronze || "Bronze")
+                }
+                <ChevronDown className="h-3 w-3 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={() => setSelectedMedal("all")}>
+                {t.filters?.all || "All"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedMedal("gold")}>
+                {dictionary.medalTable?.gold || "Gold"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedMedal("silver")}>
+                {dictionary.medalTable?.silver || "Silver"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedMedal("bronze")}>
+                {dictionary.medalTable?.bronze || "Bronze"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Date Sort */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-2"
+            onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+          >
             <ArrowUpDown className="h-4 w-4" />
             {t.filters?.date || "Date"}
+            <span className="text-xs opacity-50">
+              {sortOrder === "desc" ? "↓" : "↑"}
+            </span>
           </Button>
         </div>
       </CardHeader>
