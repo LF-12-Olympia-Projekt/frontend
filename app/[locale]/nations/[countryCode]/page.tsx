@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { PageWrapper } from "@/components/page-wrapper"
 import { useTranslation } from "@/lib/locale-context"
 import { CountryHero } from "@/components/country-hero"
@@ -11,10 +12,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { ChevronRight } from "lucide-react"
 
 interface PageProps {
-  params: {
+  params: Promise<{
     locale: string
     countryCode: string
-  }
+  }>
 }
 
 export default function NationPage({ params }: PageProps) {
@@ -22,10 +23,13 @@ export default function NationPage({ params }: PageProps) {
   const t = dictionary.nations || {}
   const common = dictionary.common || {}
 
+  // Unwrap params Promise
+  const { countryCode } = use(params)
+
   // Mock country data - in real app this would come from API
   const countryData = {
-    code: params.countryCode.toUpperCase(),
-    name: params.countryCode === "no" ? "Norwegen" : "Norway",
+    code: countryCode.toUpperCase(),
+    name: countryCode === "no" ? "Norwegen" : "Norway",
     gold: 16,
     silver: 8,
     bronze: 13,
