@@ -3,7 +3,7 @@
 import React from "react"
 
 import { useState } from "react"
-import Link from "next/link"
+import * as authApi from "@/lib/api/auth"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -52,23 +52,27 @@ export default function LoginPage() {
         setError(null)
         setIsLoading(true)
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        router.push(`/${locale}/judge`)
-
-        setIsLoading(false)
+        try {
+            const { token } = await authApi.login(email, password)
+            localStorage.setItem("token", token)
+            router.push(`/${locale}/judge`)
+        } catch {
+            setError(t.invalidCredentials)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const handleForgotPassword = async (e: React.FormEvent) => {
         e.preventDefault()
-        setError(null)
         setIsLoading(true)
 
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-
-        setStep("reset-sent")
-        setIsLoading(false)
+        try {
+            await authApi.forgotPassword(email)
+            setStep("reset-sent")
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
