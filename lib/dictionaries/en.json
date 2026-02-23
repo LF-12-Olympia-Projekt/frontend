@@ -187,5 +187,57 @@
       "participatingNations": "Participating Nations",
       "viewDetails": "View Details"
     }
+  },
+  "resultsPage": {
+    "title": "Results",
+    "subtitle": "All published competition results",
+    "breadcrumb": "Results",
+    "searchPlaceholder": "Search athlete or event...",
+    "filterSport": "Sport",
+    "filterCountry": "Country",
+    "filterDate": "Date",
+    "allSports": "All Sports",
+    "allCountries": "All Countries",
+    "noResults": "No results found",
+    "noResultsHint": "Try adjusting your filters",
+    "rank": "Rank",
+    "medal": "Medal",
+    "athlete": "Athlete",
+    "country": "Country",
+    "result": "Result",
+    "event": "Event",
+    "lastModified": "Last modified",
+    "page": "Page",
+    "of": "of",
+    "viewDetail": "View Details"
+  },
+  "resultDetail": {
+    "title": "Result Detail",
+    "breadcrumb": "Result",
+    "eventInfo": "Event Information",
+    "sport": "Sport",
+    "date": "Date",
+    "location": "Location",
+    "version": "Version",
+    "relatedResults": "Results from this Event"
+  },
+  "athleteProfile": {
+    "title": "Athlete Profile",
+    "breadcrumb": "Athlete",
+    "age": "Age",
+    "country": "Country",
+    "disciplines": "Disciplines",
+    "results": "Results",
+    "noResults": "No published results yet"
+  },
+  "countryMedals": {
+    "title": "Medal Details",
+    "breadcrumb": "Country",
+    "medals": "Medals",
+    "results": "Medal-Winning Results",
+    "gold": "Gold",
+    "silver": "Silver",
+    "bronze": "Bronze",
+    "total": "Total"
   }
 }
