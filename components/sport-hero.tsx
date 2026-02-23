@@ -43,35 +43,41 @@ export function SportHero({
   const IconComponent = iconConfig.icon
 
   return (
-    <div className="border-b border-border bg-muted/30 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          {/* Left: Icon and Title */}
-          <div className="flex items-center gap-4">
-            <div className={`flex h-20 w-20 items-center justify-center rounded-2xl ${iconConfig.bgColor}`}>
-              <IconComponent className={`h-10 w-10 ${iconConfig.iconColor}`} />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                {sportName}
-              </h1>
-              <p className="mt-1 text-muted-foreground">{description}</p>
-            </div>
-          </div>
+  <div className="relative overflow-hidden border-b border-border bg-muted/30 px-4 py-8 sm:px-6 lg:px-8">
+    
+    {/* Weicher Gesamt-Gradient */}
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-green-500/10" />
 
-          {/* Right: Stats */}
-          <div className="flex gap-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold">{disciplinesCount}</div>
-              <div className="text-sm text-muted-foreground">{disciplinesLabel}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">{medalsCount}</div>
-              <div className="text-sm text-muted-foreground">{medalsLabel}</div>
-            </div>
+    <div className="relative mx-auto max-w-7xl">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        
+        {/* Left: Icon and Title */}
+        <div className="flex items-center gap-4">
+          <div className={`flex h-20 w-20 items-center justify-center rounded-2xl ${iconConfig.bgColor}`}>
+            <IconComponent className={`h-10 w-10 ${iconConfig.iconColor}`} />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              {sportName}
+            </h1>
+            <p className="mt-1 text-muted-foreground">{description}</p>
           </div>
         </div>
+
+        {/* Right: Stats */}
+        <div className="flex gap-8">
+          <div className="text-center">
+            <div className="text-3xl font-bold">{disciplinesCount}</div>
+            <div className="text-sm text-muted-foreground">{disciplinesLabel}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold">{medalsCount}</div>
+            <div className="text-sm text-muted-foreground">{medalsLabel}</div>
+          </div>
+        </div>
+
       </div>
     </div>
-  )
+  </div>
+)
 }
