@@ -1,11 +1,8 @@
-﻿export function getToken(): string | null {
-    return localStorage.getItem("token")
-}
-
-export function logout() {
-    localStorage.removeItem("token")
-}
+// lib/auth.ts | Task: FE-001 | Auth utilities (deprecated – use useAuth hook instead)
+// This file is kept for backward compatibility.
+// New code should use the useAuth() hook from lib/auth-context.tsx
 
 export function isAuthenticated(): boolean {
-    return !!getToken()
+  console.warn("isAuthenticated() is deprecated. Use useAuth().isAuthenticated instead.")
+  return false
 }
