@@ -479,5 +479,22 @@
       "cancel": "Annuler",
       "confirm": "Confirmer"
     }
+  },
+  "sidebar": {
+    "results": "Résultats",
+    "medalTable": "Tableau des médailles",
+    "sports": "Sports",
+    "myDashboard": "Mon tableau de bord",
+    "myResults": "Mes résultats",
+    "newResult": "Nouveau résultat",
+    "reviewQueue": "File d'attente de révision",
+    "adminDashboard": "Tableau de bord admin",
+    "userManagement": "Gestion des utilisateurs",
+    "resultManagement": "Gestion des résultats",
+    "sportTemplates": "Modèles de sport",
+    "auditLog": "Journal d'audit",
+    "medalAssets": "Assets médailles",
+    "login": "Connexion",
+    "logout": "Déconnexion"
   }
 }

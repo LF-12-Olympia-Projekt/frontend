@@ -534,5 +534,22 @@
       "cancel": "Abbrechen",
       "confirm": "Bestätigen"
     }
+  },
+  "sidebar": {
+    "results": "Ergebnisse",
+    "medalTable": "Medaillenspiegel",
+    "sports": "Sportarten",
+    "myDashboard": "Mein Dashboard",
+    "myResults": "Meine Ergebnisse",
+    "newResult": "Neues Ergebnis",
+    "reviewQueue": "Prüfungswarteschlange",
+    "adminDashboard": "Admin-Dashboard",
+    "userManagement": "Benutzerverwaltung",
+    "resultManagement": "Ergebnisverwaltung",
+    "sportTemplates": "Sport-Vorlagen",
+    "auditLog": "Audit-Protokoll",
+    "medalAssets": "Medaillen-Assets",
+    "login": "Anmelden",
+    "logout": "Abmelden"
   }
 }
