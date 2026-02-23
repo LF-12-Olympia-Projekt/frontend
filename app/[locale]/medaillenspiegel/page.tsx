@@ -12,6 +12,7 @@ import { getMedals, type MedalEntry } from "@/lib/api/medals"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
+import GradientHero from "@/components/GradientHero";
 
 export default function MedalTableDetailPage() {
   const { dictionary, locale } = useTranslation()
@@ -94,16 +95,9 @@ export default function MedalTableDetailPage() {
       </section>
 
       {/* Page Title */}
-      <section className="bg-background px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            {t.title}
-          </h1>
-          <p className="mt-2 text-base text-muted-foreground sm:text-lg">
-            {t.subtitle}
-          </p>
-        </div>
-      </section>
+      
+      <GradientHero title={t.title} subtitle={t.subtitle} />
+
 
       {/* Filter Bar */}
       <section className="border-b border-t border-border bg-card/50 px-4 py-4 sm:px-6 lg:px-8">
