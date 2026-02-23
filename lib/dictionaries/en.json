@@ -534,5 +534,22 @@
       "cancel": "Cancel",
       "confirm": "Confirm"
     }
+  },
+  "sidebar": {
+    "results": "Results",
+    "medalTable": "Medal Table",
+    "sports": "Sports",
+    "myDashboard": "My Dashboard",
+    "myResults": "My Results",
+    "newResult": "New Result",
+    "reviewQueue": "Review Queue",
+    "adminDashboard": "Admin Dashboard",
+    "userManagement": "User Management",
+    "resultManagement": "Result Management",
+    "sportTemplates": "Sport Templates",
+    "auditLog": "Audit Log",
+    "medalAssets": "Medal Assets",
+    "login": "Login",
+    "logout": "Logout"
   }
 }

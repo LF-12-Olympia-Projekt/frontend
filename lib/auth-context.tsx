@@ -6,14 +6,23 @@ import * as authApi from "@/lib/api/auth"
 
 const TOKEN_KEY = "olympia_jwt"
 
+// .NET ClaimTypes URIs used in JWT
+const CLAIM_ROLE = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+const CLAIM_NAME = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+
+export type UserRole = "admin" | "judge" | null
+
 interface User {
   token: string
+  username: string
+  role: UserRole
 }
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
+  role: UserRole
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   getToken: () => string | null
@@ -21,18 +30,35 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function parseJwtPayload(token: string): { username: string; role: UserRole } {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]))
+    const username = payload[CLAIM_NAME] ?? payload.name ?? "unknown"
+    const rawRole = payload[CLAIM_ROLE] ?? payload.role
+    // Role can be string or array; take first match
+    const roleStr = Array.isArray(rawRole) ? rawRole[0] : rawRole
+    const role: UserRole =
+      roleStr?.toLowerCase() === "admin" ? "admin" :
+      roleStr?.toLowerCase() === "judge" ? "judge" :
+      null
+    return { username, role }
+  } catch {
+    return { username: "unknown", role: null }
+  }
+}
+
 function readStoredToken(): User | null {
   if (typeof window === "undefined") return null
   try {
     const token = sessionStorage.getItem(TOKEN_KEY)
     if (!token) return null
-    // Check if token is expired by decoding the payload
     const payload = JSON.parse(atob(token.split(".")[1]))
     if (payload.exp && payload.exp * 1000 < Date.now()) {
       sessionStorage.removeItem(TOKEN_KEY)
       return null
     }
-    return { token }
+    const { username, role } = parseJwtPayload(token)
+    return { token, username, role }
   } catch {
     sessionStorage.removeItem(TOKEN_KEY)
     return null
@@ -52,7 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const { token } = await authApi.login(email, password)
     sessionStorage.setItem(TOKEN_KEY, token)
-    setUser({ token })
+    const { username, role } = parseJwtPayload(token)
+    setUser({ token, username, role })
   }, [])
 
   const logout = useCallback(() => {
@@ -65,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, logout, getToken }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, role: user?.role ?? null, login, logout, getToken }}>
       {children}
     </AuthContext.Provider>
   )
