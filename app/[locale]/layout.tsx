@@ -2,13 +2,16 @@ import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Locale, getDictionary } from "@/lib/dictionaries";
 import { LocaleProvider } from "@/lib/locale-context";
+import { AuthProvider } from "@/lib/auth-context";
 
 export async function generateStaticParams() {
     return [
         { locale: "de" },
         { locale: "de-BA" },
         { locale: "fr" },
+        { locale: "fr-FR" },
         { locale: "en" },
+        { locale: "en-GB" },
         { locale: "pirate" },
     ];
 }
@@ -32,7 +35,9 @@ export default async function LocaleLayout({
                 enableSystem
                 disableTransitionOnChange
             >
-                {children}
+                <AuthProvider>
+                    {children}
+                </AuthProvider>
             </ThemeProvider>
         </LocaleProvider>
     );

@@ -30,6 +30,7 @@ import {
     ArrowRight,
 } from "lucide-react"
 import { useTranslation } from "@/lib/locale-context"
+import { useAuth } from "@/lib/auth-context"
 
 type AuthStep = "login" | "2fa" | "forgot-password" | "reset-sent"
 
@@ -37,8 +38,9 @@ export default function LoginPage() {
     const router = useRouter()
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common
+    const { login: authLogin } = useAuth()
 
-    const [step, setStep] = useState<AuthStep>("login")
+    const [step, setStep]= useState<AuthStep>("login")
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -53,8 +55,7 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
-            const { token } = await authApi.login(email, password)
-            localStorage.setItem("token", token)
+            await authLogin(email, password)
             router.push(`/${locale}/judge`)
         } catch {
             setError(t.invalidCredentials)
