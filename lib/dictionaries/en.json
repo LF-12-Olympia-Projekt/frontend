@@ -239,5 +239,110 @@
     "silver": "Silver",
     "bronze": "Bronze",
     "total": "Total"
+  },
+  "judge": {
+    "dashboard": {
+      "title": "Judge Dashboard",
+      "subtitle": "Overview of your results",
+      "drafts": "Drafts",
+      "pendingReview": "Pending Review",
+      "published": "Published",
+      "protests": "Protests",
+      "invalid": "Invalid",
+      "newResult": "New Result",
+      "myDrafts": "My Drafts",
+      "reviewQueue": "Review Queue"
+    },
+    "results": {
+      "title": "My Results",
+      "subtitle": "Manage all your results",
+      "all": "All",
+      "filterDraft": "Draft",
+      "filterPending": "Pending",
+      "filterPublished": "Published",
+      "filterInvalid": "Invalid",
+      "event": "Event",
+      "athlete": "Athlete",
+      "sport": "Sport",
+      "value": "Value",
+      "status": "Status",
+      "version": "Version",
+      "lastModified": "Last Modified",
+      "actions": "Actions",
+      "noResults": "No results found"
+    },
+    "review": {
+      "title": "Review Queue",
+      "subtitle": "Review submitted results",
+      "submittedBy": "Submitted by",
+      "submittedAt": "Submitted at",
+      "firstApproval": "First Approval",
+      "awaitingSecond": "Awaiting second approval",
+      "noItems": "No results to review",
+      "reviewDetail": "Review Result",
+      "approvalHistory": "Approval History"
+    },
+    "status": {
+      "draft": "Draft",
+      "pendingReview": "Pending Review",
+      "published": "Published",
+      "protestFiled": "Protest Filed",
+      "invalid": "Invalid"
+    },
+    "actions": {
+      "edit": "Edit",
+      "view": "View",
+      "submit": "Submit",
+      "approve": "Approve",
+      "reject": "Reject",
+      "protest": "Protest",
+      "invalidate": "Invalidate",
+      "saveDraft": "Save Draft",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "back": "Back"
+    },
+    "form": {
+      "newResult": "Create New Result",
+      "editResult": "Edit Result",
+      "selectSport": "Select Sport",
+      "selectEvent": "Select Event",
+      "selectAthlete": "Select Athlete",
+      "enterValue": "Enter result value",
+      "enterUnit": "Enter unit",
+      "enterRank": "Rank",
+      "notes": "Notes",
+      "sportSpecific": "Sport-specific fields",
+      "reviewAndSave": "Review & Save",
+      "autoSaved": "Auto-saved",
+      "required": "Required",
+      "step": "Step",
+      "of": "of"
+    },
+    "modal": {
+      "confirmSubmit": "Submit Result?",
+      "confirmSubmitMessage": "The result will be submitted for review and can no longer be edited.",
+      "confirmApprove": "Approve Result?",
+      "confirmApproveMessage": "Do you want to approve this result?",
+      "confirmReject": "Reject Result?",
+      "confirmRejectMessage": "Please provide a reason for rejection.",
+      "protestTitle": "File Protest",
+      "protestMessage": "Please provide the reason for your protest (max. 1000 characters).",
+      "invalidateTitle": "Invalidate Result",
+      "invalidateMessage": "Please provide the reason for invalidation.",
+      "reasonPlaceholder": "Enter reason...",
+      "rejectionPlaceholder": "Enter rejection reason..."
+    },
+    "detail": {
+      "title": "Result Detail",
+      "resultInfo": "Result Information",
+      "versionHistory": "Version History",
+      "reviewerFeedback": "Reviewer Feedback",
+      "auditTrail": "Audit Trail",
+      "protestHistory": "Protest History",
+      "changedBy": "Changed by",
+      "changedAt": "Changed at",
+      "changeType": "Change Type"
+    }
   }
 }

@@ -1,4 +1,4 @@
-// components/protected-route.tsx | Task: FE-001 | Protected route wrapper component
+// components/protected-route.tsx | Task: FE-003 | Protected route wrapper component
 "use client"
 
 import { useEffect } from "react"
@@ -12,15 +12,23 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
   const { locale } = useTranslation()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.replace(`/${locale}/login`)
     }
-  }, [isAuthenticated, locale, router])
+  }, [isAuthenticated, isLoading, locale, router])
+
+  if (isLoading) {
+    return fallback ?? (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    )
+  }
 
   if (!isAuthenticated) {
     return fallback ?? null

@@ -239,5 +239,110 @@
     "silver": "Silber",
     "bronze": "Bronze",
     "total": "Gesamt"
+  },
+  "judge": {
+    "dashboard": {
+      "title": "Kampfrichter-Dashboard",
+      "subtitle": "Übersicht Ihrer Ergebnisse",
+      "drafts": "Entwürfe",
+      "pendingReview": "In Prüfung",
+      "published": "Veröffentlicht",
+      "protests": "Proteste",
+      "invalid": "Ungültig",
+      "newResult": "Neues Ergebnis",
+      "myDrafts": "Meine Entwürfe",
+      "reviewQueue": "Prüf-Warteschlange"
+    },
+    "results": {
+      "title": "Meine Ergebnisse",
+      "subtitle": "Alle eigenen Ergebnisse verwalten",
+      "all": "Alle",
+      "filterDraft": "Entwurf",
+      "filterPending": "In Prüfung",
+      "filterPublished": "Veröffentlicht",
+      "filterInvalid": "Ungültig",
+      "event": "Wettbewerb",
+      "athlete": "Athlet",
+      "sport": "Sportart",
+      "value": "Wert",
+      "status": "Status",
+      "version": "Version",
+      "lastModified": "Zuletzt geändert",
+      "actions": "Aktionen",
+      "noResults": "Keine Ergebnisse gefunden"
+    },
+    "review": {
+      "title": "Prüf-Warteschlange",
+      "subtitle": "Eingereichte Ergebnisse prüfen",
+      "submittedBy": "Eingereicht von",
+      "submittedAt": "Eingereicht am",
+      "firstApproval": "Erste Freigabe",
+      "awaitingSecond": "Wartet auf zweite Freigabe",
+      "noItems": "Keine Ergebnisse zur Prüfung",
+      "reviewDetail": "Ergebnis prüfen",
+      "approvalHistory": "Freigabe-Verlauf"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "pendingReview": "In Prüfung",
+      "published": "Veröffentlicht",
+      "protestFiled": "Protest eingereicht",
+      "invalid": "Ungültig"
+    },
+    "actions": {
+      "edit": "Bearbeiten",
+      "view": "Anzeigen",
+      "submit": "Einreichen",
+      "approve": "Freigeben",
+      "reject": "Ablehnen",
+      "protest": "Protestieren",
+      "invalidate": "Ungültig erklären",
+      "saveDraft": "Entwurf speichern",
+      "cancel": "Abbrechen",
+      "confirm": "Bestätigen",
+      "back": "Zurück"
+    },
+    "form": {
+      "newResult": "Neues Ergebnis erstellen",
+      "editResult": "Ergebnis bearbeiten",
+      "selectSport": "Sportart auswählen",
+      "selectEvent": "Wettbewerb auswählen",
+      "selectAthlete": "Athlet auswählen",
+      "enterValue": "Ergebniswert eingeben",
+      "enterUnit": "Einheit eingeben",
+      "enterRank": "Platzierung",
+      "notes": "Notizen",
+      "sportSpecific": "Sportspezifische Felder",
+      "reviewAndSave": "Überprüfen und Speichern",
+      "autoSaved": "Automatisch gespeichert",
+      "required": "Pflichtfeld",
+      "step": "Schritt",
+      "of": "von"
+    },
+    "modal": {
+      "confirmSubmit": "Ergebnis einreichen?",
+      "confirmSubmitMessage": "Das Ergebnis wird zur Prüfung eingereicht und kann danach nicht mehr bearbeitet werden.",
+      "confirmApprove": "Ergebnis freigeben?",
+      "confirmApproveMessage": "Möchten Sie dieses Ergebnis freigeben?",
+      "confirmReject": "Ergebnis ablehnen?",
+      "confirmRejectMessage": "Bitte geben Sie einen Ablehnungsgrund an.",
+      "protestTitle": "Protest einreichen",
+      "protestMessage": "Bitte geben Sie den Grund für Ihren Protest an (max. 1000 Zeichen).",
+      "invalidateTitle": "Ergebnis ungültig erklären",
+      "invalidateMessage": "Bitte geben Sie den Grund für die Ungültigkeitserklärung an.",
+      "reasonPlaceholder": "Grund eingeben...",
+      "rejectionPlaceholder": "Ablehnungsgrund eingeben..."
+    },
+    "detail": {
+      "title": "Ergebnis-Detail",
+      "resultInfo": "Ergebnis-Informationen",
+      "versionHistory": "Versionshistorie",
+      "reviewerFeedback": "Reviewer-Feedback",
+      "auditTrail": "Audit-Protokoll",
+      "protestHistory": "Protest-Verlauf",
+      "changedBy": "Geändert von",
+      "changedAt": "Geändert am",
+      "changeType": "Änderungstyp"
+    }
   }
 }

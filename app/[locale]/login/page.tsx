@@ -56,7 +56,7 @@ export default function LoginPage() {
 
         try {
             await authLogin(email, password)
-            router.push(`/${locale}/judge`)
+            router.push(`/${locale}/judge/dashboard`)
         } catch {
             setError(t.invalidCredentials)
         } finally {

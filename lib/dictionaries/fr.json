@@ -184,5 +184,110 @@
     "silver": "Argent",
     "bronze": "Bronze",
     "total": "Total"
+  },
+  "judge": {
+    "dashboard": {
+      "title": "Tableau de bord des juges",
+      "subtitle": "Aperçu de vos résultats",
+      "drafts": "Brouillons",
+      "pendingReview": "En attente de révision",
+      "published": "Publiés",
+      "protests": "Protestations",
+      "invalid": "Invalides",
+      "newResult": "Nouveau résultat",
+      "myDrafts": "Mes brouillons",
+      "reviewQueue": "File de révision"
+    },
+    "results": {
+      "title": "Mes résultats",
+      "subtitle": "Gérer tous vos résultats",
+      "all": "Tous",
+      "filterDraft": "Brouillon",
+      "filterPending": "En attente",
+      "filterPublished": "Publié",
+      "filterInvalid": "Invalide",
+      "event": "Épreuve",
+      "athlete": "Athlète",
+      "sport": "Sport",
+      "value": "Valeur",
+      "status": "Statut",
+      "version": "Version",
+      "lastModified": "Dernière modification",
+      "actions": "Actions",
+      "noResults": "Aucun résultat trouvé"
+    },
+    "review": {
+      "title": "File de révision",
+      "subtitle": "Réviser les résultats soumis",
+      "submittedBy": "Soumis par",
+      "submittedAt": "Soumis le",
+      "firstApproval": "Première approbation",
+      "awaitingSecond": "En attente de la deuxième approbation",
+      "noItems": "Aucun résultat à réviser",
+      "reviewDetail": "Réviser le résultat",
+      "approvalHistory": "Historique des approbations"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "pendingReview": "En attente de révision",
+      "published": "Publié",
+      "protestFiled": "Protestation déposée",
+      "invalid": "Invalide"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "view": "Voir",
+      "submit": "Soumettre",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "protest": "Protester",
+      "invalidate": "Invalider",
+      "saveDraft": "Enregistrer le brouillon",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "back": "Retour"
+    },
+    "form": {
+      "newResult": "Créer un nouveau résultat",
+      "editResult": "Modifier le résultat",
+      "selectSport": "Sélectionner le sport",
+      "selectEvent": "Sélectionner l'épreuve",
+      "selectAthlete": "Sélectionner l'athlète",
+      "enterValue": "Saisir la valeur du résultat",
+      "enterUnit": "Saisir l'unité",
+      "enterRank": "Classement",
+      "notes": "Notes",
+      "sportSpecific": "Champs spécifiques au sport",
+      "reviewAndSave": "Vérifier et enregistrer",
+      "autoSaved": "Sauvegarde automatique",
+      "required": "Obligatoire",
+      "step": "Étape",
+      "of": "de"
+    },
+    "modal": {
+      "confirmSubmit": "Soumettre le résultat ?",
+      "confirmSubmitMessage": "Le résultat sera soumis pour révision et ne pourra plus être modifié.",
+      "confirmApprove": "Approuver le résultat ?",
+      "confirmApproveMessage": "Voulez-vous approuver ce résultat ?",
+      "confirmReject": "Rejeter le résultat ?",
+      "confirmRejectMessage": "Veuillez fournir une raison de rejet.",
+      "protestTitle": "Déposer une protestation",
+      "protestMessage": "Veuillez indiquer la raison de votre protestation (max. 1000 caractères).",
+      "invalidateTitle": "Invalider le résultat",
+      "invalidateMessage": "Veuillez indiquer la raison de l'invalidation.",
+      "reasonPlaceholder": "Saisir la raison...",
+      "rejectionPlaceholder": "Saisir la raison du rejet..."
+    },
+    "detail": {
+      "title": "Détail du résultat",
+      "resultInfo": "Informations sur le résultat",
+      "versionHistory": "Historique des versions",
+      "reviewerFeedback": "Commentaires du réviseur",
+      "auditTrail": "Piste d'audit",
+      "protestHistory": "Historique des protestations",
+      "changedBy": "Modifié par",
+      "changedAt": "Modifié le",
+      "changeType": "Type de modification"
+    }
   }
 }
