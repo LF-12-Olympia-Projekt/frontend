@@ -3,7 +3,7 @@ name: SSH Test
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   ssh-test:
