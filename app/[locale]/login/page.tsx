@@ -31,25 +31,26 @@ import {
     ArrowRight,
 } from "lucide-react"
 import { useTranslation } from "@/lib/locale-context"
-import { useAuth } from "@/lib/auth-context"
 
-type AuthStep = "login" | "2fa" | "forgot-password" | "reset-sent"
+type AuthStep = "login" | "2fa" | "2fa-setup" | "forgot-password" | "reset-sent"
 
 export default function LoginPage() {
     const router = useRouter()
     const { setToken } = useAuth()
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common
-    const { login: authLogin } = useAuth()
 
     const [step, setStep]= useState<AuthStep>("login")
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    // Form state
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [tempToken, setTempToken] = useState("")
+    const [totpCode, setTotpCode] = useState("")
+    const [totpSecret, setTotpSecret] = useState("")
+    const [qrCodeUri, setQrCodeUri] = useState("")
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -57,14 +58,55 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
-<<<<<<< HEAD
-            await authLogin(email, password)
-            router.push(`/${locale}/judge/dashboard`)
-=======
-            const { token } = await authApi.login(email, password)
-            setToken(token)
-            router.push(`/${locale}/judge`)
->>>>>>> feature/BE-FIX-001-jwt-memory-storage
+            const response = await authApi.login(email, password)
+
+            if (response.requires2FaSetup && response.tempToken) {
+                setTempToken(response.tempToken)
+                const setupResp = await authApi.setup2Fa(response.tempToken)
+                setTotpSecret(setupResp.secret)
+                setQrCodeUri(setupResp.qrCodeUri)
+                setStep("2fa-setup")
+            } else if (response.requires2Fa && response.tempToken) {
+                setTempToken(response.tempToken)
+                setStep("2fa")
+            } else if (response.token) {
+                setToken(response.token)
+                router.push(`/${locale}/judge`)
+            }
+        } catch {
+            setError(t.invalidCredentials)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handle2FaVerify = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError(null)
+        setIsLoading(true)
+        try {
+            const response = await authApi.verify2Fa(tempToken, totpCode)
+            if (response.token) {
+                setToken(response.token)
+                router.push(`/${locale}/judge`)
+            }
+        } catch {
+            setError(t.invalidCredentials)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handle2FaLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError(null)
+        setIsLoading(true)
+        try {
+            const response = await authApi.login2Fa(tempToken, totpCode)
+            if (response.token) {
+                setToken(response.token)
+                router.push(`/${locale}/judge`)
+            }
         } catch {
             setError(t.invalidCredentials)
         } finally {
@@ -273,6 +315,100 @@ export default function LoginPage() {
                             >
                                 {t.backToLogin}
                             </Button>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* 2FA Code Entry */}
+                {step === "2fa" && (
+                    <Card className="mt-8 border-0 shadow-lg">
+                        <CardHeader className="text-center">
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-olympic-blue/10">
+                                <Shield className="h-8 w-8 text-olympic-blue" />
+                            </div>
+                            <CardTitle className="text-2xl">{t.twoFactorTitle ?? "Two-Factor Authentication"}</CardTitle>
+                            <CardDescription>
+                                {t.twoFactorDescription ?? "Enter the 6-digit code from your authenticator app."}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handle2FaLogin} className="space-y-4">
+                                {error && (
+                                    <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                                        <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                                        <p>{error}</p>
+                                    </div>
+                                )}
+                                <div className="space-y-2">
+                                    <Label htmlFor="totp-code">{t.totpCode ?? "Code"}</Label>
+                                    <Input
+                                        id="totp-code"
+                                        type="text"
+                                        inputMode="numeric"
+                                        pattern="[0-9]{6}"
+                                        maxLength={6}
+                                        placeholder="000000"
+                                        value={totpCode}
+                                        onChange={(e) => setTotpCode(e.target.value)}
+                                        className="text-center text-2xl tracking-widest"
+                                        required
+                                        autoFocus
+                                    />
+                                </div>
+                                <Button type="submit" className="w-full" disabled={isLoading || totpCode.length !== 6}>
+                                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                    {t.verify ?? "Verify"}
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* 2FA Setup */}
+                {step === "2fa-setup" && (
+                    <Card className="mt-8 border-0 shadow-lg">
+                        <CardHeader className="text-center">
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-olympic-yellow/20">
+                                <Shield className="h-8 w-8 text-olympic-yellow" />
+                            </div>
+                            <CardTitle className="text-2xl">{t.twoFactorSetupTitle ?? "Set Up 2FA"}</CardTitle>
+                            <CardDescription>
+                                {t.twoFactorSetupDescription ?? "Scan this QR code with your authenticator app, then enter the code to verify."}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handle2FaVerify} className="space-y-4">
+                                {error && (
+                                    <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                                        <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                                        <p>{error}</p>
+                                    </div>
+                                )}
+                                <div className="rounded-lg bg-muted p-4 text-center">
+                                    <p className="text-xs text-muted-foreground mb-2">{t.manualEntry ?? "Manual entry key"}:</p>
+                                    <code className="text-sm font-mono break-all select-all">{totpSecret}</code>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="setup-totp-code">{t.totpCode ?? "Verification Code"}</Label>
+                                    <Input
+                                        id="setup-totp-code"
+                                        type="text"
+                                        inputMode="numeric"
+                                        pattern="[0-9]{6}"
+                                        maxLength={6}
+                                        placeholder="000000"
+                                        value={totpCode}
+                                        onChange={(e) => setTotpCode(e.target.value)}
+                                        className="text-center text-2xl tracking-widest"
+                                        required
+                                        autoFocus
+                                    />
+                                </div>
+                                <Button type="submit" className="w-full" disabled={isLoading || totpCode.length !== 6}>
+                                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                                    {t.verifyAndActivate ?? "Verify & Activate"}
+                                </Button>
+                            </form>
                         </CardContent>
                     </Card>
                 )}
