@@ -1,10 +1,8 @@
-// lib/auth-context.tsx | Task: FE-003 | Auth context with sessionStorage-backed JWT
+// lib/auth-context.tsx | Task: REM-003 | Auth context with in-memory JWT (never sessionStorage)
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react"
+import React, { createContext, useContext, useState, useCallback, ReactNode } from "react"
 import * as authApi from "@/lib/api/auth"
-
-const TOKEN_KEY = "olympia_jwt"
 
 // .NET ClaimTypes URIs used in JWT
 const CLAIM_ROLE = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
@@ -35,7 +33,6 @@ function parseJwtPayload(token: string): { username: string; role: UserRole } {
     const payload = JSON.parse(atob(token.split(".")[1]))
     const username = payload[CLAIM_NAME] ?? payload.name ?? "unknown"
     const rawRole = payload[CLAIM_ROLE] ?? payload.role
-    // Role can be string or array; take first match
     const roleStr = Array.isArray(rawRole) ? rawRole[0] : rawRole
     const role: UserRole =
       roleStr?.toLowerCase() === "admin" ? "admin" :
@@ -47,43 +44,18 @@ function parseJwtPayload(token: string): { username: string; role: UserRole } {
   }
 }
 
-function readStoredToken(): User | null {
-  if (typeof window === "undefined") return null
-  try {
-    const token = sessionStorage.getItem(TOKEN_KEY)
-    if (!token) return null
-    const payload = JSON.parse(atob(token.split(".")[1]))
-    if (payload.exp && payload.exp * 1000 < Date.now()) {
-      sessionStorage.removeItem(TOKEN_KEY)
-      return null
-    }
-    const { username, role } = parseJwtPayload(token)
-    return { token, username, role }
-  } catch {
-    sessionStorage.removeItem(TOKEN_KEY)
-    return null
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // JWT stored in React state only — cleared on page refresh (by design)
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Restore token from sessionStorage on mount
-  useEffect(() => {
-    setUser(readStoredToken())
-    setIsLoading(false)
-  }, [])
+  const [isLoading] = useState(false)
 
   const login = useCallback(async (email: string, password: string) => {
     const { token } = await authApi.login(email, password)
-    sessionStorage.setItem(TOKEN_KEY, token)
     const { username, role } = parseJwtPayload(token)
     setUser({ token, username, role })
   }, [])
 
   const logout = useCallback(() => {
-    sessionStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }, [])
 
