@@ -4,6 +4,7 @@ import React from "react"
 
 import { useState } from "react"
 import * as authApi from "@/lib/api/auth"
+import { useAuth } from "@/lib/auth"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,6 +37,7 @@ type AuthStep = "login" | "2fa" | "forgot-password" | "reset-sent"
 
 export default function LoginPage() {
     const router = useRouter()
+    const { setToken } = useAuth()
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common
     const { login: authLogin } = useAuth()
@@ -55,8 +57,14 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
+<<<<<<< HEAD
             await authLogin(email, password)
             router.push(`/${locale}/judge/dashboard`)
+=======
+            const { token } = await authApi.login(email, password)
+            setToken(token)
+            router.push(`/${locale}/judge`)
+>>>>>>> feature/BE-FIX-001-jwt-memory-storage
         } catch {
             setError(t.invalidCredentials)
         } finally {
