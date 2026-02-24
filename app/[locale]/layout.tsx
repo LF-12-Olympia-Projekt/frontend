@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Locale, getDictionary } from "@/lib/dictionaries";
 import { LocaleProvider } from "@/lib/locale-context";
 import { AuthProvider } from "@/lib/auth";
+import { AuthProvider as AuthContextProvider } from "@/lib/auth-context";
 import { AuthBridge } from "@/components/auth-bridge";
 
 export async function generateStaticParams() {
@@ -28,17 +29,19 @@ export default async function LocaleLayout({
 
     return (
         <AuthProvider>
-            <LocaleProvider locale={locale as Locale} dictionary={dictionary}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <AuthBridge />
-                    {children}
-                </ThemeProvider>
-            </LocaleProvider>
+            <AuthContextProvider>
+                <LocaleProvider locale={locale as Locale} dictionary={dictionary}>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <AuthBridge />
+                        {children}
+                    </ThemeProvider>
+                </LocaleProvider>
+            </AuthContextProvider>
         </AuthProvider>
     );
 }
