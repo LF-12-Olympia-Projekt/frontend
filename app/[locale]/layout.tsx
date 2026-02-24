@@ -1,7 +1,10 @@
+// frontend/app/[locale]/layout.tsx | Task: BE-FIX-001 | Add AuthProvider for in-memory JWT
 import React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Locale, getDictionary } from "@/lib/dictionaries";
 import { LocaleProvider } from "@/lib/locale-context";
+import { AuthProvider } from "@/lib/auth";
+import { AuthBridge } from "@/components/auth-bridge";
 
 export async function generateStaticParams() {
     return [
@@ -25,15 +28,18 @@ export default async function LocaleLayout({
     const dictionary = await getDictionary(locale as Locale);
 
     return (
-        <LocaleProvider locale={locale as Locale} dictionary={dictionary}>
-            <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-            >
-                {children}
-            </ThemeProvider>
-        </LocaleProvider>
+        <AuthProvider>
+            <LocaleProvider locale={locale as Locale} dictionary={dictionary}>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <AuthBridge />
+                    {children}
+                </ThemeProvider>
+            </LocaleProvider>
+        </AuthProvider>
     );
 }

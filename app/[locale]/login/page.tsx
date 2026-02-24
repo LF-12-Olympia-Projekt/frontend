@@ -4,6 +4,7 @@ import React from "react"
 
 import { useState } from "react"
 import * as authApi from "@/lib/api/auth"
+import { useAuth } from "@/lib/auth"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -35,6 +36,7 @@ type AuthStep = "login" | "2fa" | "forgot-password" | "reset-sent"
 
 export default function LoginPage() {
     const router = useRouter()
+    const { setToken } = useAuth()
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common
 
@@ -54,7 +56,7 @@ export default function LoginPage() {
 
         try {
             const { token } = await authApi.login(email, password)
-            localStorage.setItem("token", token)
+            setToken(token)
             router.push(`/${locale}/judge`)
         } catch {
             setError(t.invalidCredentials)
