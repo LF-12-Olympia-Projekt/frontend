@@ -10,9 +10,8 @@ export async function generateStaticParams() {
     return [
         { locale: "de" },
         { locale: "de-BA" },
-        { locale: "fr" },
-        { locale: "en" },
-        { locale: "pirate" },
+        { locale: "fr-FR" },
+        { locale: "en-GB" },
     ];
 }
 

@@ -14,7 +14,7 @@ export function Footer() {
 
     // Generate timestamp on client side only to avoid hydration mismatch
     useEffect(() => {
-        const timestamp = new Date().toLocaleString(locale === "de" || locale === "de-BA" ? "de-DE" : locale === "fr" ? "fr-FR" : "en-US", {
+        const timestamp = new Date().toLocaleString(locale === "de" || locale === "de-BA" ? "de-DE" : locale === "fr-FR" ? "fr-FR" : "en-GB", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

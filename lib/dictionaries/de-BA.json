@@ -94,7 +94,62 @@
       "skiJumping": "Skispringan",
       "bobsled": "Bobsport",
       "figureSkating": "Eiskunstlauf",
-      "curling": "Curling"
+      "curling": "Curling",
+      "luge": "Rennrodeln",
+      "nordicCombined": "Nordische Kombination",
+      "shortTrack": "Shorttrack",
+      "skeleton": "Skeleton",
+      "alpineSkiing": "Alpina Skifoahrt",
+      "freestyle": "Freestyle-Skiing",
+      "snowboard": "Snowboard",
+      "speedSkating": "Eisschnelllauf"
+    },
+    "overview": {
+      "title": "Sportoatn",
+      "subtitle": "Alle 15 olympischn Wintasportoatn",
+      "searchPlaceholder": "Sportoat suachn...",
+      "totalSports": "Sportoatn",
+      "totalEvents": "Wettbewerbe",
+      "totalMedals": "Medaljn",
+      "totalNations": "Nationan",
+      "events": "Wettbewerbe",
+      "medals": "Medaljn"
+    },
+    "detail": {
+      "breadcrumb": "Sportoatn",
+      "eventsAndResults": "Wettkampfplan & Ergebnisse",
+      "disciplines": "Disziplinen",
+      "disciplinesCount": "Disziplinen",
+      "medalsCount": "Medaljn",
+      "description": {
+        "biathlon": "Kombination aus Skilanglauf und Schiaßn",
+        "bobsled": "Gschwindigkeit auf Eis",
+        "crossCountrySkiing": "Ausdaua im Schnee",
+        "curling": "Präzision aufm Eis",
+        "figureSkating": "Kunst und Athletik",
+        "iceHockey": "Schnelligkeit und Teamwoark",
+        "luge": "Rasant auf Kufen",
+        "nordicCombined": "Springan und Langlauf",
+        "shortTrack": "Gschwindigkeit auf kuaza Bahn",
+        "skeleton": "Kopfüba ins Ziel",
+        "alpineSkiing": "Gschwindigkeit am Berg",
+        "skiJumping": "Fliagn durch de Luft",
+        "freestyle": "Tricks und Stunts",
+        "snowboard": "Style aufm Board",
+        "speedSkating": "Tempo auf da langen Bahn"
+      },
+      "eventInfo": {
+        "date": "Datum",
+        "time": "Zeit",
+        "location": "Ort",
+        "status": {
+          "live": "Live",
+          "final": "Final",
+          "draft": "Entwurf",
+          "scheduled": "Geplant"
+        },
+        "viewResults": "Ergebnisse"
+      }
     }
   },
   "nations": {
@@ -132,5 +187,57 @@
       "participatingNations": "Teilnehmende Nationan",
       "viewDetails": "Details o'zoagn"
     }
+  },
+  "resultsPage": {
+    "title": "Ergebnisse",
+    "subtitle": "Alle veröffentlichten Wettkampfergebnisse",
+    "breadcrumb": "Ergebnisse",
+    "searchPlaceholder": "Athlet oder Event suachn...",
+    "filterSport": "Sportoat",
+    "filterCountry": "Land",
+    "filterDate": "Datum",
+    "allSports": "Alle Sportoatn",
+    "allCountries": "Alle Lända",
+    "noResults": "Keine Ergebnisse gfundn",
+    "noResultsHint": "Probier de Filter o'zupassn",
+    "rank": "Plotz",
+    "medal": "Medalj",
+    "athlete": "Athlet",
+    "country": "Land",
+    "result": "Ergebnis",
+    "event": "Wettbewerb",
+    "lastModified": "Zuletzt geändert",
+    "page": "Seite",
+    "of": "vo",
+    "viewDetail": "Details o'zoagn"
+  },
+  "resultDetail": {
+    "title": "Ergebnis-Detail",
+    "breadcrumb": "Ergebnis",
+    "eventInfo": "Wettbewerb-Informationen",
+    "sport": "Sportoat",
+    "date": "Datum",
+    "location": "Ort",
+    "version": "Version",
+    "relatedResults": "Ergebnisse vo dem Wettbewerb"
+  },
+  "athleteProfile": {
+    "title": "Athletnprofil",
+    "breadcrumb": "Athlet",
+    "age": "Oida",
+    "country": "Land",
+    "disciplines": "Disziplinen",
+    "results": "Ergebnisse",
+    "noResults": "Noch keine veröffentlichten Ergebnisse"
+  },
+  "countryMedals": {
+    "title": "Medaljn-Details",
+    "breadcrumb": "Land",
+    "medals": "Medaljn",
+    "results": "Medaljn-Ergebnisse",
+    "gold": "Gold",
+    "silver": "Sülba",
+    "bronze": "Bronze",
+    "total": "Gsamt"
   }
 }

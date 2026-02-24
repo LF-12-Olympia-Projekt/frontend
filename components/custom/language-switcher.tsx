@@ -15,9 +15,8 @@ export default function LanguageSwitcher() {
     const languages: { code: Locale; name: string }[] = [
         { code: "de", name: "Deutsch (de-DE)" },
         { code: "de-BA", name: "Deutsch Bairisch (de-BA)" },
-        { code: "fr", name: "Français (fr-FR)" },
-        { code: "en", name: "English (en-GB)" },
-        { code: "pirate", name: "Pirate (arr-GG)" },
+        { code: "fr-FR", name: "Français (fr-FR)" },
+        { code: "en-GB", name: "English (en-GB)" },
     ];
 
     const currentLanguageName = languages.find((lang) => lang.code === locale)?.code.toUpperCase() || "EN";
