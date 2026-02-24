@@ -22,6 +22,7 @@ interface AuthContextType {
   isLoading: boolean
   role: UserRole
   login: (email: string, password: string) => Promise<void>
+  loginWithToken: (token: string) => void
   logout: () => void
   getToken: () => string | null
 }
@@ -55,6 +56,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ token, username, role })
   }, [])
 
+  const loginWithToken = useCallback((token: string) => {
+    const { username, role } = parseJwtPayload(token)
+    setUser({ token, username, role })
+  }, [])
+
   const logout = useCallback(() => {
     setUser(null)
   }, [])
@@ -64,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, role: user?.role ?? null, login, logout, getToken }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, role: user?.role ?? null, login, loginWithToken, logout, getToken }}>
       {children}
     </AuthContext.Provider>
   )

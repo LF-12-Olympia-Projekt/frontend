@@ -4,7 +4,8 @@ import React from "react"
 
 import { useState } from "react"
 import * as authApi from "@/lib/api/auth"
-import { useAuth } from "@/lib/auth"
+import { useAuth as useAuthSimple } from "@/lib/auth"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -36,9 +37,30 @@ type AuthStep = "login" | "2fa" | "2fa-setup" | "forgot-password" | "reset-sent"
 
 export default function LoginPage() {
     const router = useRouter()
-    const { setToken } = useAuth()
+    const { setToken } = useAuthSimple()
+    const { loginWithToken } = useAuth()
     const { dictionary, locale } = useTranslation()
     const t = dictionary.common
+
+    // Helper: set token in both contexts and redirect based on role
+    const completeLogin = (token: string) => {
+        setToken(token)
+        loginWithToken(token)
+        // Parse role from JWT for redirect
+        const CLAIM_ROLE = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]))
+            const rawRole = payload[CLAIM_ROLE] ?? payload.role
+            const roleStr = Array.isArray(rawRole) ? rawRole[0] : rawRole
+            if (roleStr?.toLowerCase() === "admin") {
+                router.push(`/${locale}/admin/dashboard`)
+            } else {
+                router.push(`/${locale}/judge/dashboard`)
+            }
+        } catch {
+            router.push(`/${locale}/judge/dashboard`)
+        }
+    }
 
     const [step, setStep]= useState<AuthStep>("login")
     const [showPassword, setShowPassword] = useState(false)
@@ -70,8 +92,7 @@ export default function LoginPage() {
                 setTempToken(response.tempToken)
                 setStep("2fa")
             } else if (response.token) {
-                setToken(response.token)
-                router.push(`/${locale}/judge`)
+                completeLogin(response.token)
             }
         } catch {
             setError(t.invalidCredentials)
@@ -87,8 +108,7 @@ export default function LoginPage() {
         try {
             const response = await authApi.verify2Fa(tempToken, totpCode)
             if (response.token) {
-                setToken(response.token)
-                router.push(`/${locale}/judge`)
+                completeLogin(response.token)
             }
         } catch {
             setError(t.invalidCredentials)
@@ -104,8 +124,7 @@ export default function LoginPage() {
         try {
             const response = await authApi.login2Fa(tempToken, totpCode)
             if (response.token) {
-                setToken(response.token)
-                router.push(`/${locale}/judge`)
+                completeLogin(response.token)
             }
         } catch {
             setError(t.invalidCredentials)
