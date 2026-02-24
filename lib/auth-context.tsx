@@ -1,7 +1,7 @@
-// lib/auth-context.tsx | Task: REM-003 | Auth context with in-memory JWT (never sessionStorage)
+// lib/auth-context.tsx | Task: FINAL-002 | Auth context with in-memory JWT + refresh token on mount
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react"
 import * as authApi from "@/lib/api/auth"
 
 // .NET ClaimTypes URIs used in JWT
@@ -46,14 +46,40 @@ function parseJwtPayload(token: string): { username: string; role: UserRole } {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // JWT stored in React state only — cleared on page refresh (by design)
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // On mount: attempt to get a new JWT via httpOnly refresh cookie
+  useEffect(() => {
+    let cancelled = false
+    async function tryRefresh() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`,
+          { method: "POST", credentials: "include" }
+        )
+        if (res.ok) {
+          const data = await res.json()
+          if (data.token && !cancelled) {
+            const { username, role } = parseJwtPayload(data.token)
+            setUser({ token: data.token, username, role })
+          }
+        }
+      } catch {
+        // No refresh cookie or server unavailable — stay logged out
+      } finally {
+        if (!cancelled) setIsLoading(false)
+      }
+    }
+    tryRefresh()
+    return () => { cancelled = true }
+  }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    const { token } = await authApi.login(email, password)
-    const { username, role } = parseJwtPayload(token)
-    setUser({ token, username, role })
+    const resp = await authApi.login(email, password)
+    if (!resp.token) throw new Error("No token received")
+    const { username, role } = parseJwtPayload(resp.token)
+    setUser({ token: resp.token, username, role })
   }, [])
 
   const loginWithToken = useCallback((token: string) => {
@@ -61,8 +87,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ token, username, role })
   }, [])
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     setUser(null)
+    // Clear httpOnly refresh cookie on server
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/logout`,
+        { method: "POST", credentials: "include" }
+      )
+    } catch {
+      // Best effort
+    }
   }, [])
 
   const getToken = useCallback(() => {

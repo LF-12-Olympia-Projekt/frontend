@@ -1,10 +1,10 @@
-// app/[locale]/sports/[sportId]/results/page.tsx | Task: FE-002 | Sport-specific results page
+// app/[locale]/sports/[sportId]/results/page.tsx | Task: FINAL-002 | Sport-specific results with dynamic template columns
 import { notFound } from "next/navigation"
 import { PageWrapper } from "@/components/page-wrapper"
 import { ResultsTable } from "@/components/results-table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { getSportBySlug, getSportResults } from "@/lib/api/results"
+import { getSportBySlug, getSportResults, getSportTemplate } from "@/lib/api/results"
 import { getDictionary, Locale } from "@/lib/dictionaries"
 import { Award } from "lucide-react"
 
@@ -26,10 +26,22 @@ export default async function SportResultsPage({
 
   let sport
   let results = { data: [] as any[], total: 0, page: 1, pageSize: 20 }
+  let templateFields: { name: string; type: string; label?: string; unit?: string }[] | undefined
 
   try {
     sport = await getSportBySlug(sportId)
     results = await getSportResults(sportId, { page, pageSize: 20 })
+
+    // Fetch sport template for dynamic columns
+    const template = await getSportTemplate(sportId)
+    if (template?.fields) {
+      templateFields = template.fields.map((f) => ({
+        name: f.name,
+        type: f.type,
+        label: f.labels?.[locale] ?? f.label ?? f.name,
+        unit: f.unit,
+      }))
+    }
   } catch {
     notFound()
   }
@@ -75,6 +87,7 @@ export default async function SportResultsPage({
               locale={locale}
               dictionary={dictionary}
               showSport={false}
+              templateFields={templateFields}
             />
           </CardContent>
         </Card>

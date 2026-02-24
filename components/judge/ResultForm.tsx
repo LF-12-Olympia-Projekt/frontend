@@ -1,4 +1,4 @@
-// components/judge/ResultForm.tsx | Task: FE-003 | Dynamic result creation/edit form
+// components/judge/ResultForm.tsx | Task: FINAL-002 | Template-driven dynamic result form
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -9,6 +9,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Save, Loader2 } from "lucide-react"
 import type { CreateResultRequest } from "@/types/judge"
+
+export interface TemplateFormField {
+  name: string
+  type: "text" | "number" | "time" | "dropdown" | string
+  required?: boolean
+  unit?: string
+  label?: string
+  options?: string[]
+}
 
 interface ResultFormProps {
   initialData?: {
@@ -25,6 +34,7 @@ interface ResultFormProps {
   onAutoSave?: (data: CreateResultRequest) => void
   labels?: Record<string, string>
   isEdit?: boolean
+  templateFields?: TemplateFormField[]
 }
 
 export function ResultForm({
@@ -34,6 +44,7 @@ export function ResultForm({
   onAutoSave,
   labels = {},
   isEdit = false,
+  templateFields,
 }: ResultFormProps) {
   const [eventId, setEventId] = useState(initialData?.eventId ?? "")
   const [athleteId, setAthleteId] = useState(initialData?.athleteId ?? "")
@@ -41,11 +52,24 @@ export function ResultForm({
   const [unit, setUnit] = useState(initialData?.unit ?? "")
   const [rank, setRank] = useState<string>(initialData?.rank?.toString() ?? "")
   const [notes, setNotes] = useState(initialData?.notes ?? "")
-  const [sportSpecificFields, setSportSpecificFields] = useState(
-    initialData?.sportSpecificFields ?? ""
-  )
   const [saving, setSaving] = useState(false)
   const [autoSaved, setAutoSaved] = useState(false)
+
+  // Dynamic template field values
+  const [dynamicFields, setDynamicFields] = useState<Record<string, string>>(() => {
+    try {
+      const parsed = initialData?.sportSpecificFields
+        ? JSON.parse(initialData.sportSpecificFields)
+        : {}
+      return parsed
+    } catch {
+      return {}
+    }
+  })
+
+  const setDynamicField = useCallback((name: string, val: string) => {
+    setDynamicFields((prev) => ({ ...prev, [name]: val }))
+  }, [])
 
   const getData = useCallback((): CreateResultRequest => ({
     eventId,
@@ -54,8 +78,10 @@ export function ResultForm({
     unit,
     rank: rank ? parseInt(rank, 10) : null,
     notes: notes || null,
-    sportSpecificFields: sportSpecificFields || null,
-  }), [eventId, athleteId, value, unit, rank, notes, sportSpecificFields])
+    sportSpecificFields: Object.keys(dynamicFields).length > 0
+      ? JSON.stringify(dynamicFields)
+      : null,
+  }), [eventId, athleteId, value, unit, rank, notes, dynamicFields])
 
   // Auto-save every 30 seconds
   useEffect(() => {
@@ -73,6 +99,12 @@ export function ResultForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!eventId || !athleteId || !value || !unit) return
+    // Validate required template fields
+    if (templateFields) {
+      for (const f of templateFields) {
+        if (f.required && !dynamicFields[f.name]) return
+      }
+    }
     setSaving(true)
     try {
       await onSave(getData())
@@ -160,25 +192,90 @@ export function ResultForm({
         </CardContent>
       </Card>
 
+      {/* Template-driven dynamic fields */}
+      {templateFields && templateFields.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {labels.sportSpecific ?? "Sport-Specific Fields"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {templateFields.map((field) => (
+                <div key={field.name} className="space-y-2">
+                  <Label htmlFor={`tf-${field.name}`}>
+                    {field.label ?? field.name}
+                    {field.unit ? ` (${field.unit})` : ""}
+                    {field.required ? " *" : ""}
+                  </Label>
+                  {field.type === "dropdown" && field.options ? (
+                    <select
+                      id={`tf-${field.name}`}
+                      value={dynamicFields[field.name] ?? ""}
+                      onChange={(e) => setDynamicField(field.name, e.target.value)}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      required={field.required}
+                    >
+                      <option value="">--</option>
+                      {field.options.map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      id={`tf-${field.name}`}
+                      type={field.type === "number" ? "number" : field.type === "time" ? "time" : "text"}
+                      value={dynamicFields[field.name] ?? ""}
+                      onChange={(e) => setDynamicField(field.name, e.target.value)}
+                      required={field.required}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Fallback: raw JSON field when no template is loaded */}
+      {(!templateFields || templateFields.length === 0) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {labels.notes ?? "Additional Information"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="sportSpecific">{labels.sportSpecific ?? "Sport-specific Fields (JSON)"}</Label>
+              <Textarea
+                id="sportSpecific"
+                value={dynamicFields ? JSON.stringify(dynamicFields) : ""}
+                onChange={(e) => {
+                  try {
+                    setDynamicFields(JSON.parse(e.target.value))
+                  } catch {
+                    // Let user keep typing
+                  }
+                }}
+                placeholder='e.g. {"windSpeed": "1.2m/s"}'
+                rows={3}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            {labels.notes ?? "Additional Information"}
+            {labels.notes ?? "Notes"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="sportSpecific">{labels.sportSpecific ?? "Sport-specific Fields"}</Label>
-            <Textarea
-              id="sportSpecific"
-              value={sportSpecificFields}
-              onChange={(e) => setSportSpecificFields(e.target.value)}
-              placeholder='e.g. {"windSpeed": "1.2m/s"}'
-              rows={3}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">{labels.notes ?? "Notes"}</Label>
+            <Label htmlFor="notes">{labels.notes ?? "Internal Notes"}</Label>
             <Textarea
               id="notes"
               value={notes}

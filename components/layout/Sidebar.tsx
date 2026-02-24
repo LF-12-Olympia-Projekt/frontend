@@ -44,9 +44,9 @@ function useNavSections(locale: string, role: UserRole, dict: any): NavSection[]
   // Public links – always visible
   const publicSection: NavSection = {
     items: [
-      { label: s.results ?? "Results", href: `/${locale}/results`, icon: <Trophy className="h-4 w-4" /> },
-      { label: s.medalTable ?? "Medal Table", href: `/${locale}/medals`, icon: <Medal className="h-4 w-4" /> },
-      { label: s.sports ?? "Sports", href: `/${locale}/sports`, icon: <Dumbbell className="h-4 w-4" /> },
+      { label: s.results, href: `/${locale}/results`, icon: <Trophy className="h-4 w-4" /> },
+      { label: s.medalTable, href: `/${locale}/medals`, icon: <Medal className="h-4 w-4" /> },
+      { label: s.sports, href: `/${locale}/sports`, icon: <Dumbbell className="h-4 w-4" /> },
     ],
   }
 
@@ -55,10 +55,10 @@ function useNavSections(locale: string, role: UserRole, dict: any): NavSection[]
   // Judge links
   const judgeSection: NavSection = {
     items: [
-      { label: s.myDashboard ?? "My Dashboard", href: `/${locale}/judge/dashboard`, icon: <LayoutDashboard className="h-4 w-4" /> },
-      { label: s.myResults ?? "My Results", href: `/${locale}/judge/results`, icon: <FileText className="h-4 w-4" /> },
-      { label: s.newResult ?? "New Result", href: `/${locale}/judge/results/new`, icon: <FilePlus className="h-4 w-4" /> },
-      { label: s.reviewQueue ?? "Review Queue", href: `/${locale}/judge/review`, icon: <ClipboardCheck className="h-4 w-4" /> },
+      { label: s.myDashboard, href: `/${locale}/judge/dashboard`, icon: <LayoutDashboard className="h-4 w-4" /> },
+      { label: s.myResults, href: `/${locale}/judge/results`, icon: <FileText className="h-4 w-4" /> },
+      { label: s.newResult, href: `/${locale}/judge/results/new`, icon: <FilePlus className="h-4 w-4" /> },
+      { label: s.reviewQueue, href: `/${locale}/judge/review`, icon: <ClipboardCheck className="h-4 w-4" /> },
     ],
   }
 
@@ -67,12 +67,12 @@ function useNavSections(locale: string, role: UserRole, dict: any): NavSection[]
   // Admin links
   const adminSection: NavSection = {
     items: [
-      { label: s.adminDashboard ?? "Admin Dashboard", href: `/${locale}/admin/dashboard`, icon: <ShieldCheck className="h-4 w-4" /> },
-      { label: s.userManagement ?? "User Management", href: `/${locale}/admin/users`, icon: <Users className="h-4 w-4" /> },
-      { label: s.resultManagement ?? "Result Management", href: `/${locale}/admin/results`, icon: <FileText className="h-4 w-4" /> },
-      { label: s.sportTemplates ?? "Sport Templates", href: `/${locale}/admin/templates`, icon: <Blocks className="h-4 w-4" /> },
-      { label: s.auditLog ?? "Audit Log", href: `/${locale}/admin/audit`, icon: <ScrollText className="h-4 w-4" /> },
-      { label: s.medalAssets ?? "Medal Assets", href: `/${locale}/admin/assets`, icon: <Gem className="h-4 w-4" /> },
+      { label: s.adminDashboard, href: `/${locale}/admin/dashboard`, icon: <ShieldCheck className="h-4 w-4" /> },
+      { label: s.userManagement, href: `/${locale}/admin/users`, icon: <Users className="h-4 w-4" /> },
+      { label: s.resultManagement, href: `/${locale}/admin/results`, icon: <FileText className="h-4 w-4" /> },
+      { label: s.sportTemplates, href: `/${locale}/admin/templates`, icon: <Blocks className="h-4 w-4" /> },
+      { label: s.auditLog, href: `/${locale}/admin/audit`, icon: <ScrollText className="h-4 w-4" /> },
+      { label: s.medalAssets, href: `/${locale}/admin/assets`, icon: <Gem className="h-4 w-4" /> },
     ],
   }
 
@@ -136,10 +136,10 @@ export function Sidebar() {
             <button
               onClick={() => { logout(); setMobileOpen(false) }}
               className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-              title={collapsed ? (dictionary?.sidebar?.logout ?? "Logout") : undefined}
+              title={collapsed ? dictionary?.sidebar?.logout : undefined}
             >
               <LogOut className="h-4 w-4" />
-              {!collapsed && <span>{dictionary?.sidebar?.logout ?? "Logout"}</span>}
+              {!collapsed && <span>{dictionary?.sidebar?.logout}</span>}
             </button>
           </div>
         ) : (
@@ -147,10 +147,10 @@ export function Sidebar() {
             href={`/${locale}/login`}
             onClick={() => setMobileOpen(false)}
             className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            title={collapsed ? (dictionary?.sidebar?.login ?? "Login") : undefined}
+            title={collapsed ? dictionary?.sidebar?.login : undefined}
           >
             <LogIn className="h-4 w-4" />
-            {!collapsed && <span>{dictionary?.sidebar?.login ?? "Login"}</span>}
+            {!collapsed && <span>{dictionary?.sidebar?.login}</span>}
           </Link>
         )}
       </div>

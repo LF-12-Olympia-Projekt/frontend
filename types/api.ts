@@ -19,6 +19,7 @@ export interface ResultListItem {
   sportName: string
   lastModifiedBy: string | null
   lastModifiedAt: string | null
+  sportSpecificFields?: string | null
 }
 
 export interface ResultDetail {

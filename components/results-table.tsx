@@ -1,4 +1,4 @@
-// components/results-table.tsx | Task: FE-002 | Reusable results table with pagination
+// components/results-table.tsx | Task: FINAL-002 | Results table with dynamic sport-specific columns
 "use client"
 
 import Link from "next/link"
@@ -10,6 +10,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 import type { ResultListItem } from "@/types/api"
 
+export interface TemplateField {
+  name: string
+  type: string
+  label?: string
+  unit?: string
+}
+
 interface ResultsTableProps {
   results: ResultListItem[]
   total: number
@@ -20,6 +27,7 @@ interface ResultsTableProps {
   onPageChange?: (page: number) => void
   dictionary?: any
   showSport?: boolean
+  templateFields?: TemplateField[]
 }
 
 export function ResultsTable({
@@ -32,9 +40,22 @@ export function ResultsTable({
   onPageChange,
   dictionary,
   showSport = true,
+  templateFields,
 }: ResultsTableProps) {
   const t = dictionary?.resultsPage || {}
   const totalPages = Math.ceil(total / pageSize)
+
+  // Parse sport-specific JSON fields for a result
+  function getSpecificField(result: ResultListItem, fieldName: string): string {
+    try {
+      const fields = typeof result.sportSpecificFields === "string"
+        ? JSON.parse(result.sportSpecificFields)
+        : result.sportSpecificFields
+      return fields?.[fieldName] ?? "-"
+    } catch {
+      return "-"
+    }
+  }
 
   if (loading) {
     return (
@@ -67,6 +88,11 @@ export function ResultsTable({
               <th className="whitespace-nowrap px-4 py-3">{t.athlete || "Athlete"}</th>
               <th className="whitespace-nowrap px-4 py-3">{t.country || "Country"}</th>
               <th className="whitespace-nowrap px-4 py-3">{t.result || "Result"}</th>
+              {templateFields?.map((f) => (
+                <th key={f.name} className="whitespace-nowrap px-4 py-3">
+                  {f.label || f.name}{f.unit ? ` (${f.unit})` : ""}
+                </th>
+              ))}
               {showSport && <th className="whitespace-nowrap px-4 py-3">{t.event || "Event"}</th>}
               <th className="whitespace-nowrap px-4 py-3">{t.lastModified || "Last modified"}</th>
             </tr>
@@ -99,6 +125,11 @@ export function ResultsTable({
                 <td className="whitespace-nowrap px-4 py-3">
                   {r.value} {r.unit}
                 </td>
+                {templateFields?.map((f) => (
+                  <td key={f.name} className="whitespace-nowrap px-4 py-3">
+                    {getSpecificField(r, f.name)}
+                  </td>
+                ))}
                 {showSport && (
                   <td className="px-4 py-3 text-sm text-muted-foreground">
                     {r.eventName}

@@ -90,3 +90,27 @@ export async function getSportResults(slug: string, params?: {
   const qs = searchParams.toString()
   return fetchApi<PaginatedResponse<ResultListItem>>(`/api/sports/by-slug/${slug}/results${qs ? `?${qs}` : ""}`)
 }
+
+export interface SportTemplateField {
+  name: string
+  type: string
+  required?: boolean
+  unit?: string
+  label?: string
+  labels?: Record<string, string>
+}
+
+export interface SportTemplate {
+  id: string
+  sportName: string
+  fields: SportTemplateField[]
+  version: number
+}
+
+export async function getSportTemplate(slug: string): Promise<SportTemplate | null> {
+  try {
+    return await fetchApi<SportTemplate>(`/api/sports/by-slug/${slug}/template`)
+  } catch {
+    return null
+  }
+}
