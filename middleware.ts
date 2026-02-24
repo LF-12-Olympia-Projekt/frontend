@@ -1,8 +1,22 @@
-﻿import { NextResponse } from 'next/server'
+// frontend/middleware.ts | Task: FE-FIX-001 | Corrected locale codes with browser detection
+import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-let locales = ['de', 'de-BA', 'fr', 'fr-FR', 'en', 'en-GB', 'pirate']
-let defaultLocale = 'de'
+const locales = ['de', 'de-BA', 'fr-FR', 'en-GB']
+const defaultLocale = 'de'
+
+// Map common browser locale prefixes to our supported locales
+function matchLocale(acceptLang: string | null): string {
+  if (!acceptLang) return defaultLocale
+  const preferred = acceptLang.split(',').map(l => l.split(';')[0].trim())
+  for (const lang of preferred) {
+    if (locales.includes(lang)) return lang
+    if (lang.startsWith('de')) return 'de'
+    if (lang.startsWith('fr')) return 'fr-FR'
+    if (lang.startsWith('en')) return 'en-GB'
+  }
+  return defaultLocale
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -12,15 +26,13 @@ export function middleware(request: NextRequest) {
 
   if (pathnameHasLocale) return
 
-  // Redirect if there is no locale
-  const locale = defaultLocale
+  const locale = matchLocale(request.headers.get('accept-language'))
   request.nextUrl.pathname = `/${locale}${pathname}`
   return NextResponse.redirect(request.nextUrl)
 }
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next)
     '/((?!api|_next/static|_next/image|favicon.ico|next.svg|vercel.svg).*)',
   ],
 }

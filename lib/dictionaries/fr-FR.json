@@ -94,7 +94,62 @@
       "skiJumping": "Saut à ski",
       "bobsled": "Bobsleigh",
       "figureSkating": "Patinage artistique",
-      "curling": "Curling"
+      "curling": "Curling",
+      "luge": "Luge",
+      "nordicCombined": "Combiné nordique",
+      "shortTrack": "Short-track",
+      "skeleton": "Skeleton",
+      "alpineSkiing": "Ski alpin",
+      "freestyle": "Ski acrobatique",
+      "snowboard": "Snowboard",
+      "speedSkating": "Patinage de vitesse"
+    },
+    "overview": {
+      "title": "Sports",
+      "subtitle": "Les 15 sports olympiques d'hiver",
+      "searchPlaceholder": "Rechercher un sport...",
+      "totalSports": "Sports",
+      "totalEvents": "Épreuves",
+      "totalMedals": "Médailles",
+      "totalNations": "Nations",
+      "events": "Épreuves",
+      "medals": "Médailles"
+    },
+    "detail": {
+      "breadcrumb": "Sports",
+      "eventsAndResults": "Programme & Résultats",
+      "disciplines": "Disciplines",
+      "disciplinesCount": "Disciplines",
+      "medalsCount": "Médailles",
+      "description": {
+        "biathlon": "Combinaison de ski de fond et de tir",
+        "bobsled": "Vitesse sur glace",
+        "crossCountrySkiing": "Endurance dans la neige",
+        "curling": "Précision sur glace",
+        "figureSkating": "Art et athlétisme",
+        "iceHockey": "Vitesse et travail d'équipe",
+        "luge": "Course sur patins",
+        "nordicCombined": "Saut et ski de fond",
+        "shortTrack": "Vitesse sur piste courte",
+        "skeleton": "Tête la première vers la ligne d'arrivée",
+        "alpineSkiing": "Vitesse en montagne",
+        "skiJumping": "Voler dans les airs",
+        "freestyle": "Figures et acrobaties",
+        "snowboard": "Style sur la planche",
+        "speedSkating": "Vitesse sur longue piste"
+      },
+      "eventInfo": {
+        "date": "Date",
+        "time": "Heure",
+        "location": "Lieu",
+        "status": {
+          "live": "Direct",
+          "final": "Final",
+          "draft": "Brouillon",
+          "scheduled": "Programmé"
+        },
+        "viewResults": "Résultats"
+      }
     }
   },
   "nations": {
