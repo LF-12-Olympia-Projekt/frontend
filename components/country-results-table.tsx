@@ -9,22 +9,14 @@ import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Trophy, Search, Filter, ArrowUpDown, ChevronDown } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import type { ResultListItem } from "@/types/api"
 
 interface CountryResultsTableProps {
   countryCode: string
+  results: ResultListItem[]
 }
 
-interface Result {
-  sport: string
-  discipline: string
-  athlete: string
-  result: string
-  medal: "gold" | "silver" | "bronze"
-  status: "final"
-  date: string
-}
-
-export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
+export function CountryResultsTable({ countryCode, results }: CountryResultsTableProps) {
   const { dictionary } = useTranslation()
   const t = dictionary.nations || {}
   const liveResults = dictionary.liveResults || {}
@@ -34,115 +26,33 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
   const [selectedMedal, setSelectedMedal] = useState<string>("all")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
-  // Mock data - in real app this would come from API
-  const results: Result[] = [
-    {
-      sport: "Biathlon",
-      discipline: "10km Sprint Herren",
-      athlete: "Johannes Thingnes Bø",
-      result: "23:44.3",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-07"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "15km klassisch",
-      athlete: "Hans Christer Holund",
-      result: "33:48.2",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-08"
-    },
-    {
-      sport: "Skispringen",
-      discipline: "Normalschanze Einzel",
-      athlete: "Halvor Egner Granerud",
-      result: "291.3 Punkte",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-07"
-    },
-    {
-      sport: "Biathlon",
-      discipline: "12.5km Verfolgung",
-      athlete: "Johannes Thingnes Bø",
-      result: "31:15.6",
-      medal: "silver",
-      status: "final",
-      date: "2026-02-09"
-    },
-    {
-      sport: "Skispringen",
-      discipline: "Großschanze Einzel",
-      athlete: "Marius Lindvik",
-      result: "285.7 Punkte",
-      medal: "bronze",
-      status: "final",
-      date: "2026-02-15"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "50km Massenstart",
-      athlete: "Simen Hegstad Krüger",
-      result: "1:59:26.5",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-23"
-    },
-    {
-      sport: "Biathlon",
-      discipline: "4x7.5km Staffel",
-      athlete: "Norwegen",
-      result: "1:15:23.1",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-18"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "4x10km Staffel",
-      athlete: "Norwegen",
-      result: "1:32:08.9",
-      medal: "bronze",
-      status: "final",
-      date: "2026-02-16"
-    }
-  ]
-
-  // Get unique sports for filter dropdown
   const uniqueSports = useMemo(() => {
-    const sports = [...new Set(results.map(r => r.sport))].sort()
+    const sports = [...new Set(results.map(r => r.sportName))].sort()
     return sports
   }, [results])
 
-  // Filter and sort results
   const filteredResults = useMemo(() => {
     let filtered = results
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(result => 
-        result.athlete.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        result.sport.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        result.discipline.toLowerCase().includes(searchQuery.toLowerCase())
+        result.athleteName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        result.sportName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        result.eventName.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
-    // Apply sport filter
     if (selectedSport !== "all") {
-      filtered = filtered.filter(result => result.sport === selectedSport)
+      filtered = filtered.filter(result => result.sportName === selectedSport)
     }
 
-    // Apply medal filter
     if (selectedMedal !== "all") {
-      filtered = filtered.filter(result => result.medal === selectedMedal)
+      filtered = filtered.filter(result => result.medal?.toLowerCase() === selectedMedal)
     }
 
-    // Apply date sorting
     const sorted = [...filtered].sort((a, b) => {
-      const dateA = new Date(a.date).getTime()
-      const dateB = new Date(b.date).getTime()
+      const dateA = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0
+      const dateB = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0
       return sortOrder === "desc" ? dateB - dateA : dateA - dateB
     })
 
@@ -150,21 +60,22 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
   }, [results, searchQuery, selectedSport, selectedMedal, sortOrder])
 
   const getMedalBadge = (medal: string) => {
-    const styles = {
+    const m = medal?.toLowerCase()
+    const styles: Record<string, string> = {
       gold: "bg-yellow-400/20 text-yellow-400 border-yellow-400/30",
       silver: "bg-gray-400/20 text-gray-300 border-gray-400/30",
       bronze: "bg-orange-400/20 text-orange-400 border-orange-400/30"
     }
     
-    const labels = {
+    const labels: Record<string, string> = {
       gold: dictionary.medalTable?.gold || "Gold",
       silver: dictionary.medalTable?.silver || "Silver",
       bronze: dictionary.medalTable?.bronze || "Bronze"
     }
 
     return (
-      <Badge className={`${styles[medal as keyof typeof styles]} border`}>
-        {labels[medal as keyof typeof labels]}
+      <Badge className={`${styles[m] || ""} border`}>
+        {labels[m] || medal}
       </Badge>
     )
   }
@@ -190,17 +101,12 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
           </div>
         </div>
 
-        {/* Filter Bar */}
         <div className="flex flex-wrap gap-2 pt-4">
-          {/* Sport Filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
                 <Filter className="h-4 w-4" />
-                {selectedSport === "all" 
-                  ? (t.filters?.allSports || "All Sports")
-                  : selectedSport
-                }
+                {selectedSport === "all" ? (t.filters?.allSports || "All Sports") : selectedSport}
                 <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
@@ -216,7 +122,6 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Medal Filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
@@ -247,7 +152,6 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Date Sort */}
           <Button 
             variant="outline" 
             size="sm" 
@@ -264,43 +168,49 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t.table?.sport}</TableHead>
-                <TableHead>{t.table?.athlete}</TableHead>
-                <TableHead>{t.table?.result}</TableHead>
-                <TableHead>{t.table?.medal}</TableHead>
-                <TableHead>{t.table?.status}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredResults.map((result, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{result.sport}</div>
-                      <div className="text-sm text-muted-foreground">{result.discipline}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <a href="#" className="font-medium text-sky-500 hover:text-sky-400 hover:underline">
-                      {result.athlete}
-                    </a>
-                  </TableCell>
-                  <TableCell className="font-medium">{result.result}</TableCell>
-                  <TableCell>{getMedalBadge(result.medal)}</TableCell>
-                  <TableCell>
-                    <Badge className="border border-green-500/30 bg-green-500/20 text-green-500">
-                      {liveResults.status?.final || "Final"}
-                    </Badge>
-                  </TableCell>
+        {filteredResults.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">
+            {dictionary.common?.noResults || "No results found"}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t.table?.sport}</TableHead>
+                  <TableHead>{t.table?.athlete}</TableHead>
+                  <TableHead>{t.table?.result}</TableHead>
+                  <TableHead>{t.table?.medal}</TableHead>
+                  <TableHead>{t.table?.status}</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredResults.map((result) => (
+                  <TableRow key={result.id}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{result.sportName}</div>
+                        <div className="text-sm text-muted-foreground">{result.eventName}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-medium text-sky-500 hover:text-sky-400">
+                        {result.athleteName}
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-medium">{result.value} {result.unit}</TableCell>
+                    <TableCell>{result.medal && getMedalBadge(result.medal)}</TableCell>
+                    <TableCell>
+                      <Badge className="border border-green-500/30 bg-green-500/20 text-green-500">
+                        {liveResults.status?.final || "Final"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

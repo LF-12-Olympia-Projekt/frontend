@@ -94,8 +94,23 @@ export default function LoginPage() {
             } else if (response.token) {
                 completeLogin(response.token)
             }
-        } catch {
-            setError(t.invalidCredentials)
+        } catch (err) {
+            if (err instanceof Error && 'status' in err) {
+                const status = (err as { status: number }).status
+                if (status === 429) {
+                    setError(t.tooManyAttempts)
+                } else if (status === 423) {
+                    setError(t.accountLocked)
+                } else {
+                    // Spec §6.1: Generic message – no hint which field is wrong
+                    setError(t.invalidCredentials)
+                }
+            } else if (err instanceof TypeError) {
+                // Network/fetch failure
+                setError(t.networkError)
+            } else {
+                setError(t.unknownError)
+            }
         } finally {
             setIsLoading(false)
         }
@@ -110,8 +125,12 @@ export default function LoginPage() {
             if (response.token) {
                 completeLogin(response.token)
             }
-        } catch {
-            setError(t.invalidCredentials)
+        } catch (err) {
+            if (err instanceof TypeError) {
+                setError(t.networkError)
+            } else {
+                setError(t.invalidCredentials)
+            }
         } finally {
             setIsLoading(false)
         }
@@ -126,8 +145,12 @@ export default function LoginPage() {
             if (response.token) {
                 completeLogin(response.token)
             }
-        } catch {
-            setError(t.invalidCredentials)
+        } catch (err) {
+            if (err instanceof TypeError) {
+                setError(t.networkError)
+            } else {
+                setError(t.invalidCredentials)
+            }
         } finally {
             setIsLoading(false)
         }

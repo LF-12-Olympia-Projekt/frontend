@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { UserTable } from "@/components/admin/UserTable"
 import { ConfirmModal } from "@/components/judge/ConfirmModal"
+import { DangerModal } from "@/components/admin/DangerModal"
 import { UserPlus } from "lucide-react"
 import * as adminApi from "@/lib/api/admin"
 import type { AdminUserListItem, CreateUserRequest } from "@/types/admin"
@@ -35,6 +36,7 @@ export default function AdminUsersPage() {
   const [loading, setLoading] = useState(true)
 
   const [showCreate, setShowCreate] = useState(false)
+  const [createdPassword, setCreatedPassword] = useState<string | null>(null)
   const [createForm, setCreateForm] = useState<CreateUserRequest>({
     userName: "",
     email: "",
@@ -46,6 +48,8 @@ export default function AdminUsersPage() {
     user: AdminUserListItem
     action: "lock" | "unlock"
   } | null>(null)
+
+  const [deleteTarget, setDeleteTarget] = useState<AdminUserListItem | null>(null)
 
   const fetchUsers = useCallback(async () => {
     const token = getToken()
@@ -74,7 +78,8 @@ export default function AdminUsersPage() {
     const token = getToken()
     if (!token) return
     try {
-      await adminApi.createUser(token, createForm)
+      const result = await adminApi.createUser(token, createForm)
+      setCreatedPassword(result.tempPassword)
       setShowCreate(false)
       setCreateForm({ userName: "", email: "", role: "Judge", temporaryPassword: "" })
       fetchUsers()
@@ -94,6 +99,19 @@ export default function AdminUsersPage() {
         await adminApi.unlockUser(token, confirmAction.user.id)
       }
       setConfirmAction(null)
+      fetchUsers()
+    } catch {
+      // handle error
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return
+    const token = getToken()
+    if (!token) return
+    try {
+      await adminApi.deleteUser(token, deleteTarget.id)
+      setDeleteTarget(null)
       fetchUsers()
     } catch {
       // handle error
@@ -140,6 +158,7 @@ export default function AdminUsersPage() {
               onView={(u) => router.push(`/${locale}/admin/users/${u.id}`)}
               onLock={(u) => setConfirmAction({ user: u, action: "lock" })}
               onUnlock={(u) => setConfirmAction({ user: u, action: "unlock" })}
+              onDelete={(u) => setDeleteTarget(u)}
               labels={t.table}
             />
             {total > 20 && (
@@ -216,9 +235,40 @@ export default function AdminUsersPage() {
               </Button>
               <Button
                 onClick={handleCreate}
-                disabled={!createForm.userName || !createForm.email || !createForm.temporaryPassword}
+                disabled={!createForm.userName || !createForm.email}
               >
                 {t.create ?? "Create"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Show generated password after creation */}
+        <Dialog open={!!createdPassword} onOpenChange={() => setCreatedPassword(null)}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>{t.userCreated ?? "Benutzer erstellt"}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {t.passwordNote ?? "Bitte notieren Sie das temporäre Passwort. Es wird nur einmal angezeigt."}
+              </p>
+              <div className="flex items-center gap-2 rounded-lg bg-muted p-3">
+                <code className="flex-1 text-lg font-mono font-bold select-all">{createdPassword}</code>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    if (createdPassword) navigator.clipboard.writeText(createdPassword)
+                  }}
+                >
+                  {t.copy ?? "Kopieren"}
+                </Button>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setCreatedPassword(null)}>
+                {t.close ?? "Schließen"}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -237,6 +287,16 @@ export default function AdminUsersPage() {
           confirmLabel={confirmAction?.action === "lock" ? (t.lock ?? "Lock") : (t.unlock ?? "Unlock")}
           onConfirm={handleLockUnlock}
           onCancel={() => setConfirmAction(null)}
+        />
+
+        {/* Delete User Confirmation */}
+        <DangerModal
+          open={!!deleteTarget}
+          title={t.deleteTitle ?? "Benutzer löschen"}
+          message={t.deleteMessage ?? `Möchten Sie den Benutzer "${deleteTarget?.userName}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+          confirmPhrase={deleteTarget?.userName ?? ""}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteTarget(null)}
         />
       </div>
     </ProtectedRoute>

@@ -67,7 +67,7 @@ export default function AdminUserDetailPage() {
     const token = getToken()
     if (!token || !user) return
     try {
-      if (user.isActive) {
+      if (!user.isLocked) {
         await adminApi.lockUser(token, userId)
       } else {
         await adminApi.unlockUser(token, userId)
@@ -146,8 +146,8 @@ export default function AdminUserDetailPage() {
             {user.roles.map((role) => (
               <RoleBadge key={role} role={role} />
             ))}
-            <Badge variant={user.isActive ? "outline" : "destructive"}>
-              {user.isActive ? (t.active ?? "Active") : (t.locked ?? "Locked")}
+            <Badge variant={!user.isLocked ? "outline" : "destructive"}>
+              {!user.isLocked ? (t.active ?? "Active") : (t.locked ?? "Locked")}
             </Badge>
           </div>
         </div>
@@ -183,10 +183,10 @@ export default function AdminUserDetailPage() {
                   {saving ? (t.saving ?? "Saving...") : (t.save ?? "Save")}
                 </Button>
                 <Button
-                  variant={user.isActive ? "destructive" : "outline"}
+                  variant={!user.isLocked ? "destructive" : "outline"}
                   onClick={() => setConfirmLock(true)}
                 >
-                  {user.isActive
+                  {!user.isLocked
                     ? <><Lock className="h-4 w-4 mr-2" />{t.lock ?? "Lock Account"}</>
                     : <><Unlock className="h-4 w-4 mr-2" />{t.unlock ?? "Unlock Account"}</>}
                 </Button>
@@ -230,11 +230,11 @@ export default function AdminUserDetailPage() {
 
         <ConfirmModal
           open={confirmLock}
-          title={user.isActive ? (t.lockTitle ?? "Lock User?") : (t.unlockTitle ?? "Unlock User?")}
-          message={user.isActive
+          title={!user.isLocked ? (t.lockTitle ?? "Lock User?") : (t.unlockTitle ?? "Unlock User?")}
+          message={!user.isLocked
             ? (t.lockMessage ?? "This user will be unable to log in.")
             : (t.unlockMessage ?? "This user will be able to log in again.")}
-          danger={user.isActive}
+          danger={!user.isLocked}
           onConfirm={handleLockToggle}
           onCancel={() => setConfirmLock(false)}
         />

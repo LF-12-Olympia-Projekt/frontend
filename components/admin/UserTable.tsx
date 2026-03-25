@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { RoleBadge } from "./RoleBadge"
-import { Lock, Unlock, Eye, UserCog } from "lucide-react"
+import { Lock, Unlock, Eye, UserCog, Trash2 } from "lucide-react"
 import type { AdminUserListItem } from "@/types/admin"
 
 interface UserTableProps {
@@ -20,10 +20,11 @@ interface UserTableProps {
   onView: (user: AdminUserListItem) => void
   onLock: (user: AdminUserListItem) => void
   onUnlock: (user: AdminUserListItem) => void
+  onDelete: (user: AdminUserListItem) => void
   labels?: Record<string, string>
 }
 
-export function UserTable({ users, onView, onLock, onUnlock, labels }: UserTableProps) {
+export function UserTable({ users, onView, onLock, onUnlock, onDelete, labels }: UserTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -48,8 +49,8 @@ export function UserTable({ users, onView, onLock, onUnlock, labels }: UserTable
               ))}
             </TableCell>
             <TableCell>
-              <Badge variant={user.isActive ? "outline" : "destructive"}>
-                {user.isActive
+              <Badge variant={!user.isLocked ? "outline" : "destructive"}>
+                {!user.isLocked
                   ? (labels?.active ?? "Active")
                   : (labels?.locked ?? "Locked")}
               </Badge>
@@ -73,7 +74,7 @@ export function UserTable({ users, onView, onLock, onUnlock, labels }: UserTable
               <Button size="sm" variant="ghost" onClick={() => onView(user)} title={labels?.view ?? "View"}>
                 <Eye className="h-4 w-4" />
               </Button>
-              {user.isActive ? (
+              {!user.isLocked ? (
                 <Button size="sm" variant="ghost" onClick={() => onLock(user)} title={labels?.lock ?? "Lock"}>
                   <Lock className="h-4 w-4" />
                 </Button>
@@ -82,6 +83,9 @@ export function UserTable({ users, onView, onLock, onUnlock, labels }: UserTable
                   <Unlock className="h-4 w-4" />
                 </Button>
               )}
+              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => onDelete(user)} title={labels?.delete ?? "Delete"}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </TableCell>
           </TableRow>
         ))}

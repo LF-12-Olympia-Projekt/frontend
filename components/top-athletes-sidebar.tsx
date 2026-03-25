@@ -1,64 +1,54 @@
 "use client"
 
+import { useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Star, ChevronRight } from "lucide-react"
+import { Star } from "lucide-react"
+import type { ResultListItem } from "@/types/api"
 
 interface TopAthletesSidebarProps {
   countryCode: string
+  results: ResultListItem[]
 }
 
-interface Athlete {
+interface AthleteAggregate {
   name: string
   sport: string
   gold: number
   silver: number
   bronze: number
+  total: number
 }
 
-export function TopAthletesSidebar({ countryCode }: TopAthletesSidebarProps) {
+export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarProps) {
   const { dictionary } = useTranslation()
   const t = dictionary.nations || {}
 
-  // Mock data - in real app this would come from API
-  const topAthletes: Athlete[] = [
-    {
-      name: "Johannes Thingnes Bø",
-      sport: "Biathlon",
-      gold: 2,
-      silver: 1,
-      bronze: 0
-    },
-    {
-      name: "Hans Christer Holund",
-      sport: "Skilanglauf",
-      gold: 2,
-      silver: 0,
-      bronze: 1
-    },
-    {
-      name: "Halvor Egner Granerud",
-      sport: "Skispringen",
-      gold: 2,
-      silver: 1,
-      bronze: 0
-    },
-    {
-      name: "Marius Lindvik",
-      sport: "Skispringen",
-      gold: 1,
-      silver: 1,
-      bronze: 1
-    },
-    {
-      name: "Simen Hegstad Krüger",
-      sport: "Skilanglauf",
-      gold: 1,
-      silver: 0,
-      bronze: 2
+  const topAthletes = useMemo<AthleteAggregate[]>(() => {
+    const map = new Map<string, AthleteAggregate>()
+    for (const r of results) {
+      const medal = r.medal?.toLowerCase()
+      if (!medal || medal === "none") continue
+      const existing = map.get(r.athleteName) || {
+        name: r.athleteName,
+        sport: r.sportName,
+        gold: 0,
+        silver: 0,
+        bronze: 0,
+        total: 0,
+      }
+      if (medal === "gold") existing.gold++
+      else if (medal === "silver") existing.silver++
+      else if (medal === "bronze") existing.bronze++
+      existing.total = existing.gold + existing.silver + existing.bronze
+      map.set(r.athleteName, existing)
     }
-  ]
+    return [...map.values()]
+      .sort((a, b) => b.gold - a.gold || b.total - a.total)
+      .slice(0, 5)
+  }, [results])
+
+  if (topAthletes.length === 0) return null
 
   return (
     <Card className="border-0 shadow-lg">
@@ -71,9 +61,9 @@ export function TopAthletesSidebar({ countryCode }: TopAthletesSidebarProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {topAthletes.map((athlete, index) => (
+        {topAthletes.map((athlete) => (
           <div
-            key={index}
+            key={athlete.name}
             className="group cursor-pointer rounded-lg border border-transparent bg-muted/30 p-3 transition-all hover:border-sky-500/30 hover:bg-muted/50"
           >
             <div className="mb-1 font-medium">{athlete.name}</div>
@@ -97,10 +87,6 @@ export function TopAthletesSidebar({ countryCode }: TopAthletesSidebarProps) {
             </div>
           </div>
         ))}
-        <Button variant="outline" className="w-full gap-2">
-          {t.showAllAthletes}
-          <ChevronRight className="h-4 w-4" />
-        </Button>
       </CardContent>
     </Card>
   )

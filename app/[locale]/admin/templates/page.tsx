@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge"
 import { Plus, Eye, FileEdit } from "lucide-react"
 import * as adminApi from "@/lib/api/admin"
 import type { SportTemplateListItem } from "@/types/admin"
+import { toast } from "sonner"
 
 export default function AdminTemplatesPage() {
   const { getToken } = useAuth()
@@ -64,25 +65,26 @@ export default function AdminTemplatesPage() {
     const token = getToken()
     if (!token || !createSportId) return
     try {
+      const parsedFields = JSON.parse(createFields)
       await adminApi.createTemplate(token, {
         sportId: createSportId,
-        fields: createFields,
+        fields: parsedFields,
       })
       setShowCreate(false)
       setCreateSportId("")
       setCreateFields("[]")
       fetchTemplates()
-    } catch {
-      // handle
+    } catch (err: any) {
+      if (err instanceof SyntaxError) {
+        toast.error("Invalid JSON in fields")
+      } else {
+        toast.error(err?.message || "Failed to create template")
+      }
     }
   }
 
-  const getFieldCount = (fields: string) => {
-    try {
-      return JSON.parse(fields).length
-    } catch {
-      return 0
-    }
+  const getFieldCount = (fields: any[]) => {
+    return Array.isArray(fields) ? fields.length : 0
   }
 
   return (

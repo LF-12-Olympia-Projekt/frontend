@@ -1,94 +1,54 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Trophy, Medal, ArrowUpDown } from "lucide-react"
+import { Search, Trophy, Medal, ArrowUpDown, Loader2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-
-interface Country {
-  code: string
-  name: string
-  gold: number
-  silver: number
-  bronze: number
-  total: number
-  athletes: number
-}
+import { getMedals, type MedalEntry } from "@/lib/api/medals"
 
 export function NationsGrid() {
   const { dictionary, locale } = useTranslation()
   const t = dictionary.nations?.overview || {}
   const medalTable = dictionary.medalTable || {}
   
+  const [countries, setCountries] = useState<MedalEntry[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterMedals, setFilterMedals] = useState<"all" | "withMedals">("all")
   const [sortBy, setSortBy] = useState<"name" | "medals">("medals")
 
-  // Mock data - in real app this would come from API
-  const countries: Country[] = [
-    { code: "NO", name: "Norwegen", gold: 16, silver: 8, bronze: 13, total: 37, athletes: 109 },
-    { code: "DE", name: "Deutschland", gold: 12, silver: 10, bronze: 5, total: 27, athletes: 150 },
-    { code: "CA", name: "Kanada", gold: 11, silver: 8, bronze: 10, total: 29, athletes: 215 },
-    { code: "US", name: "USA", gold: 10, silver: 12, bronze: 7, total: 29, athletes: 222 },
-    { code: "SE", name: "Schweden", gold: 8, silver: 6, bronze: 7, total: 21, athletes: 116 },
-    { code: "AT", name: "Österreich", gold: 7, silver: 7, bronze: 8, total: 22, athletes: 105 },
-    { code: "CH", name: "Schweiz", gold: 7, silver: 5, bronze: 9, total: 21, athletes: 168 },
-    { code: "NL", name: "Niederlande", gold: 6, silver: 5, bronze: 4, total: 15, athletes: 48 },
-    { code: "FI", name: "Finnland", gold: 5, silver: 4, bronze: 5, total: 14, athletes: 95 },
-    { code: "JP", name: "Japan", gold: 4, silver: 7, bronze: 5, total: 16, athletes: 124 },
-    { code: "IT", name: "Italien", gold: 4, silver: 4, bronze: 6, total: 14, athletes: 139 },
-    { code: "FR", name: "Frankreich", gold: 4, silver: 3, bronze: 7, total: 14, athletes: 123 },
-    { code: "CN", name: "China", gold: 4, silver: 3, bronze: 2, total: 9, athletes: 176 },
-    { code: "KR", name: "Südkorea", gold: 3, silver: 2, bronze: 2, total: 7, athletes: 63 },
-    { code: "CZ", name: "Tschechien", gold: 2, silver: 3, bronze: 3, total: 8, athletes: 115 },
-    { code: "RU", name: "Russland", gold: 2, silver: 4, bronze: 5, total: 11, athletes: 212 },
-    { code: "GB", name: "Großbritannien", gold: 1, silver: 3, bronze: 4, total: 8, athletes: 58 },
-    { code: "AU", name: "Australien", gold: 1, silver: 2, bronze: 1, total: 4, athletes: 44 },
-    { code: "PL", name: "Polen", gold: 1, silver: 1, bronze: 2, total: 4, athletes: 65 },
-    { code: "SK", name: "Slowakei", gold: 1, silver: 1, bronze: 1, total: 3, athletes: 48 },
-    { code: "SI", name: "Slowenien", gold: 1, silver: 0, bronze: 2, total: 3, athletes: 43 },
-    { code: "BE", name: "Belgien", gold: 1, silver: 0, bronze: 1, total: 2, athletes: 22 },
-    { code: "ES", name: "Spanien", gold: 0, silver: 2, bronze: 1, total: 3, athletes: 57 },
-    { code: "NZ", name: "Neuseeland", gold: 0, silver: 1, bronze: 1, total: 2, athletes: 16 },
-    { code: "UA", name: "Ukraine", gold: 0, silver: 1, bronze: 0, total: 1, athletes: 45 },
-    { code: "BR", name: "Brasilien", gold: 0, silver: 0, bronze: 0, total: 0, athletes: 12 },
-    { code: "AR", name: "Argentinien", gold: 0, silver: 0, bronze: 0, total: 0, athletes: 8 },
-    { code: "IN", name: "Indien", gold: 0, silver: 0, bronze: 0, total: 0, athletes: 6 },
-  ]
+  useEffect(() => {
+    getMedals(undefined, 200, 0)
+      .then((res) => setCountries(res.data))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
-  // Filter and sort countries
   const filteredCountries = useMemo(() => {
     let filtered = countries
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(country => 
-        country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        country.code.toLowerCase().includes(searchQuery.toLowerCase())
+        country.countryName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        country.countryCode.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
-    // Apply medal filter
     if (filterMedals === "withMedals") {
       filtered = filtered.filter(country => country.total > 0)
     }
 
-    // Apply sorting
     const sorted = [...filtered].sort((a, b) => {
       if (sortBy === "medals") {
-        // Sort by total medals (descending), then by name
-        if (b.total !== a.total) {
-          return b.total - a.total
-        }
-        return a.name.localeCompare(b.name)
+        if (b.total !== a.total) return b.total - a.total
+        return a.countryName.localeCompare(b.countryName)
       } else {
-        // Sort alphabetically by name
-        return a.name.localeCompare(b.name)
+        return a.countryName.localeCompare(b.countryName)
       }
     })
 
@@ -97,6 +57,14 @@ export function NationsGrid() {
 
   const totalNations = countries.length
   const nationsWithMedals = countries.filter(c => c.total > 0).length
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -125,7 +93,6 @@ export function NationsGrid() {
       <Card className="border-0 shadow-md">
         <CardContent className="px-4 py-2">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            {/* Search */}
             <div className="relative flex-1 sm:max-w-xs">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -136,9 +103,7 @@ export function NationsGrid() {
               />
             </div>
 
-            {/* Filters */}
             <div className="flex flex-wrap gap-2">
-              {/* Medal Filter */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="gap-2">
@@ -156,7 +121,6 @@ export function NationsGrid() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Sort */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="gap-2">
@@ -181,23 +145,18 @@ export function NationsGrid() {
       {/* Countries Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredCountries.map((country) => (
-          <Link key={country.code} href={`/${locale}/nations/${country.code.toLowerCase()}`}>
+          <Link key={country.countryCode} href={`/${locale}/nations/${country.countryCode.toLowerCase()}`}>
             <Card className="group cursor-pointer border-0 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
               <CardContent className="p-6">
-                {/* Flag and Name */}
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-lg font-bold text-white shadow-md">
-                    {country.code}
+                    {country.countryAbbr}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold group-hover:text-sky-500">{country.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {country.athletes} {dictionary.common?.athletes || "Athletes"}
-                    </p>
+                    <h3 className="font-bold group-hover:text-sky-500">{country.countryName}</h3>
                   </div>
                 </div>
 
-                {/* Medals */}
                 {country.total > 0 ? (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
@@ -236,7 +195,6 @@ export function NationsGrid() {
         ))}
       </div>
 
-      {/* No Results */}
       {filteredCountries.length === 0 && (
         <div className="py-12 text-center">
           <Search className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />

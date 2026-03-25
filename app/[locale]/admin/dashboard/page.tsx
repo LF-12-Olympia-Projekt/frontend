@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
           adminApi.getAdminResults(token, { status: "ProtestFiled", pageSize: 1 }),
           adminApi.getAuditLog(token, { action: "FORCE_PUBLISH", pageSize: 1 }),
         ])
-        const judges = await adminApi.getUsers(token, { role: "Judge", isActive: true, pageSize: 1 })
+        const judges = await adminApi.getUsers(token, { role: "Judge", isLocked: false, pageSize: 1 })
         const recentFP = audit.data.length > 0
           && new Date(audit.data[0].timestamp).getTime() > Date.now() - 24 * 60 * 60 * 1000
         setStats({

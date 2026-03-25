@@ -4,7 +4,7 @@ import { PageWrapper } from "@/components/page-wrapper"
 import { ResultsTable } from "@/components/results-table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { getSportBySlug, getSportResults } from "@/lib/api/results"
+import { getSportById, getResults } from "@/lib/api/results"
 import { getDictionary, Locale } from "@/lib/dictionaries"
 import { Award } from "lucide-react"
 
@@ -28,8 +28,8 @@ export default async function SportResultsPage({
   let results = { data: [] as any[], total: 0, page: 1, pageSize: 20 }
 
   try {
-    sport = await getSportBySlug(sportId)
-    results = await getSportResults(sportId, { page, pageSize: 20 })
+    sport = await getSportById(sportId)
+    results = await getResults({ sport: sport.name, page, pageSize: 20 })
   } catch {
     notFound()
   }

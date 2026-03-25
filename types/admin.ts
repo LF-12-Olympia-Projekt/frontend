@@ -7,7 +7,7 @@ export interface AdminUserListItem {
   userName: string
   email: string
   roles: string[]
-  isActive: boolean
+  isLocked: boolean
   lastLogin: string | null
   createdAt: string
   delegatedReviewerUntil: string | null
@@ -18,7 +18,7 @@ export interface AdminUserDetail {
   userName: string
   email: string
   roles: string[]
-  isActive: boolean
+  isLocked: boolean
   lastLogin: string | null
   createdAt: string
   updatedAt: string
@@ -78,20 +78,40 @@ export interface SportTemplateListItem {
   id: string
   sportId: string
   sportName: string
-  fields: string
+  fields: TemplateFieldDto[]
   version: number
   isActive: boolean
   createdByUser: string | null
   updatedAt: string
 }
 
+export interface TemplateFieldDto {
+  id: string
+  name: string
+  fieldType: string
+  required: boolean
+  unit?: string
+  displayOrder: number
+  labels?: Record<string, string>
+}
+
 export interface CreateTemplateRequest {
   sportId: string
-  fields: string
+  fields: TemplateFieldRequest[]
+}
+
+export interface TemplateFieldRequest {
+  name: string
+  fieldType: string
+  required: boolean
+  unit?: string
+  displayOrder: number
+  labels?: Record<string, string>
 }
 
 export interface UpdateTemplateRequest {
-  fields?: string
+  sportId: string
+  fields: TemplateFieldRequest[]
 }
 
 export interface TemplateField {

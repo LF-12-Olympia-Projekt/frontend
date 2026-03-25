@@ -9,7 +9,10 @@ import { CountryResultsTable } from "@/components/country-results-table"
 import { TopAthletesSidebar } from "@/components/top-athletes-sidebar"
 import { MedalTimelineSidebar } from "@/components/medal-timeline-sidebar"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { getCountryMedals } from "@/lib/api/results"
+import type { CountryMedalDetail, ResultListItem } from "@/types/api"
 
 interface PageProps {
   params: Promise<{
@@ -23,17 +26,50 @@ export default function NationPage({ params }: PageProps) {
   const t = dictionary.nations || {}
   const common = dictionary.common || {}
 
-  // Unwrap params Promise
   const { countryCode } = use(params)
+  const [data, setData] = useState<CountryMedalDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  // Mock country data - in real app this would come from API
+  useEffect(() => {
+    getCountryMedals(countryCode.toUpperCase())
+      .then(setData)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
+  }, [countryCode])
+
+  if (loading) {
+    return (
+      <PageWrapper>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </PageWrapper>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <PageWrapper>
+        <div className="flex min-h-[50vh] items-center justify-center text-muted-foreground">
+          {common.noResults || "Country not found"}
+        </div>
+      </PageWrapper>
+    )
+  }
+
+  const gold = data.medals?.gold ?? 0
+  const silver = data.medals?.silver ?? 0
+  const bronze = data.medals?.bronze ?? 0
+  const total = gold + silver + bronze
+
   const countryData = {
-    code: countryCode.toUpperCase(),
-    name: countryCode === "no" ? "Norwegen" : "Norway",
-    gold: 16,
-    silver: 8,
-    bronze: 13,
-    total: 37
+    code: data.country.countryCode,
+    name: data.country.name,
+    gold,
+    silver,
+    bronze,
+    total,
   }
 
   return (
@@ -71,10 +107,10 @@ export default function NationPage({ params }: PageProps) {
         <div className="px-4 py-8 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <MedalSummaryCards 
-              gold={countryData.gold}
-              silver={countryData.silver}
-              bronze={countryData.bronze}
-              total={countryData.total}
+              gold={gold}
+              silver={silver}
+              bronze={bronze}
+              total={total}
             />
           </div>
         </div>
@@ -85,13 +121,13 @@ export default function NationPage({ params }: PageProps) {
             <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
               {/* Left Column - Results Table */}
               <div>
-                <CountryResultsTable countryCode={countryData.code} />
+                <CountryResultsTable countryCode={countryData.code} results={data.results || []} />
               </div>
 
               {/* Right Column - Sidebar */}
               <div className="space-y-6">
-                <TopAthletesSidebar countryCode={countryData.code} />
-                <MedalTimelineSidebar countryCode={countryData.code} />
+                <TopAthletesSidebar countryCode={countryData.code} results={data.results || []} />
+                <MedalTimelineSidebar countryCode={countryData.code} results={data.results || []} />
               </div>
             </div>
           </div>

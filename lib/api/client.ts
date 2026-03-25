@@ -38,6 +38,7 @@ export async function apiClient<T>(
     const res = await fetch(`${API_BASE}${path}`, {
         ...options,
         headers,
+        credentials: "include",
     })
 
     if (res.status === 401) {
@@ -47,7 +48,12 @@ export async function apiClient<T>(
 
     if (!res.ok) {
         const text = await res.text()
-        throw new ApiError(res.status, text || "Request failed")
+        let parsed = text || "Request failed"
+        try {
+            const json = JSON.parse(text)
+            if (json.message) parsed = json.message
+        } catch { /* not JSON, use raw text */ }
+        throw new ApiError(res.status, parsed)
     }
 
     const contentLength = res.headers.get("content-length")

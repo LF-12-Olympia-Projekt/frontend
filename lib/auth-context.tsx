@@ -1,7 +1,7 @@
 // lib/auth-context.tsx | Task: REM-003 | Auth context with in-memory JWT (never sessionStorage)
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react"
 import * as authApi from "@/lib/api/auth"
 
 // .NET ClaimTypes URIs used in JWT
@@ -46,14 +46,35 @@ function parseJwtPayload(token: string): { username: string; role: UserRole } {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // JWT stored in React state only — cleared on page refresh (by design)
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // On mount, try to restore session via refresh token cookie
+  useEffect(() => {
+    let cancelled = false
+    authApi.refreshToken()
+      .then((response) => {
+        if (!cancelled && response.token) {
+          const { username, role } = parseJwtPayload(response.token)
+          setUser({ token: response.token, username, role })
+        }
+      })
+      .catch(() => {
+        // No valid refresh token — stay logged out
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    const { token } = await authApi.login(email, password)
-    const { username, role } = parseJwtPayload(token)
-    setUser({ token, username, role })
+    const response = await authApi.login(email, password)
+    if (!response.token) {
+      throw new Error(response.requires2Fa ? '2FA_REQUIRED' : '2FA_SETUP_REQUIRED')
+    }
+    const { username, role } = parseJwtPayload(response.token)
+    setUser({ token: response.token, username, role })
   }, [])
 
   const loginWithToken = useCallback((token: string) => {
@@ -63,6 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     setUser(null)
+    // Clear the server-side refresh cookie
+    authApi.logoutServer().catch(() => {})
   }, [])
 
   const getToken = useCallback(() => {

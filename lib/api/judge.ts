@@ -16,44 +16,44 @@ function authHeaders(token: string): HeadersInit {
   return { Authorization: `Bearer ${token}` }
 }
 
-// POST /api/results — Create new result as draft
+// POST /api/judge/results — Create new result as draft
 export async function createResult(token: string, data: CreateResultRequest) {
-  return apiClient<JudgeResultListItem>("/api/results", {
+  return apiClient<JudgeResultListItem>("/api/judge/results", {
     method: "POST",
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
 }
 
-// PUT /api/results/{id} — Edit existing draft result
+// PUT /api/judge/results/{id} — Edit existing draft result
 export async function updateResult(token: string, id: string, data: UpdateResultRequest) {
-  return apiClient<JudgeResultListItem>(`/api/results/${id}`, {
+  return apiClient<JudgeResultListItem>(`/api/judge/results/${id}`, {
     method: "PUT",
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
 }
 
-// POST /api/results/{id}/submit — Submit draft for review
+// POST /api/judge/results/{id}/submit — Submit draft for review
 export async function submitResult(token: string, id: string) {
-  return apiClient<JudgeResultListItem>(`/api/results/${id}/submit`, {
+  return apiClient<JudgeResultListItem>(`/api/judge/results/${id}/submit`, {
     method: "POST",
     headers: authHeaders(token),
   })
 }
 
-// POST /api/results/{id}/protest — File protest
+// POST /api/judge/results/{id}/protest — File protest
 export async function protestResult(token: string, id: string, data: ProtestRequest) {
-  return apiClient<{ message: string; protestId: string }>(`/api/results/${id}/protest`, {
+  return apiClient<{ message: string; protestId: string }>(`/api/judge/results/${id}/protest`, {
     method: "POST",
     headers: authHeaders(token),
     body: JSON.stringify(data),
   })
 }
 
-// POST /api/results/{id}/invalidate — Invalidate result
+// POST /api/judge/results/{id}/invalidate — Invalidate result
 export async function invalidateResult(token: string, id: string, data: InvalidateRequest) {
-  return apiClient<{ message: string }>(`/api/results/${id}/invalidate`, {
+  return apiClient<{ message: string }>(`/api/judge/results/${id}/invalidate`, {
     method: "POST",
     headers: authHeaders(token),
     body: JSON.stringify(data),
@@ -98,9 +98,9 @@ export async function getReviewQueue(
   )
 }
 
-// GET /api/reviewer/results/{id} — Reviewer detail
+// GET /api/judge/results/{id} — Reviewer detail (uses judge endpoint)
 export async function getReviewResultDetail(token: string, id: string) {
-  return apiClient<JudgeResultDetail>(`/api/reviewer/results/${id}`, {
+  return apiClient<JudgeResultDetail>(`/api/judge/results/${id}`, {
     headers: authHeaders(token),
   })
 }

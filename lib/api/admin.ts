@@ -27,11 +27,11 @@ function authHeaders(token: string): HeadersInit {
 
 export async function getUsers(
   token: string,
-  params?: { role?: string; isActive?: boolean; page?: number; pageSize?: number }
+  params?: { role?: string; isLocked?: boolean; page?: number; pageSize?: number }
 ) {
   const sp = new URLSearchParams()
   if (params?.role) sp.set("role", params.role)
-  if (params?.isActive !== undefined) sp.set("isActive", String(params.isActive))
+  if (params?.isLocked !== undefined) sp.set("isLocked", String(params.isLocked))
   if (params?.page) sp.set("page", String(params.page))
   if (params?.pageSize) sp.set("pageSize", String(params.pageSize))
   const qs = sp.toString()
@@ -48,7 +48,7 @@ export async function getUser(token: string, id: string) {
 }
 
 export async function createUser(token: string, data: CreateUserRequest) {
-  return apiClient<AdminUserListItem>("/api/admin/users", {
+  return apiClient<{ id: string; tempPassword: string; message: string }>("/api/admin/users", {
     method: "POST",
     headers: authHeaders(token),
     body: JSON.stringify(data),
@@ -73,6 +73,13 @@ export async function lockUser(token: string, id: string) {
 export async function unlockUser(token: string, id: string) {
   return apiClient<{ message: string }>(`/api/admin/users/${id}/unlock`, {
     method: "POST",
+    headers: authHeaders(token),
+  })
+}
+
+export async function deleteUser(token: string, id: string) {
+  return apiClient<{ message: string }>(`/api/admin/users/${id}`, {
+    method: "DELETE",
     headers: authHeaders(token),
   })
 }

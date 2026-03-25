@@ -1,7 +1,7 @@
 // components/admin/AuditLogTable.tsx | Task: FE-004 | Read-only audit log table with expandable rows
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import {
   Table,
   TableBody,
@@ -51,9 +51,8 @@ export function AuditLogTable({ entries, labels }: AuditLogTableProps) {
           const isHighlight = forcePublishActions.includes(entry.action)
           const isExpanded = expandedIds.has(entry.id)
           return (
-            <>
+            <React.Fragment key={entry.id}>
               <TableRow
-                key={entry.id}
                 className={isHighlight ? "bg-orange-500/5" : ""}
               >
                 <TableCell>
@@ -116,7 +115,7 @@ export function AuditLogTable({ entries, labels }: AuditLogTableProps) {
                   </TableCell>
                 </TableRow>
               )}
-            </>
+            </React.Fragment>
           )
         })}
       </TableBody>

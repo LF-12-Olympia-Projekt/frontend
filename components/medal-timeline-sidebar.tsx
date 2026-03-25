@@ -1,49 +1,48 @@
 "use client"
 
+import { useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "lucide-react"
+import type { ResultListItem } from "@/types/api"
 
 interface MedalTimelineSidebarProps {
   countryCode: string
+  results: ResultListItem[]
 }
 
-interface TimelineEvent {
-  date: string
-  sport: string
-  medal: "gold" | "silver" | "bronze"
-}
-
-export function MedalTimelineSidebar({ countryCode }: MedalTimelineSidebarProps) {
+export function MedalTimelineSidebar({ countryCode, results }: MedalTimelineSidebarProps) {
   const { dictionary } = useTranslation()
   const t = dictionary.nations || {}
 
-  // Mock data - in real app this would come from API
-  const timelineEvents: TimelineEvent[] = [
-    { date: "07. Feb.", sport: "Biathlon", medal: "gold" },
-    { date: "07. Feb.", sport: "Skispringen", medal: "gold" },
-    { date: "08. Feb.", sport: "Skilanglauf", medal: "gold" },
-    { date: "09. Feb.", sport: "Biathlon", medal: "silver" },
-    { date: "09. Feb.", sport: "Skilanglauf", medal: "bronze" },
-    { date: "15. Feb.", sport: "Skispringen", medal: "bronze" },
-    { date: "16. Feb.", sport: "Skilanglauf", medal: "bronze" },
-    { date: "18. Feb.", sport: "Biathlon", medal: "gold" },
-    { date: "23. Feb.", sport: "Skilanglauf", medal: "gold" }
-  ]
+  const timelineEvents = useMemo(() => {
+    return results
+      .filter(r => r.medal && r.medal.toLowerCase() !== "none")
+      .sort((a, b) => {
+        const da = a.lastModifiedAt ? new Date(a.lastModifiedAt).getTime() : 0
+        const db = b.lastModifiedAt ? new Date(b.lastModifiedAt).getTime() : 0
+        return da - db
+      })
+      .map(r => ({
+        date: r.lastModifiedAt
+          ? new Date(r.lastModifiedAt).toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
+          : "—",
+        sport: r.sportName,
+        medal: r.medal.toLowerCase() as "gold" | "silver" | "bronze",
+      }))
+  }, [results])
 
   const getMedalColor = (medal: string) => {
     switch (medal) {
-      case "gold":
-        return "bg-yellow-400"
-      case "silver":
-        return "bg-gray-300"
-      case "bronze":
-        return "bg-orange-400"
-      default:
-        return "bg-gray-400"
+      case "gold": return "bg-yellow-400"
+      case "silver": return "bg-gray-300"
+      case "bronze": return "bg-orange-400"
+      default: return "bg-gray-400"
     }
   }
+
+  if (timelineEvents.length === 0) return null
 
   return (
     <Card className="border-0 shadow-lg">

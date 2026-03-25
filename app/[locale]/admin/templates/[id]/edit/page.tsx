@@ -34,11 +34,14 @@ export default function AdminTemplateEditPage() {
       try {
         const data = await adminApi.getTemplate(token, templateId)
         setTemplate(data)
-        try {
-          setFields(JSON.parse(data.fields))
-        } catch {
-          setFields([])
-        }
+        setFields(Array.isArray(data.fields) ? data.fields.map((f: any) => ({
+          name: f.name,
+          type: f.fieldType || "text",
+          required: f.required,
+          unit: f.unit,
+          label: f.labels || { de: f.name, fr: f.name, en: f.name },
+          options: f.options,
+        })) : [])
       } catch {
         // handle
       } finally {
@@ -54,7 +57,15 @@ export default function AdminTemplateEditPage() {
     setSaving(true)
     try {
       const updated = await adminApi.updateTemplate(token, templateId, {
-        fields: JSON.stringify(fields),
+        sportId: template!.sportId,
+        fields: fields.map((f, i) => ({
+          name: f.name,
+          fieldType: f.type || "text",
+          required: f.required,
+          unit: f.unit,
+          displayOrder: i,
+          labels: f.label as Record<string, string>,
+        })),
       })
       setTemplate(updated)
       router.push(`/${locale}/admin/templates`)

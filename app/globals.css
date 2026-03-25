@@ -3,11 +3,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   Olympia 2026 Design System
+   Based on: Entwickler-Spezifikation v1.1
+   Fonts: Oswald (display), Source Sans 3 (body), JetBrains Mono (code)
+   Spacing: 8px grid (4/8/12/16/24/32/48/64/96)
+   ============================================================ */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+  --font-display: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -37,6 +45,12 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-gold: var(--olympia-gold);
+  --color-silver: var(--olympia-silver);
+  --color-bronze: var(--olympia-bronze);
+  --color-success: var(--olympia-success);
+  --color-warning: var(--olympia-warning);
+  --color-error: var(--olympia-error);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -47,72 +61,120 @@
 }
 
 :root {
+  /* Olympia 2026 Color Palette (Spec §2) */
+  --color-primary: #1A3A5C;
+  --color-secondary: #2E6DA4;
+  --color-accent: #C9A84C;
+  --color-bg: #FFFFFF;
+  --color-bg-dark: #0F1E2E;
+  --color-surface: #F4F7FA;
+  --color-surface-dark: #1C2D3E;
+  --color-text: #1A1A1A;
+  --color-text-dark: #E8EFF6;
+  --color-border: #D1DCE8;
+
+  /* Medal Colors */
+  --olympia-gold: #FFD700;
+  --olympia-silver: #C0C0C0;
+  --olympia-bronze: #CD7F32;
+
+  /* Status Colors */
+  --olympia-error: #B22222;
+  --olympia-success: #1A7A4A;
+  --olympia-warning: #C96A00;
+
+  /* Fonts (Spec §2 Typography) */
+  --font-display: 'Oswald', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+
+  /* Typography Scale (Spec §2) */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 48px;
+
+  /* 8px Spacing Grid (Spec §2) */
+  --space-0-5: 4px;
+  --space-1: 8px;
+  --space-1-5: 12px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+
+  /* Shadcn/UI Mappings → Olympia Tokens */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #FFFFFF;
+  --foreground: #1A1A1A;
+  --card: #F4F7FA;
+  --card-foreground: #1A1A1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+  --primary: #1A3A5C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #2E6DA4;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F4F7FA;
+  --muted-foreground: #5A6B7D;
+  --accent: #C9A84C;
+  --accent-foreground: #1A1A1A;
+  --destructive: #B22222;
+  --border: #D1DCE8;
+  --input: #D1DCE8;
+  --ring: #2E6DA4;
+  --chart-1: #1A3A5C;
+  --chart-2: #2E6DA4;
+  --chart-3: #C9A84C;
+  --chart-4: #1A7A4A;
+  --chart-5: #C96A00;
+  --sidebar: #1A3A5C;
+  --sidebar-foreground: #E8EFF6;
+  --sidebar-primary: #2E6DA4;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #C9A84C;
+  --sidebar-accent-foreground: #1A1A1A;
+  --sidebar-border: rgba(255, 255, 255, 0.15);
+  --sidebar-ring: #2E6DA4;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0F1E2E;
+  --foreground: #E8EFF6;
+  --card: #1C2D3E;
+  --card-foreground: #E8EFF6;
+  --popover: #1C2D3E;
+  --popover-foreground: #E8EFF6;
+  --primary: #E8EFF6;
+  --primary-foreground: #1A3A5C;
+  --secondary: #2E6DA4;
+  --secondary-foreground: #FFFFFF;
+  --muted: #1C2D3E;
+  --muted-foreground: #8FA3B8;
+  --accent: #C9A84C;
+  --accent-foreground: #0F1E2E;
+  --destructive: #E04040;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #C9A84C;
+  --chart-1: #2E6DA4;
+  --chart-2: #C9A84C;
+  --chart-3: #1A7A4A;
+  --chart-4: #C96A00;
+  --chart-5: #E04040;
+  --sidebar: #0F1E2E;
+  --sidebar-foreground: #E8EFF6;
+  --sidebar-primary: #2E6DA4;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1C2D3E;
+  --sidebar-accent-foreground: #E8EFF6;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #C9A84C;
 }
 
 @layer base {

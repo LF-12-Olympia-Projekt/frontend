@@ -7,6 +7,7 @@ import type {
   AthleteDetail,
   MedalListResponse,
   CountryMedalDetail,
+  CountryInfo,
   SportInfo,
   SportDetail,
 } from "@/types/api"
@@ -89,4 +90,46 @@ export async function getSportResults(slug: string, params?: {
   if (params?.pageSize) searchParams.set("pageSize", String(params.pageSize))
   const qs = searchParams.toString()
   return fetchApi<PaginatedResponse<ResultListItem>>(`/api/sports/by-slug/${slug}/results${qs ? `?${qs}` : ""}`)
+}
+
+export async function getCountries(): Promise<CountryInfo[]> {
+  return fetchApi<CountryInfo[]>("/api/countries")
+}
+
+export interface SportEventItem {
+  id: string
+  title: string
+  date: string
+  time: string
+  location: string
+  status: number
+  sport: SportDetail
+}
+
+export async function getSportEvents(sportId: string): Promise<SportEventItem[]> {
+  return fetchApi<SportEventItem[]>(`/api/sports/${sportId}/events`)
+}
+
+export async function getSportById(id: string): Promise<SportDetail> {
+  return fetchApi<SportDetail>(`/api/sports/${id}`)
+}
+
+export interface AthleteSearchItem {
+  id: string
+  name: string
+  countryCode: string
+  age: number | null
+}
+
+export async function searchAthletes(params?: {
+  search?: string
+  country?: string
+  limit?: number
+}): Promise<{ data: AthleteSearchItem[]; total: number }> {
+  const searchParams = new URLSearchParams()
+  if (params?.search) searchParams.set("search", params.search)
+  if (params?.country) searchParams.set("country", params.country)
+  if (params?.limit) searchParams.set("limit", String(params.limit))
+  const qs = searchParams.toString()
+  return fetchApi<{ data: AthleteSearchItem[]; total: number }>(`/api/athletes${qs ? `?${qs}` : ""}`)
 }

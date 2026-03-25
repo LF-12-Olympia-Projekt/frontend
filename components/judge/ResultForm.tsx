@@ -1,4 +1,4 @@
-// components/judge/ResultForm.tsx | Task: FE-003 | Dynamic result creation/edit form
+// components/judge/ResultForm.tsx | Dynamic result creation/edit form
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Combobox, type ComboboxOption } from "@/components/ui/combobox"
 import { Save, Loader2 } from "lucide-react"
+import { getSports, getSportEvents, searchAthletes, type SportEventItem, type AthleteSearchItem } from "@/lib/api/results"
+import type { SportInfo } from "@/types/api"
 import type { CreateResultRequest } from "@/types/judge"
 
 interface ResultFormProps {
@@ -46,6 +49,58 @@ export function ResultForm({
   )
   const [saving, setSaving] = useState(false)
   const [autoSaved, setAutoSaved] = useState(false)
+
+  // Sport & Event selection
+  const [sports, setSports] = useState<SportInfo[]>([])
+  const [selectedSportId, setSelectedSportId] = useState("")
+  const [events, setEvents] = useState<SportEventItem[]>([])
+  const [loadingSports, setLoadingSports] = useState(true)
+  const [loadingEvents, setLoadingEvents] = useState(false)
+
+  // Athlete selection
+  const [athletes, setAthletes] = useState<AthleteSearchItem[]>([])
+  const [loadingAthletes, setLoadingAthletes] = useState(true)
+
+  useEffect(() => {
+    getSports()
+      .then(setSports)
+      .catch(() => {})
+      .finally(() => setLoadingSports(false))
+    searchAthletes({ limit: 100 })
+      .then((res) => setAthletes(res.data))
+      .catch(() => {})
+      .finally(() => setLoadingAthletes(false))
+  }, [])
+
+  useEffect(() => {
+    if (!selectedSportId) {
+      setEvents([])
+      return
+    }
+    setLoadingEvents(true)
+    getSportEvents(selectedSportId)
+      .then(setEvents)
+      .catch(() => setEvents([]))
+      .finally(() => setLoadingEvents(false))
+  }, [selectedSportId])
+
+  const sportOptions: ComboboxOption[] = sports.map((s) => ({
+    value: s.id,
+    label: s.name,
+    sublabel: `${s.events} events`,
+  }))
+
+  const eventOptions: ComboboxOption[] = events.map((e) => ({
+    value: e.id,
+    label: e.title,
+    sublabel: `${e.location} — ${e.date}`,
+  }))
+
+  const athleteOptions: ComboboxOption[] = athletes.map((a) => ({
+    value: a.id,
+    label: a.name,
+    sublabel: a.countryCode + (a.age ? ` · ${a.age} years` : ""),
+  }))
 
   const getData = useCallback((): CreateResultRequest => ({
     eventId,
@@ -92,27 +147,49 @@ export function ResultForm({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Sport selector → Event selector */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="eventId">{labels.selectEvent ?? "Event ID"} *</Label>
-              <Input
-                id="eventId"
-                value={eventId}
-                onChange={(e) => setEventId(e.target.value)}
-                placeholder={labels.selectEvent ?? "Enter Event ID"}
-                required
+              <Label>{labels.selectSport ?? "Sport"} *</Label>
+              <Combobox
+                options={sportOptions}
+                value={selectedSportId}
+                onChange={(v) => {
+                  setSelectedSportId(v)
+                  setEventId("")
+                }}
+                placeholder={labels.selectSport ?? "Sport auswählen..."}
+                searchPlaceholder="Suchen..."
+                loading={loadingSports}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="athleteId">{labels.selectAthlete ?? "Athlete ID"} *</Label>
-              <Input
-                id="athleteId"
-                value={athleteId}
-                onChange={(e) => setAthleteId(e.target.value)}
-                placeholder={labels.selectAthlete ?? "Enter Athlete ID"}
-                required
+              <Label>{labels.selectEvent ?? "Event"} *</Label>
+              <Combobox
+                options={eventOptions}
+                value={eventId}
+                onChange={setEventId}
+                placeholder={labels.selectEvent ?? "Wettbewerb auswählen..."}
+                searchPlaceholder="Suchen..."
+                loading={loadingEvents}
+                disabled={!selectedSportId}
+                emptyText={selectedSportId ? "Keine Wettbewerbe" : "Zuerst Sport wählen"}
               />
             </div>
+          </div>
+
+          {/* Athlete selector */}
+          <div className="space-y-2">
+            <Label>{labels.selectAthlete ?? "Athlet"} *</Label>
+            <Combobox
+              options={athleteOptions}
+              value={athleteId}
+              onChange={setAthleteId}
+              placeholder={labels.selectAthlete ?? "Athlet auswählen..."}
+              searchPlaceholder="Name suchen..."
+              loading={loadingAthletes}
+              emptyText="Keine Athleten gefunden"
+            />
           </div>
         </CardContent>
       </Card>

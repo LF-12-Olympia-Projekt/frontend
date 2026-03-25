@@ -4,41 +4,35 @@ import { PageWrapper } from "@/components/page-wrapper"
 import { useTranslation } from "@/lib/locale-context"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, Loader2 } from "lucide-react"
 import { SportsStatsCards } from "@/components/sports-stats-cards"
 import { AllSportsGrid } from "@/components/all-sports-grid"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { getSports } from "@/lib/api/results"
+import type { SportInfo } from "@/types/api"
 
 export default function SportsPage() {
   const { dictionary, locale } = useTranslation()
   const t = dictionary.sports || {}
   const tOverview = t.overview || {}
-  const tItems = t.items || {}
   const tCommon = dictionary.common || {}
 
   const [searchQuery, setSearchQuery] = useState("")
+  const [allSports, setAllSports] = useState<SportInfo[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Mock data for all 15 winter sports
-  const allSports = [
-    { id: "biathlon", name: tItems.biathlon || "Biathlon", events: 11, medals: 33 },
-    { id: "bobsled", name: tItems.bobsled || "Bobsport", events: 4, medals: 12 },
-    { id: "crossCountrySkiing", name: tItems.crossCountrySkiing || "Skilanglauf", events: 12, medals: 36 },
-    { id: "curling", name: tItems.curling || "Curling", events: 3, medals: 9 },
-    { id: "figureSkating", name: tItems.figureSkating || "Eiskunstlauf", events: 5, medals: 15 },
-    { id: "iceHockey", name: tItems.iceHockey || "Eishockey", events: 2, medals: 6 },
-    { id: "luge", name: tItems.luge || "Rennrodeln", events: 4, medals: 12 },
-    { id: "nordicCombined", name: tItems.nordicCombined || "Nordische Kombination", events: 3, medals: 9 },
-    { id: "shortTrack", name: tItems.shortTrack || "Shorttrack", events: 9, medals: 27 },
-    { id: "skeleton", name: tItems.skeleton || "Skeleton", events: 2, medals: 6 },
-    { id: "alpineSkiing", name: tItems.alpineSkiing || "Alpiner Skisport", events: 11, medals: 33 },
-    { id: "skiJumping", name: tItems.skiJumping || "Skispringen", events: 4, medals: 12 },
-    { id: "freestyle", name: tItems.freestyle || "Freestyle-Skiing", events: 13, medals: 39 },
-    { id: "snowboard", name: tItems.snowboard || "Snowboard", events: 11, medals: 33 },
-    { id: "speedSkating", name: tItems.speedSkating || "Eisschnelllauf", events: 14, medals: 42 },
-  ]
+  useEffect(() => {
+    getSports()
+      .then(setAllSports)
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
-  const filteredSports = allSports.filter((sport) =>
-    sport.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredSports = useMemo(() =>
+    allSports.filter((sport) =>
+      sport.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+    [allSports, searchQuery]
   )
 
   const totalEvents = allSports.reduce((sum, sport) => sum + sport.events, 0)
@@ -67,11 +61,10 @@ export default function SportsPage() {
               {tOverview.title || "Sportarten"}
             </h1>
             <p className="mt-2 text-muted-foreground">
-              {tOverview.subtitle || "Alle 15 olympischen Wintersportarten"}
+              {tOverview.subtitle || "Alle olympischen Wintersportarten"}
             </p>
           </div>
 
-          {/* Search */}
           <div className="relative w-full sm:w-80">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -84,38 +77,45 @@ export default function SportsPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="mb-12">
-          <SportsStatsCards
-            totalSports={15}
-            totalEvents={totalEvents}
-            totalMedals={totalMedals}
-            totalNations={93}
-            labels={{
-              sports: tOverview.totalSports || "Sportarten",
-              events: tOverview.totalEvents || "Wettbewerbe",
-              medals: tOverview.totalMedals || "Medaillen",
-              nations: tOverview.totalNations || "Nationen",
-            }}
-          />
-        </div>
-
-        {/* Sports Grid */}
-        <AllSportsGrid
-          sports={filteredSports}
-          locale={locale}
-          eventsLabel={tOverview.events || "Wettbewerbe"}
-          medalsLabel={tOverview.medals || "Medaillen"}
-        />
-
-        {/* No results */}
-        {filteredSports.length === 0 && (
-          <div className="py-12 text-center">
-            <p className="text-muted-foreground">{tCommon.noResults || "Keine Ergebnisse gefunden"}</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {tCommon.tryDifferentSearch || "Versuchen Sie einen anderen Suchbegriff"}
-            </p>
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
+        ) : (
+          <>
+            {/* Stats Cards */}
+            <div className="mb-12">
+              <SportsStatsCards
+                totalSports={allSports.length}
+                totalEvents={totalEvents}
+                totalMedals={totalMedals}
+                totalNations={0}
+                labels={{
+                  sports: tOverview.totalSports || "Sportarten",
+                  events: tOverview.totalEvents || "Wettbewerbe",
+                  medals: tOverview.totalMedals || "Medaillen",
+                  nations: tOverview.totalNations || "Nationen",
+                }}
+              />
+            </div>
+
+            {/* Sports Grid */}
+            <AllSportsGrid
+              sports={filteredSports}
+              locale={locale}
+              eventsLabel={tOverview.events || "Wettbewerbe"}
+              medalsLabel={tOverview.medals || "Medaillen"}
+            />
+
+            {filteredSports.length === 0 && (
+              <div className="py-12 text-center">
+                <p className="text-muted-foreground">{tCommon.noResults || "Keine Ergebnisse gefunden"}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {tCommon.tryDifferentSearch || "Versuchen Sie einen anderen Suchbegriff"}
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </PageWrapper>

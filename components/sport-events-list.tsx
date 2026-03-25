@@ -78,7 +78,7 @@ export function SportEventsList({ events, locale, statusLabels, viewResultsLabel
             {getStatusBadge(event.status)}
             {canViewResults(event.status) && (
               <Button variant="ghost" size="sm" asChild>
-                <Link href={`/${locale}/results/${event.id}`} className="flex items-center gap-1">
+                <Link href={`/${locale}/results?eventId=${event.id}`} className="flex items-center gap-1">
                   {viewResultsLabel}
                   <ChevronRight className="h-4 w-4" />
                 </Link>

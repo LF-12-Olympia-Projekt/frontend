@@ -62,3 +62,15 @@ export async function resetPassword(
         body: JSON.stringify({ token, newPassword }),
     })
 }
+
+export async function refreshToken(): Promise<LoginResponse> {
+    return apiClient<LoginResponse>("/api/auth/refresh", {
+        method: "POST",
+    })
+}
+
+export async function logoutServer(): Promise<void> {
+    await apiClient<void>("/api/auth/logout", {
+        method: "POST",
+    })
+}
