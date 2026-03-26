@@ -99,3 +99,13 @@ export interface SportDetail {
   events: number
   medals: number
 }
+
+export interface SportEventInfo {
+  id: string
+  title: string
+  date: string
+  time: string
+  location: string
+  status: number
+  sport: SportDetail
+}

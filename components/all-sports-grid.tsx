@@ -53,6 +53,42 @@ const iconMap: Record<string, { icon: React.ComponentType<any>; color: string }>
     speedSkating: { icon: Gauge, color: "bg-indigo-600/10 text-indigo-600" },
 }
 
+// Maps slug-format sport IDs (derived from API names) to iconMap keys
+const slugToIconKey: Record<string, string> = {
+    "biathlon": "biathlon",
+    "bobsled": "bobsled",
+    "bobsport": "bobsled",
+    "cross-country-skiing": "crossCountrySkiing",
+    "skilanglauf": "crossCountrySkiing",
+    "curling": "curling",
+    "figure-skating": "figureSkating",
+    "eiskunstlauf": "figureSkating",
+    "ice-hockey": "iceHockey",
+    "eishockey": "iceHockey",
+    "luge": "luge",
+    "rennrodeln": "luge",
+    "nordic-combined": "nordicCombined",
+    "nordische-kombination": "nordicCombined",
+    "short-track": "shortTrack",
+    "short-track-speed-skating": "shortTrack",
+    "shorttrack": "shortTrack",
+    "skeleton": "skeleton",
+    "alpine-skiing": "alpineSkiing",
+    "alpiner-skisport": "alpineSkiing",
+    "ski-jumping": "skiJumping",
+    "skispringen": "skiJumping",
+    "freestyle": "freestyle",
+    "freestyle-skiing": "freestyle",
+    "snowboard": "snowboard",
+    "speed-skating": "speedSkating",
+    "eisschnelllauf": "speedSkating",
+}
+
+function getIconForSport(sportId: string) {
+    const key = slugToIconKey[sportId] || sportId
+    return iconMap[key] ?? iconMap.biathlon
+}
+
 export function AllSportsGrid({
                                   sports,
                                   locale,
@@ -62,7 +98,7 @@ export function AllSportsGrid({
     return (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {sports.map((sport) => {
-                const iconConfig = iconMap[sport.id] ?? iconMap.biathlon
+                const iconConfig = getIconForSport(sport.id)
                 const IconComponent = iconConfig.icon
 
                 return (

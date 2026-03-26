@@ -1,12 +1,15 @@
 "use client"
 
+import { useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Star, ChevronRight } from "lucide-react"
+import type { ResultListItem } from "@/types/api"
 
 interface TopAthletesSidebarProps {
   countryCode: string
+  results: ResultListItem[]
 }
 
 interface Athlete {
@@ -17,48 +20,37 @@ interface Athlete {
   bronze: number
 }
 
-export function TopAthletesSidebar({ countryCode }: TopAthletesSidebarProps) {
+export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarProps) {
   const { dictionary } = useTranslation()
   const t = dictionary.nations || {}
 
-  // Mock data - in real app this would come from API
-  const topAthletes: Athlete[] = [
-    {
-      name: "Johannes Thingnes Bø",
-      sport: "Biathlon",
-      gold: 2,
-      silver: 1,
-      bronze: 0
-    },
-    {
-      name: "Hans Christer Holund",
-      sport: "Skilanglauf",
-      gold: 2,
-      silver: 0,
-      bronze: 1
-    },
-    {
-      name: "Halvor Egner Granerud",
-      sport: "Skispringen",
-      gold: 2,
-      silver: 1,
-      bronze: 0
-    },
-    {
-      name: "Marius Lindvik",
-      sport: "Skispringen",
-      gold: 1,
-      silver: 1,
-      bronze: 1
-    },
-    {
-      name: "Simen Hegstad Krüger",
-      sport: "Skilanglauf",
-      gold: 1,
-      silver: 0,
-      bronze: 2
-    }
-  ]
+  const topAthletes = useMemo(() => {
+    const athleteMap = new Map<string, Athlete>()
+    results.forEach((r) => {
+      if (!r.athleteName || !["gold", "silver", "bronze"].includes(r.medal)) return
+      const existing = athleteMap.get(r.athleteName)
+      if (existing) {
+        if (r.medal === "gold") existing.gold++
+        else if (r.medal === "silver") existing.silver++
+        else if (r.medal === "bronze") existing.bronze++
+      } else {
+        athleteMap.set(r.athleteName, {
+          name: r.athleteName,
+          sport: r.sportName || "",
+          gold: r.medal === "gold" ? 1 : 0,
+          silver: r.medal === "silver" ? 1 : 0,
+          bronze: r.medal === "bronze" ? 1 : 0,
+        })
+      }
+    })
+    return Array.from(athleteMap.values())
+      .sort((a, b) => {
+        const totalA = a.gold * 3 + a.silver * 2 + a.bronze
+        const totalB = b.gold * 3 + b.silver * 2 + b.bronze
+        return totalB - totalA
+      })
+      .slice(0, 5)
+  }, [results])
 
   return (
     <Card className="border-0 shadow-lg">

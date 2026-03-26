@@ -71,7 +71,7 @@ export function SportsGrid() {
             {sports.map((sport) => {
               const { icon: Icon, color } = getIconConfig(sport.name)
               return (
-                <Link key={sport.id} href={`/${locale}/sports/${sport.id}`}>
+                <Link key={sport.id} href={`/${locale}/sports/${sport.name.toLowerCase().replace(/ /g, "-")}`}>
                   <Card
                     className="group cursor-pointer border-0 bg-card shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                   >

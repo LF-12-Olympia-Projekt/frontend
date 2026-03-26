@@ -6,7 +6,6 @@ import { HeroSection } from "@/components/hero-section";
 import { SportsGrid } from "@/components/sports-grid";
 import { LiveResults } from "@/components/live-results";
 import { MedalTable } from "@/components/medal-table";
-import { HighlightsSection } from "@/components/highlights-section";
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
         <SportsGrid />
         <LiveResults />
         <MedalTable />
-        <HighlightsSection />
       </ScrollSections>
     </div>
   );

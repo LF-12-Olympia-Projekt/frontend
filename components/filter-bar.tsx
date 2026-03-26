@@ -1,7 +1,7 @@
 // components/filter-bar.tsx | Task: FE-002 | Filter bar for results with URL search params
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
@@ -32,27 +32,35 @@ export function FilterBar({
   const t = dictionary?.resultsPage || {}
 
   const [search, setSearch] = useState(searchParams.get("q") || "")
+  const isInitialMount = useRef(true)
 
-  const updateParams = useCallback(
-    (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (value) {
-        params.set(key, value)
-      } else {
-        params.delete(key)
-      }
-      params.delete("page")
-      router.push(`/${locale}${basePath}?${params.toString()}`)
-    },
-    [router, searchParams, locale, basePath]
-  )
+  // Stable ref for current searchParams to avoid dependency loops
+  const searchParamsRef = useRef(searchParams)
+  searchParamsRef.current = searchParams
 
+  const pushParams = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParamsRef.current.toString())
+    if (value) {
+      params.set(key, value)
+    } else {
+      params.delete(key)
+    }
+    params.delete("page")
+    router.push(`/${locale}${basePath}?${params.toString()}`)
+  }
+
+  // Debounced search — only fires after user types, not on mount
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
     const timer = setTimeout(() => {
-      updateParams("q", search)
-    }, 300)
+      pushParams("q", search)
+    }, 400)
     return () => clearTimeout(timer)
-  }, [search, updateParams])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search])
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -70,7 +78,7 @@ export function FilterBar({
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"
           value={searchParams.get("sport") || ""}
-          onChange={(e) => updateParams("sport", e.target.value)}
+          onChange={(e) => pushParams("sport", e.target.value)}
         >
           <option value="">{t.allSports || "All Sports"}</option>
           {sports.map((s) => (
@@ -85,7 +93,7 @@ export function FilterBar({
         <select
           className="rounded-md border bg-background px-3 py-2 text-sm"
           value={searchParams.get("country") || ""}
-          onChange={(e) => updateParams("country", e.target.value)}
+          onChange={(e) => pushParams("country", e.target.value)}
         >
           <option value="">{t.allCountries || "All Countries"}</option>
           {countries.map((c) => (
@@ -100,7 +108,7 @@ export function FilterBar({
         <Input
           type="date"
           value={searchParams.get("date") || ""}
-          onChange={(e) => updateParams("date", e.target.value)}
+          onChange={(e) => pushParams("date", e.target.value)}
           className="w-auto"
         />
       )}

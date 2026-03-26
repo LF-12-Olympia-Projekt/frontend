@@ -1,6 +1,6 @@
 "use client"
 
-import { use } from "react"
+import { use, useState, useEffect } from "react"
 import { PageWrapper } from "@/components/page-wrapper"
 import { useTranslation } from "@/lib/locale-context"
 import { CountryHero } from "@/components/country-hero"
@@ -9,7 +9,9 @@ import { CountryResultsTable } from "@/components/country-results-table"
 import { TopAthletesSidebar } from "@/components/top-athletes-sidebar"
 import { MedalTimelineSidebar } from "@/components/medal-timeline-sidebar"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Loader2 } from "lucide-react"
+import { getCountryMedals } from "@/lib/api/results"
+import type { CountryMedalDetail } from "@/types/api"
 
 interface PageProps {
   params: Promise<{
@@ -26,15 +28,36 @@ export default function NationPage({ params }: PageProps) {
   // Unwrap params Promise
   const { countryCode } = use(params)
 
-  // Mock country data - in real app this would come from API
-  const countryData = {
-    code: countryCode.toUpperCase(),
-    name: countryCode === "no" ? "Norwegen" : "Norway",
-    gold: 16,
-    silver: 8,
-    bronze: 13,
-    total: 37
+  const [data, setData] = useState<CountryMedalDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getCountryMedals(countryCode.toUpperCase())
+      .then((d) => setData(d))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [countryCode])
+
+  if (loading) {
+    return (
+      <PageWrapper>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </PageWrapper>
+    )
   }
+
+  const countryData = {
+    code: data?.country?.countryCode || countryCode.toUpperCase(),
+    name: data?.country?.name || countryCode.toUpperCase(),
+    gold: data?.medals?.gold ?? 0,
+    silver: data?.medals?.silver ?? 0,
+    bronze: data?.medals?.bronze ?? 0,
+    total: (data?.medals?.gold ?? 0) + (data?.medals?.silver ?? 0) + (data?.medals?.bronze ?? 0),
+  }
+
+  const results = data?.results ?? []
 
   return (
     <PageWrapper>
@@ -90,8 +113,8 @@ export default function NationPage({ params }: PageProps) {
 
               {/* Right Column - Sidebar */}
               <div className="space-y-6">
-                <TopAthletesSidebar countryCode={countryData.code} />
-                <MedalTimelineSidebar countryCode={countryData.code} />
+                <TopAthletesSidebar countryCode={countryData.code} results={results} />
+                <MedalTimelineSidebar countryCode={countryData.code} results={results} />
               </div>
             </div>
           </div>
