@@ -21,7 +21,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
   role: UserRole
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<authApi.LoginResponse | void>
   loginWithToken: (token: string) => void
   logout: () => void
   getToken: () => string | null
@@ -51,9 +51,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading] = useState(false)
 
   const login = useCallback(async (email: string, password: string) => {
-    const { token } = await authApi.login(email, password)
-    const { username, role } = parseJwtPayload(token)
-    setUser({ token, username, role })
+    const response = await authApi.login(email, password)
+    if (!response.token) {
+      return response
+    }
+    const { username, role } = parseJwtPayload(response.token)
+    setUser({ token: response.token, username, role })
+    return response
   }, [])
 
   const loginWithToken = useCallback((token: string) => {

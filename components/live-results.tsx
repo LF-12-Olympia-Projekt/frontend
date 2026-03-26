@@ -1,40 +1,43 @@
 ﻿"use client"
 
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Radio, ArrowRight } from "lucide-react"
+import { Radio, ArrowRight, Loader2 } from "lucide-react"
 import { useTranslation } from "@/lib/locale-context"
+import { getResults } from "@/lib/api/results"
+import type { ResultListItem } from "@/types/api"
 
-type ResultStatus = "live" | "final" | "corrected"
-
-interface Result {
-  rank: number
-  athlete: string
-  country: string
-  countryCode: string
-  result: string
-  status: ResultStatus
-  medal?: "gold" | "silver" | "bronze"
-}
-
-const mockResults: Result[] = [
-  { rank: 1, athlete: "Johannes Thingnes Bø", country: "Norwegen", countryCode: "NOR", result: "23:45.2", status: "final", medal: "gold" },
-  { rank: 2, athlete: "Quentin Fillon Maillet", country: "Frankreich", countryCode: "FRA", result: "23:52.8", status: "final", medal: "silver" },
-  { rank: 3, athlete: "Tarjei Bø", country: "Norwegen", countryCode: "NOR", result: "24:01.3", status: "corrected", medal: "bronze" },
-  { rank: 4, athlete: "Sebastian Samuelsson", country: "Schweden", countryCode: "SWE", result: "24:15.7", status: "live" },
-  { rank: 5, athlete: "Emilien Jacquelin", country: "Frankreich", countryCode: "FRA", result: "24:22.1", status: "live" },
-]
-
-const medalColors = {
+const medalColors: Record<string, string> = {
   gold: "bg-yellow-400 text-foreground",
   silver: "bg-slate-300 text-foreground",
   bronze: "bg-amber-600 text-white",
 }
 
+function normalizeMedal(medal: string | null | undefined): "gold" | "silver" | "bronze" | null {
+  if (!medal) return null
+  const lower = medal.toLowerCase()
+  if (lower === "gold" || lower === "1") return "gold"
+  if (lower === "silver" || lower === "2") return "silver"
+  if (lower === "bronze" || lower === "3") return "bronze"
+  return null
+}
+
 export function LiveResults() {
-  const { dictionary } = useTranslation()
+  const { dictionary, locale } = useTranslation()
+  const router = useRouter()
+  const [results, setResults] = useState<ResultListItem[]>([])
+  const [loading, setLoading] = useState(true)
   const t = dictionary.liveResults || { status: {} }
+
+  useEffect(() => {
+    getResults({ pageSize: 5 })
+      .then((res) => setResults(res.data))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   const statusConfig = {
     live: {
@@ -86,53 +89,70 @@ export function LiveResults() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockResults.map((result, index) => (
-                    <tr
-                      key={result.athlete}
-                      className={`border-b transition-colors last:border-0 hover:bg-muted/50 ${
-                        index < 3 ? "bg-muted/30" : ""
-                      }`}
-                    >
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-lg font-bold">{result.rank}</span>
-                      </td>
-                      <td className="px-4 py-4">
-                        <span className="font-medium">{result.athlete}</span>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-semibold">
-                            {result.countryCode}
-                          </span>
-                          <span className="hidden text-sm text-muted-foreground sm:inline">
-                            {result.country}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-right font-mono text-sm font-semibold">
-                        {result.result}
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        {result.medal && (
-                          <Badge className={medalColors[result.medal]}>
-                            {result.medal === "gold" && "🥇"}
-                            {result.medal === "silver" && "🥈"}
-                            {result.medal === "bronze" && "🥉"}
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <Badge className={statusConfig[result.status].className}>
-                          {statusConfig[result.status].label}
-                        </Badge>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center">
+                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-muted-foreground" />
                       </td>
                     </tr>
-                  ))}
+                  ) : results.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center text-muted-foreground">
+                        {dictionary.common?.noResults || "No results available"}
+                      </td>
+                    </tr>
+                  ) : (
+                    results.map((result, index) => {
+                      const medal = normalizeMedal(result.medal)
+                      return (
+                        <tr
+                          key={result.id}
+                          className={`border-b transition-colors last:border-0 hover:bg-muted/50 ${
+                            index < 3 ? "bg-muted/30" : ""
+                          }`}
+                        >
+                          <td className="px-4 py-4 text-center">
+                            <span className="text-lg font-bold">{result.rank ?? index + 1}</span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="font-medium">{result.athleteName}</span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <div className="flex items-center gap-2">
+                              <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-semibold">
+                                {result.countryCode}
+                              </span>
+                              <span className="hidden text-sm text-muted-foreground sm:inline">
+                                {result.sportName}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-sm font-semibold">
+                            {result.value} {result.unit}
+                          </td>
+                          <td className="px-4 py-4 text-center">
+                            {medal && (
+                              <Badge className={medalColors[medal]}>
+                                {medal === "gold" && "🥇"}
+                                {medal === "silver" && "🥈"}
+                                {medal === "bronze" && "🥉"}
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="px-4 py-4 text-center">
+                            <Badge className={statusConfig.final.className}>
+                              {statusConfig.final.label}
+                            </Badge>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
             <div className="border-t p-4">
-              <Button variant="outline" className="w-full sm:w-auto bg-transparent">
+              <Button variant="outline" className="w-full sm:w-auto bg-transparent" onClick={() => router.push(`/${locale}/results`)}>
                 {t.viewAll}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

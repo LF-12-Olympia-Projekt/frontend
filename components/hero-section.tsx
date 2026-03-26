@@ -1,16 +1,43 @@
 ﻿"use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import { useTranslation } from "@/lib/locale-context"
+import { getSports, getMedalStandings } from "@/lib/api/results"
 
 export function HeroSection() {
-  const { dictionary } = useTranslation()
+  const { dictionary, locale } = useTranslation()
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
+  const [stats, setStats] = useState({ events: 0, nations: 0, medals: 0 })
   const t = dictionary.hero || {}
   const common = dictionary.common || {}
+
+  useEffect(() => {
+    Promise.all([getSports(), getMedalStandings({ limit: 100 })])
+      .then(([sports, medalData]) => {
+        const totalEvents = sports.reduce((sum, s) => sum + s.events, 0)
+        const totalMedals = medalData.data.reduce(
+          (sum, s) => sum + s.gold + s.silver + s.bronze,
+          0
+        )
+        setStats({
+          events: totalEvents,
+          nations: medalData.total,
+          medals: totalMedals,
+        })
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/${locale}/results?q=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-16 sm:px-6 lg:px-8">
@@ -42,6 +69,7 @@ export function HeroSection() {
               placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className="h-14 rounded-full pl-12 pr-4 text-base shadow-lg transition-shadow focus:shadow-xl"
             />
           </div>
@@ -52,6 +80,7 @@ export function HeroSection() {
           <Button
             size="lg"
             className="h-12 rounded-full bg-sky-600 px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-sky-600/90 hover:shadow-xl"
+            onClick={() => router.push(`/${locale}/results`)}
           >
             {t.cta}
           </Button>
@@ -60,17 +89,17 @@ export function HeroSection() {
         {/* Quick Stats */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground sm:gap-10">
           <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-foreground">109</span>
+            <span className="text-2xl font-bold text-foreground">{stats.events || "–"}</span>
             <span>{common.events}</span>
           </div>
           <div className="h-8 w-px bg-border" />
           <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-foreground">91</span>
+            <span className="text-2xl font-bold text-foreground">{stats.nations || "–"}</span>
             <span>{common.nations}</span>
           </div>
           <div className="h-8 w-px bg-border" />
           <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold text-foreground">327</span>
+            <span className="text-2xl font-bold text-foreground">{stats.medals || "–"}</span>
             <span>{common.medals}</span>
           </div>
         </div>
