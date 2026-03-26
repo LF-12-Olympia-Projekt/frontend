@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/locale-context"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { ChevronRight } from "lucide-react"
 import { NationsGrid } from "@/components/nations-grid"
+import GradientHero from "@/components/GradientHero";
 
 export default function NationsOverviewPage() {
   const { dictionary } = useTranslation()
@@ -33,17 +34,9 @@ export default function NationsOverviewPage() {
           </div>
         </div>
 
-        {/* Hero Section */}
-        <div className="border-b bg-gradient-to-b from-muted/50 to-background px-4 py-12 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl text-center">
-            <h1 className="mb-3 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              {t.title}
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              {t.subtitle}
-            </p>
-          </div>
-        </div>
+{/* Hero Section */}
+
+<GradientHero title={t.title} subtitle={t.subtitle} />
 
         {/* Nations Grid */}
         <div className="px-4 py-12 sm:px-6 lg:px-8">

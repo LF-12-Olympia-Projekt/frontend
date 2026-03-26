@@ -52,7 +52,11 @@ export function Header() {
                     <ModeToggle />
                     {/* Login Button */}
                     <Link href={`/${locale}/login`}>
-                        <Button variant="outline" size="sm" className="hidden sm:flex bg-transparent">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="hidden sm:flex h-9 bg-transparent"
+                        >
                             <User className="mr-1.5 h-4 w-4" />
                             {dictionary.common?.login}
                         </Button>
