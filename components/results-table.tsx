@@ -2,6 +2,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import { MedalBadge } from "@/components/medal-badge"
 import { CountryFlag } from "@/components/country-flag"
 import { LastModified } from "@/components/last-modified"
@@ -35,6 +36,18 @@ export function ResultsTable({
 }: ResultsTableProps) {
   const t = dictionary?.resultsPage || {}
   const totalPages = Math.ceil(total / pageSize)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const handlePageChange = (newPage: number) => {
+    if (onPageChange) {
+      onPageChange(newPage)
+    } else {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set("page", String(newPage))
+      router.push(`?${params.toString()}`)
+    }
+  }
 
   if (loading) {
     return (
@@ -123,7 +136,7 @@ export function ResultsTable({
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => onPageChange?.(page - 1)}
+              onClick={() => handlePageChange(page - 1)}
               className="bg-transparent"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -132,7 +145,7 @@ export function ResultsTable({
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => onPageChange?.(page + 1)}
+              onClick={() => handlePageChange(page + 1)}
               className="bg-transparent"
             >
               <ChevronRight className="h-4 w-4" />

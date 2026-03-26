@@ -1,14 +1,16 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Trophy, Search, Filter, ArrowUpDown, ChevronDown } from "lucide-react"
+import { Trophy, Search, Filter, ArrowUpDown, ChevronDown, Loader2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { getResults } from "@/lib/api/results"
+import type { ResultListItem } from "@/types/api"
 
 interface CountryResultsTableProps {
   countryCode: string
@@ -19,7 +21,7 @@ interface Result {
   discipline: string
   athlete: string
   result: string
-  medal: "gold" | "silver" | "bronze"
+  medal: "gold" | "silver" | "bronze" | "none"
   status: "final"
   date: string
 }
@@ -33,82 +35,26 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
   const [selectedSport, setSelectedSport] = useState<string>("all")
   const [selectedMedal, setSelectedMedal] = useState<string>("all")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [results, setResults] = useState<Result[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Mock data - in real app this would come from API
-  const results: Result[] = [
-    {
-      sport: "Biathlon",
-      discipline: "10km Sprint Herren",
-      athlete: "Johannes Thingnes Bø",
-      result: "23:44.3",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-07"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "15km klassisch",
-      athlete: "Hans Christer Holund",
-      result: "33:48.2",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-08"
-    },
-    {
-      sport: "Skispringen",
-      discipline: "Normalschanze Einzel",
-      athlete: "Halvor Egner Granerud",
-      result: "291.3 Punkte",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-07"
-    },
-    {
-      sport: "Biathlon",
-      discipline: "12.5km Verfolgung",
-      athlete: "Johannes Thingnes Bø",
-      result: "31:15.6",
-      medal: "silver",
-      status: "final",
-      date: "2026-02-09"
-    },
-    {
-      sport: "Skispringen",
-      discipline: "Großschanze Einzel",
-      athlete: "Marius Lindvik",
-      result: "285.7 Punkte",
-      medal: "bronze",
-      status: "final",
-      date: "2026-02-15"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "50km Massenstart",
-      athlete: "Simen Hegstad Krüger",
-      result: "1:59:26.5",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-23"
-    },
-    {
-      sport: "Biathlon",
-      discipline: "4x7.5km Staffel",
-      athlete: "Norwegen",
-      result: "1:15:23.1",
-      medal: "gold",
-      status: "final",
-      date: "2026-02-18"
-    },
-    {
-      sport: "Skilanglauf",
-      discipline: "4x10km Staffel",
-      athlete: "Norwegen",
-      result: "1:32:08.9",
-      medal: "bronze",
-      status: "final",
-      date: "2026-02-16"
-    }
-  ]
+  useEffect(() => {
+    getResults({ country: countryCode, pageSize: 100 })
+      .then((res) => {
+        const mapped: Result[] = res.data.map((r) => ({
+          sport: r.sportName,
+          discipline: r.eventName,
+          athlete: r.athleteName,
+          result: r.value ? (r.unit ? `${r.value} ${r.unit}` : r.value) : "",
+          medal: (["gold", "silver", "bronze"].includes(r.medal) ? r.medal : "none") as Result["medal"],
+          status: "final" as const,
+          date: r.lastModifiedAt || "",
+        }))
+        setResults(mapped)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [countryCode])
 
   // Get unique sports for filter dropdown
   const uniqueSports = useMemo(() => {
@@ -150,6 +96,8 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
   }, [results, searchQuery, selectedSport, selectedMedal, sortOrder])
 
   const getMedalBadge = (medal: string) => {
+    if (medal === "none") return <span className="text-sm text-muted-foreground">—</span>
+
     const styles = {
       gold: "bg-yellow-400/20 text-yellow-400 border-yellow-400/30",
       silver: "bg-gray-400/20 text-gray-300 border-gray-400/30",
@@ -166,6 +114,16 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
       <Badge className={`${styles[medal as keyof typeof styles]} border`}>
         {labels[medal as keyof typeof labels]}
       </Badge>
+    )
+  }
+
+  if (loading) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardContent className="flex min-h-[200px] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
     )
   }
 

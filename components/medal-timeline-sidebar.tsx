@@ -1,12 +1,15 @@
 "use client"
 
+import { useMemo } from "react"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar } from "lucide-react"
+import type { ResultListItem } from "@/types/api"
 
 interface MedalTimelineSidebarProps {
   countryCode: string
+  results: ResultListItem[]
 }
 
 interface TimelineEvent {
@@ -15,22 +18,24 @@ interface TimelineEvent {
   medal: "gold" | "silver" | "bronze"
 }
 
-export function MedalTimelineSidebar({ countryCode }: MedalTimelineSidebarProps) {
+export function MedalTimelineSidebar({ countryCode, results }: MedalTimelineSidebarProps) {
   const { dictionary } = useTranslation()
   const t = dictionary.nations || {}
 
-  // Mock data - in real app this would come from API
-  const timelineEvents: TimelineEvent[] = [
-    { date: "07. Feb.", sport: "Biathlon", medal: "gold" },
-    { date: "07. Feb.", sport: "Skispringen", medal: "gold" },
-    { date: "08. Feb.", sport: "Skilanglauf", medal: "gold" },
-    { date: "09. Feb.", sport: "Biathlon", medal: "silver" },
-    { date: "09. Feb.", sport: "Skilanglauf", medal: "bronze" },
-    { date: "15. Feb.", sport: "Skispringen", medal: "bronze" },
-    { date: "16. Feb.", sport: "Skilanglauf", medal: "bronze" },
-    { date: "18. Feb.", sport: "Biathlon", medal: "gold" },
-    { date: "23. Feb.", sport: "Skilanglauf", medal: "gold" }
-  ]
+  const timelineEvents = useMemo(() => {
+    return results
+      .filter((r) => ["gold", "silver", "bronze"].includes(r.medal))
+      .map((r) => ({
+        date: r.lastModifiedAt
+          ? new Date(r.lastModifiedAt).toLocaleDateString("de-DE", { day: "2-digit", month: "short" })
+          : "",
+        sport: r.sportName || r.eventName || "",
+        medal: r.medal as "gold" | "silver" | "bronze",
+        sortDate: r.lastModifiedAt || "",
+      }))
+      .sort((a, b) => a.sortDate.localeCompare(b.sortDate))
+      .map(({ sortDate, ...rest }) => rest)
+  }, [results])
 
   const getMedalColor = (medal: string) => {
     switch (medal) {

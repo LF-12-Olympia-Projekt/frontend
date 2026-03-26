@@ -4,10 +4,12 @@ import { PageWrapper } from "@/components/page-wrapper"
 import { useTranslation } from "@/lib/locale-context"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, Loader2 } from "lucide-react"
 import { SportsStatsCards } from "@/components/sports-stats-cards"
 import { AllSportsGrid } from "@/components/all-sports-grid"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { getSports, getCountries } from "@/lib/api/results"
+import type { SportInfo } from "@/types/api"
 
 export default function SportsPage() {
   const { dictionary, locale } = useTranslation()
@@ -17,32 +19,43 @@ export default function SportsPage() {
   const tCommon = dictionary.common || {}
 
   const [searchQuery, setSearchQuery] = useState("")
+  const [sports, setSports] = useState<SportInfo[]>([])
+  const [totalNations, setTotalNations] = useState(0)
+  const [loading, setLoading] = useState(true)
 
-  // Mock data for all 15 winter sports
-  const allSports = [
-    { id: "biathlon", name: tItems.biathlon || "Biathlon", events: 11, medals: 33 },
-    { id: "bobsled", name: tItems.bobsled || "Bobsport", events: 4, medals: 12 },
-    { id: "crossCountrySkiing", name: tItems.crossCountrySkiing || "Skilanglauf", events: 12, medals: 36 },
-    { id: "curling", name: tItems.curling || "Curling", events: 3, medals: 9 },
-    { id: "figureSkating", name: tItems.figureSkating || "Eiskunstlauf", events: 5, medals: 15 },
-    { id: "iceHockey", name: tItems.iceHockey || "Eishockey", events: 2, medals: 6 },
-    { id: "luge", name: tItems.luge || "Rennrodeln", events: 4, medals: 12 },
-    { id: "nordicCombined", name: tItems.nordicCombined || "Nordische Kombination", events: 3, medals: 9 },
-    { id: "shortTrack", name: tItems.shortTrack || "Shorttrack", events: 9, medals: 27 },
-    { id: "skeleton", name: tItems.skeleton || "Skeleton", events: 2, medals: 6 },
-    { id: "alpineSkiing", name: tItems.alpineSkiing || "Alpiner Skisport", events: 11, medals: 33 },
-    { id: "skiJumping", name: tItems.skiJumping || "Skispringen", events: 4, medals: 12 },
-    { id: "freestyle", name: tItems.freestyle || "Freestyle-Skiing", events: 13, medals: 39 },
-    { id: "snowboard", name: tItems.snowboard || "Snowboard", events: 11, medals: 33 },
-    { id: "speedSkating", name: tItems.speedSkating || "Eisschnelllauf", events: 14, medals: 42 },
-  ]
+  useEffect(() => {
+    Promise.all([getSports(), getCountries()])
+      .then(([sportsData, countriesData]) => {
+        setSports(sportsData)
+        setTotalNations(countriesData.length)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
-  const filteredSports = allSports.filter((sport) =>
-    sport.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredSports = useMemo(() => {
+    return sports
+      .filter((s) => s.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .map((s) => ({
+        id: s.name.toLowerCase().replace(/ /g, "-"),
+        name: s.name,
+        events: s.events,
+        medals: s.medals,
+      }))
+  }, [sports, searchQuery])
 
-  const totalEvents = allSports.reduce((sum, sport) => sum + sport.events, 0)
-  const totalMedals = allSports.reduce((sum, sport) => sum + sport.medals, 0)
+  const totalEvents = sports.reduce((sum, s) => sum + s.events, 0)
+  const totalMedals = sports.reduce((sum, s) => sum + s.medals, 0)
+
+  if (loading) {
+    return (
+      <PageWrapper>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </PageWrapper>
+    )
+  }
 
   return (
     <PageWrapper>
@@ -87,10 +100,10 @@ export default function SportsPage() {
         {/* Stats Cards */}
         <div className="mb-12">
           <SportsStatsCards
-            totalSports={15}
+            totalSports={sports.length}
             totalEvents={totalEvents}
             totalMedals={totalMedals}
-            totalNations={93}
+            totalNations={totalNations}
             labels={{
               sports: tOverview.totalSports || "Sportarten",
               events: tOverview.totalEvents || "Wettbewerbe",
