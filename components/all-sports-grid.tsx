@@ -103,7 +103,7 @@ export function AllSportsGrid({
 
                 return (
                     <Link key={sport.id} href={`/${locale}/sports/${sport.id}`}>
-                        <Card className="group h-full border-0 bg-[#1a1a1a] shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        <Card className="group h-full border bg-background shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-0 dark:bg-[#1a1a1a]">
                             <CardContent className="flex flex-col gap-4 p-6">
                                 {/* Icon */}
                                 <div
