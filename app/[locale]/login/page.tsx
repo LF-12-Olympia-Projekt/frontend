@@ -95,7 +95,7 @@ export default function LoginPage() {
                 completeLogin(response.token)
             }
         } catch {
-            setError(t.invalidCredentials)
+            setError(t.invalidCredentials || "E-Mail oder Passwort ist falsch.")
         } finally {
             setIsLoading(false)
         }
