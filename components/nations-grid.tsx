@@ -8,7 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, Trophy, Medal, ArrowUpDown, Loader2 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { getMedalStandings, getCountries } from "@/lib/api/results"
 import type { MedalStanding, CountryInfo } from "@/types/api"
 
@@ -137,40 +143,38 @@ export function NationsGrid() {
             {/* Filters */}
             <div className="flex flex-wrap gap-2">
               {/* Medal Filter */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
+              <Select
+                value={filterMedals}
+                onValueChange={(value) => setFilterMedals(value as "all" | "withMedals")}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <div className="flex items-center gap-2">
                     <Medal className="h-4 w-4" />
-                    {filterMedals === "all" ? t.allCountries : t.withMedals}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setFilterMedals("all")}>
-                    {t.allCountries}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilterMedals("withMedals")}>
-                    {t.withMedals}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <SelectValue />
+                  </div>
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+                  <SelectItem value="all">{t.allCountries}</SelectItem>
+                  <SelectItem value="withMedals">{t.withMedals}</SelectItem>
+                </SelectContent>
+              </Select>
 
               {/* Sort */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
+              <Select
+                value={sortBy}
+                onValueChange={(value) => setSortBy(value as "name" | "medals")}
+              >
+                <SelectTrigger className="w-[220px]">
+                  <div className="flex items-center gap-2">
                     <ArrowUpDown className="h-4 w-4" />
-                    {t.sortBy}: {sortBy === "name" ? t.sortByName : t.sortByMedals}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setSortBy("medals")}>
-                    {t.sortByMedals}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("name")}>
-                    {t.sortByName}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <SelectValue />
+                  </div>
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+                  <SelectItem value="medals">{t.sortByMedals}</SelectItem>
+                  <SelectItem value="name">{t.sortByName}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardContent>
