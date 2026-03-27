@@ -12,6 +12,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface FilterBarProps {
   locale: string
@@ -93,33 +100,41 @@ export function FilterBar({
       </div>
 
       {showSportFilter && (
-        <select
-          className="rounded-md border bg-background px-3 py-2 text-sm"
-          value={searchParams.get("sport") || ""}
-          onChange={(e) => pushParams("sport", e.target.value)}
+        <Select
+          value={searchParams.get("sport") || "__all__"}
+          onValueChange={(value) => pushParams("sport", value === "__all__" ? "" : value)}
         >
-          <option value="">{t.allSports || "All Sports"}</option>
-          {sports.map((s) => (
-            <option key={s.id} value={s.name}>
-              {s.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder={t.allSports || "All Sports"} />
+          </SelectTrigger>
+          <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+            <SelectItem value="__all__">{t.allSports || "All Sports"}</SelectItem>
+            {sports.map((s) => (
+              <SelectItem key={s.id} value={s.name}>
+                {s.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
 
       {showCountryFilter && (
-        <select
-          className="rounded-md border bg-background px-3 py-2 text-sm"
-          value={searchParams.get("country") || ""}
-          onChange={(e) => pushParams("country", e.target.value)}
+        <Select
+          value={searchParams.get("country") || "__all__"}
+          onValueChange={(value) => pushParams("country", value === "__all__" ? "" : value)}
         >
-          <option value="">{t.allCountries || "All Countries"}</option>
-          {countries.map((c) => (
-            <option key={c.code} value={c.code}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder={t.allCountries || "All Countries"} />
+          </SelectTrigger>
+          <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+            <SelectItem value="__all__">{t.allCountries || "All Countries"}</SelectItem>
+            {countries.map((c) => (
+              <SelectItem key={c.code} value={c.code}>
+                {c.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
 
       {showDateFilter && (
