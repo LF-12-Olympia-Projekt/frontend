@@ -52,7 +52,7 @@ export function SportEventsList({ events, locale, statusLabels, viewResultsLabel
       {events.map((event) => (
         <div
           key={event.id}
-          className="flex flex-col gap-4 rounded-lg border border-border bg-[#1a1a1a] p-6 transition-colors hover:bg-[#222222] sm:flex-row sm:items-center sm:justify-between"
+          className="flex flex-col gap-4 rounded-lg border border-border bg-background p-6 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center sm:justify-between dark:bg-[#1a1a1a] dark:hover:bg-[#222222]"
         >
           {/* Left: Event Info */}
           <div className="flex-1">
