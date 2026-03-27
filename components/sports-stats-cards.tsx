@@ -19,7 +19,7 @@ function StatsCard({ value, label, color, icon }: StatsCardProps) {
   }
 
   return (
-    <Card className="border-0 bg-[#1a1a1a] shadow-lg transition-all duration-300 hover:scale-105">
+    <Card className="border bg-background shadow-lg transition-all duration-300 hover:scale-105 dark:border-0 dark:bg-[#1a1a1a]">
       <CardContent className="flex flex-col items-center justify-center p-6">
         <div className="mb-2">{icon}</div>
         <div className={`mb-1 text-4xl font-bold ${colorClasses[color]}`}>
