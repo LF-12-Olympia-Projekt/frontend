@@ -4,7 +4,14 @@
 import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, CalendarIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface FilterBarProps {
   locale: string
@@ -32,6 +39,10 @@ export function FilterBar({
   const t = dictionary?.resultsPage || {}
 
   const [search, setSearch] = useState(searchParams.get("q") || "")
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(() => {
+  const dateValue = searchParams.get("date")
+  return dateValue ? new Date(dateValue) : undefined
+})
   const isInitialMount = useRef(true)
 
   // Stable ref for current searchParams to avoid dependency loops
@@ -48,6 +59,13 @@ export function FilterBar({
     params.delete("page")
     router.push(`/${locale}${basePath}?${params.toString()}`)
   }
+
+  const formatDateForQuery = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
 
   // Debounced search — only fires after user types, not on mount
   useEffect(() => {
@@ -105,12 +123,31 @@ export function FilterBar({
       )}
 
       {showDateFilter && (
-        <Input
-          type="date"
-          value={searchParams.get("date") || ""}
-          onChange={(e) => pushParams("date", e.target.value)}
-          className="w-auto"
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-auto justify-start text-left font-normal"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {selectedDate
+                ? selectedDate.toLocaleDateString("de-DE")
+                : "tt.mm.jjjj"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => {
+                setSelectedDate(date)
+                pushParams("date", date ? formatDateForQuery(date) : "")
+              }}
+              initialFocus
+              captionLayout="dropdown"
+            />
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   )
