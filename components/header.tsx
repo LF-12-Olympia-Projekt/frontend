@@ -15,7 +15,7 @@ export function Header() {
     const navItems = [
         { name: dictionary.common?.results, href: `/${locale}#results` },
         { name: dictionary.common?.sports, href: `/${locale}/sports` },
-        { name: dictionary.common?.medalTable, href: `/${locale}/medaillenspiegel` },
+        { name: dictionary.common?.medalTable, href: `/${locale}/medals` },
         { name: dictionary.common?.countries, href: `/${locale}/nations` },
     ]
 

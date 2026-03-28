@@ -153,7 +153,7 @@ export function MedalTable() {
             </div>
             )}
             <div className="border-t p-4">
-              <Button variant="outline" className="w-full sm:w-auto bg-transparent" onClick={() => router.push(`/${locale}/medaillenspiegel`)}>
+              <Button variant="outline" className="w-full sm:w-auto bg-transparent" onClick={() => router.push(`/${locale}/medals`)}>
                 {t.viewAll}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
