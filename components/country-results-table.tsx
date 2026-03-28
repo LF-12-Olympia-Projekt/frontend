@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
+import Link from "next/link"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +20,7 @@ interface CountryResultsTableProps {
 interface Result {
   sport: string
   discipline: string
+  athleteId: string
   athlete: string
   result: string
   medal: "gold" | "silver" | "bronze" | "none"
@@ -27,7 +29,7 @@ interface Result {
 }
 
 export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
-  const { dictionary } = useTranslation()
+  const { dictionary, locale } = useTranslation()
   const t = dictionary.nations || {}
   const liveResults = dictionary.liveResults || {}
   
@@ -44,6 +46,7 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
         const mapped: Result[] = res.data.map((r) => ({
           sport: r.sportName,
           discipline: r.eventName,
+          athleteId: r.athleteId,
           athlete: r.athleteName,
           result: r.value ? (r.unit ? `${r.value} ${r.unit}` : r.value) : "",
           medal: (["gold", "silver", "bronze"].includes(r.medal) ? r.medal : "none") as Result["medal"],
@@ -243,9 +246,12 @@ export function CountryResultsTable({ countryCode }: CountryResultsTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <a href="#" className="font-medium text-sky-500 hover:text-sky-400 hover:underline">
+                    <Link
+                      href={`/${locale}/athletes/${result.athleteId}`}
+                      className="font-medium text-sky-500 hover:text-sky-400 hover:underline"
+                    >
                       {result.athlete}
-                    </a>
+                    </Link>
                   </TableCell>
                   <TableCell className="font-medium">{result.result}</TableCell>
                   <TableCell>{getMedalBadge(result.medal)}</TableCell>
