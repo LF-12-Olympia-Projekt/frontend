@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import Link from "next/link"
 import { useTranslation } from "@/lib/locale-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Star, ChevronRight } from "lucide-react"
+import { Star, ChevronRight, ChevronUp } from "lucide-react"
 import type { ResultListItem } from "@/types/api"
 
 interface TopAthletesSidebarProps {
@@ -13,6 +14,7 @@ interface TopAthletesSidebarProps {
 }
 
 interface Athlete {
+  id: string
   name: string
   sport: string
   gold: number
@@ -21,10 +23,11 @@ interface Athlete {
 }
 
 export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarProps) {
-  const { dictionary } = useTranslation()
+  const { dictionary, locale } = useTranslation()
   const t = dictionary.nations || {}
+  const [showAll, setShowAll] = useState(false)
 
-  const topAthletes = useMemo(() => {
+  const allAthletes = useMemo(() => {
     const athleteMap = new Map<string, Athlete>()
     results.forEach((r) => {
       if (!r.athleteName || !["gold", "silver", "bronze"].includes(r.medal)) return
@@ -35,6 +38,7 @@ export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarP
         else if (r.medal === "bronze") existing.bronze++
       } else {
         athleteMap.set(r.athleteName, {
+          id: r.athleteId,
           name: r.athleteName,
           sport: r.sportName || "",
           gold: r.medal === "gold" ? 1 : 0,
@@ -49,8 +53,9 @@ export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarP
         const totalB = b.gold * 3 + b.silver * 2 + b.bronze
         return totalB - totalA
       })
-      .slice(0, 5)
   }, [results])
+
+  const visibleAthletes = showAll ? allAthletes : allAthletes.slice(0, 5)
 
   return (
     <Card className="border-0 shadow-lg">
@@ -63,10 +68,11 @@ export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarP
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {topAthletes.map((athlete, index) => (
-          <div
+        {visibleAthletes.map((athlete, index) => (
+          <Link
             key={index}
-            className="group cursor-pointer rounded-lg border border-transparent bg-muted/30 p-3 transition-all hover:border-sky-500/30 hover:bg-muted/50"
+            href={`/${locale}/athletes/${athlete.id}`}
+            className="group block cursor-pointer rounded-lg border border-transparent bg-muted/30 p-3 transition-all hover:border-sky-500/30 hover:bg-muted/50"
           >
             <div className="mb-1 font-medium">{athlete.name}</div>
             <div className="mb-2 text-sm text-sky-500">{athlete.sport}</div>
@@ -87,12 +93,20 @@ export function TopAthletesSidebar({ countryCode, results }: TopAthletesSidebarP
                 </div>
               )}
             </div>
-          </div>
+          </Link>
         ))}
-        <Button variant="outline" className="w-full gap-2">
-          {t.showAllAthletes}
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        {allAthletes.length > 5 && (
+          <Button
+            variant="outline"
+            className="w-full gap-2"
+            onClick={() => setShowAll((v) => !v)}
+          >
+            {showAll ? (t.showLess ?? "Show less") : (t.showAllAthletes ?? "Show all athletes")}
+            {showAll
+              ? <ChevronUp className="h-4 w-4" />
+              : <ChevronRight className="h-4 w-4" />}
+          </Button>
+        )}
       </CardContent>
     </Card>
   )

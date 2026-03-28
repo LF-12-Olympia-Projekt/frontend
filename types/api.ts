@@ -11,6 +11,7 @@ export interface ResultListItem {
   id: string
   rank: number | null
   medal: string
+  athleteId: string
   athleteName: string
   countryCode: string
   value: string
