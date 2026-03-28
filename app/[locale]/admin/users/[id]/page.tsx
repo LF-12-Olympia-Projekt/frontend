@@ -39,7 +39,7 @@ export default function AdminUserDetailPage() {
       try {
         const data = await adminApi.getUser(token, userId)
         setUser(data)
-        setEditForm({ email: data.email, role: data.roles[0] })
+        setEditForm({ email: data.email, role: data.roles?.[0] })
       } catch {
         // handle error
       } finally {
@@ -56,6 +56,7 @@ export default function AdminUserDetailPage() {
     try {
       const updated = await adminApi.updateUser(token, userId, editForm)
       setUser(updated)
+      setEditForm({ email: updated.email, role: updated.roles?.[0] })
     } catch {
       // handle error
     } finally {
@@ -143,7 +144,7 @@ export default function AdminUserDetailPage() {
             <p className="text-muted-foreground mt-1">{user.email}</p>
           </div>
           <div className="flex items-center gap-2">
-            {user.roles.map((role) => (
+            {(user.roles ?? []).map((role) => (
               <RoleBadge key={role} role={role} />
             ))}
             <Badge variant={user.isActive ? "outline" : "destructive"}>
@@ -216,7 +217,7 @@ export default function AdminUserDetailPage() {
               </CardContent>
             </Card>
 
-            {user.roles.includes("Judge") && (
+            {(user.roles ?? []).includes("Judge") && (
               <DelegationPanel
                 currentDelegation={user.delegatedReviewerUntil}
                 delegatedBy={user.delegatedBy}
