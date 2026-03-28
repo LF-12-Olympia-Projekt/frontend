@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Save, Loader2 } from "lucide-react"
 import type { CreateResultRequest } from "@/types/judge"
+import { SearchCombobox } from "@/components/judge/SearchCombobox"
+import { getAthletes, getSports, getSportEvents } from "@/lib/api/results"
+import type { SportInfo, SportEventInfo } from "@/types/api"
 
 interface ResultFormProps {
   initialData?: {
@@ -35,8 +38,10 @@ export function ResultForm({
   labels = {},
   isEdit = false,
 }: ResultFormProps) {
+  const [sportId, setSportId] = useState("")
   const [eventId, setEventId] = useState(initialData?.eventId ?? "")
   const [athleteId, setAthleteId] = useState(initialData?.athleteId ?? "")
+  const [athleteLabel, setAthleteLabel] = useState("")
   const [value, setValue] = useState(initialData?.value ?? "")
   const [unit, setUnit] = useState(initialData?.unit ?? "")
   const [rank, setRank] = useState<string>(initialData?.rank?.toString() ?? "")
@@ -46,6 +51,29 @@ export function ResultForm({
   )
   const [saving, setSaving] = useState(false)
   const [autoSaved, setAutoSaved] = useState(false)
+
+  const [sports, setSports] = useState<SportInfo[]>([])
+  const [events, setEvents] = useState<SportEventInfo[]>([])
+  const [eventsLoading, setEventsLoading] = useState(false)
+
+  useEffect(() => {
+    getSports().then(setSports).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (!sportId) { setEvents([]); setEventId(""); return }
+    setEventsLoading(true)
+    getSportEvents(sportId)
+      .then(setEvents)
+      .catch(() => {})
+      .finally(() => setEventsLoading(false))
+    setEventId("")
+  }, [sportId])
+
+  const searchAthletes = useCallback(async (q: string) => {
+    const res = await getAthletes({ search: q, limit: 10 })
+    return res.data.map(a => ({ id: a.id, label: a.name, sublabel: a.countryCode }))
+  }, [])
 
   const getData = useCallback((): CreateResultRequest => ({
     eventId,
@@ -92,28 +120,66 @@ export function ResultForm({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="eventId">{labels.selectEvent ?? "Event ID"} *</Label>
-              <Input
-                id="eventId"
-                value={eventId}
-                onChange={(e) => setEventId(e.target.value)}
-                placeholder={labels.selectEvent ?? "Enter Event ID"}
-                required
-              />
+          {isEdit ? (
+            <p className="text-sm text-muted-foreground">
+              {labels.eventAthleteLocked ?? "Event and athlete cannot be changed after creation."}
+            </p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="sport">{labels.selectSport ?? "Sport"} *</Label>
+                <select
+                  id="sport"
+                  className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50"
+                  value={sportId}
+                  onChange={(e) => setSportId(e.target.value)}
+                  required
+                >
+                  <option value="">{labels.selectSportPlaceholder ?? "— Sport wählen —"}</option>
+                  {sports.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="eventId">{labels.selectEvent ?? "Wettkampf"} *</Label>
+                <select
+                  id="eventId"
+                  className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50"
+                  value={eventId}
+                  onChange={(e) => setEventId(e.target.value)}
+                  disabled={!sportId || eventsLoading}
+                  required
+                >
+                  <option value="">
+                    {eventsLoading
+                      ? (labels.loading ?? "Laden…")
+                      : !sportId
+                        ? (labels.selectSportFirst ?? "— erst Sport wählen —")
+                        : (labels.selectEventPlaceholder ?? "— Wettkampf wählen —")}
+                  </option>
+                  {events.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.title} ({e.date})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor="athleteId">{labels.selectAthlete ?? "Athlet"} *</Label>
+                <SearchCombobox
+                  id="athleteId"
+                  placeholder={labels.athleteSearch ?? "Name eingeben…"}
+                  onSearch={searchAthletes}
+                  onSelect={(item) => { setAthleteId(item.id); setAthleteLabel(item.label) }}
+                  initialLabel={athleteLabel}
+                  required
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="athleteId">{labels.selectAthlete ?? "Athlete ID"} *</Label>
-              <Input
-                id="athleteId"
-                value={athleteId}
-                onChange={(e) => setAthleteId(e.target.value)}
-                placeholder={labels.selectAthlete ?? "Enter Athlete ID"}
-                required
-              />
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
