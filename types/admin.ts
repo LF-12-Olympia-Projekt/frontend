@@ -78,20 +78,42 @@ export interface SportTemplateListItem {
   id: string
   sportId: string
   sportName: string
-  fields: string
+  fields: TemplateFieldDto[]
   version: number
   isActive: boolean
   createdByUser: string | null
   updatedAt: string
 }
 
+/** Backend TemplateFieldDto shape */
+export interface TemplateFieldDto {
+  id: string
+  name: string
+  fieldType: string
+  required: boolean
+  unit?: string
+  displayOrder: number
+  labels?: Record<string, string>
+}
+
 export interface CreateTemplateRequest {
   sportId: string
-  fields: string
+  fields: CreateFieldRequest[]
 }
 
 export interface UpdateTemplateRequest {
-  fields?: string
+  sportId?: string
+  fields?: CreateFieldRequest[]
+}
+
+/** Matches backend CreateFieldRequest exactly */
+export interface CreateFieldRequest {
+  name: string
+  fieldType: string
+  required: boolean
+  unit?: string
+  displayOrder: number
+  labels?: Record<string, string>
 }
 
 export interface TemplateField {
@@ -105,6 +127,35 @@ export interface TemplateField {
     en: string
   }
   options?: string[]
+}
+
+/** Convert frontend TemplateField[] → backend CreateFieldRequest[] */
+export function templateFieldsToRequest(fields: TemplateField[]): CreateFieldRequest[] {
+  return fields.map((f, i) => ({
+    name: f.name,
+    fieldType: f.type,
+    required: f.required,
+    unit: f.unit,
+    displayOrder: i,
+    labels: { de: f.label.de, fr: f.label.fr, en: f.label.en },
+  }))
+}
+
+/** Convert backend TemplateFieldDto[] → editor TemplateField[] */
+export function backendFieldsToEditor(fields: TemplateFieldDto[]): TemplateField[] {
+  return [...fields]
+    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .map((f) => ({
+      name: f.name,
+      type: (f.fieldType as TemplateField["type"]) ?? "text",
+      required: f.required,
+      unit: f.unit,
+      label: {
+        de: f.labels?.["de"] ?? "",
+        fr: f.labels?.["fr"] ?? "",
+        en: f.labels?.["en"] ?? "",
+      },
+    }))
 }
 
 export interface AuditLogListItem {

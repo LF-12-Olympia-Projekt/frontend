@@ -28,7 +28,8 @@ import { TemplateEditor } from "@/components/admin/TemplateEditor"
 import { Plus, FileEdit } from "lucide-react"
 import * as adminApi from "@/lib/api/admin"
 import { getSports } from "@/lib/api/results"
-import type { SportTemplateListItem, TemplateField } from "@/types/admin"
+import type { SportTemplateListItem, TemplateField, TemplateFieldDto } from "@/types/admin"
+import { templateFieldsToRequest, backendFieldsToEditor } from "@/types/admin"
 import type { SportInfo } from "@/types/api"
 
 export default function AdminTemplatesPage() {
@@ -78,7 +79,7 @@ export default function AdminTemplatesPage() {
     try {
       await adminApi.createTemplate(token, {
         sportId: createSportId,
-        fields: JSON.stringify(createFields),
+        fields: templateFieldsToRequest(createFields),
       })
       setShowCreate(false)
       fetchTemplates()
@@ -89,9 +90,7 @@ export default function AdminTemplatesPage() {
     }
   }
 
-  const getFieldCount = (fields: string) => {
-    try { return JSON.parse(fields).length } catch { return 0 }
-  }
+  const getFieldCount = (fields: TemplateFieldDto[]) => fields?.length ?? 0
 
   return (
     <ProtectedRoute>

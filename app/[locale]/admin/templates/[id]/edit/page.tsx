@@ -13,6 +13,7 @@ import { TemplateEditor } from "@/components/admin/TemplateEditor"
 import { ArrowLeft, Save } from "lucide-react"
 import * as adminApi from "@/lib/api/admin"
 import type { SportTemplateListItem, TemplateField } from "@/types/admin"
+import { backendFieldsToEditor, templateFieldsToRequest } from "@/types/admin"
 
 export default function AdminTemplateEditPage() {
   const { getToken } = useAuth()
@@ -34,11 +35,7 @@ export default function AdminTemplateEditPage() {
       try {
         const data = await adminApi.getTemplate(token, templateId)
         setTemplate(data)
-        try {
-          setFields(JSON.parse(data.fields))
-        } catch {
-          setFields([])
-        }
+        setFields(backendFieldsToEditor(data.fields ?? []))
       } catch {
         // handle
       } finally {
@@ -54,7 +51,8 @@ export default function AdminTemplateEditPage() {
     setSaving(true)
     try {
       const updated = await adminApi.updateTemplate(token, templateId, {
-        fields: JSON.stringify(fields),
+        sportId: template!.sportId,
+        fields: templateFieldsToRequest(fields),
       })
       setTemplate(updated)
       router.push(`/${locale}/admin/templates`)
