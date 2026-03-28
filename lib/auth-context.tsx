@@ -1,12 +1,13 @@
-// lib/auth-context.tsx | Task: REM-003 | Auth context with in-memory JWT (never sessionStorage)
+// lib/auth-context.tsx | Task: REM-003 | Auth context with localStorage JWT persistence
 "use client"
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react"
 import * as authApi from "@/lib/api/auth"
 
 // .NET ClaimTypes URIs used in JWT
 const CLAIM_ROLE = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
 const CLAIM_NAME = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+const TOKEN_KEY = "auth_token"
 
 export type UserRole = "admin" | "judge" | null
 
@@ -45,27 +46,50 @@ function parseJwtPayload(token: string): { username: string; role: UserRole } {
   }
 }
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]))
+    return payload.exp ? payload.exp * 1000 < Date.now() : false
+  } catch {
+    return true
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // JWT stored in React state only — cleared on page refresh (by design)
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Restore session from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(TOKEN_KEY)
+    if (saved && !isTokenExpired(saved)) {
+      const { username, role } = parseJwtPayload(saved)
+      setUser({ token: saved, username, role })
+    } else if (saved) {
+      localStorage.removeItem(TOKEN_KEY)
+    }
+    setIsLoading(false)
+  }, [])
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await authApi.login(email, password)
     if (!response.token) {
       return response
     }
+    localStorage.setItem(TOKEN_KEY, response.token)
     const { username, role } = parseJwtPayload(response.token)
     setUser({ token: response.token, username, role })
     return response
   }, [])
 
   const loginWithToken = useCallback((token: string) => {
+    localStorage.setItem(TOKEN_KEY, token)
     const { username, role } = parseJwtPayload(token)
     setUser({ token, username, role })
   }, [])
 
   const logout = useCallback(() => {
+    localStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }, [])
 
