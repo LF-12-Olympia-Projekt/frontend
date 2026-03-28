@@ -25,6 +25,7 @@ import {
   PanelLeft,
   LogOut,
   LogIn,
+  PersonStanding,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -69,6 +70,7 @@ function useNavSections(locale: string, role: UserRole, dict: any): NavSection[]
     items: [
       { label: s.adminDashboard ?? "Admin Dashboard", href: `/${locale}/admin/dashboard`, icon: <ShieldCheck className="h-4 w-4" /> },
       { label: s.userManagement ?? "User Management", href: `/${locale}/admin/users`, icon: <Users className="h-4 w-4" /> },
+      { label: s.athleteManagement ?? "Athleten-Verwaltung", href: `/${locale}/admin/athletes`, icon: <PersonStanding className="h-4 w-4" /> },
       { label: s.resultManagement ?? "Result Management", href: `/${locale}/admin/results`, icon: <FileText className="h-4 w-4" /> },
       { label: s.sportTemplates ?? "Sport Templates", href: `/${locale}/admin/templates`, icon: <Blocks className="h-4 w-4" /> },
       { label: s.auditLog ?? "Audit Log", href: `/${locale}/admin/audit`, icon: <ScrollText className="h-4 w-4" /> },

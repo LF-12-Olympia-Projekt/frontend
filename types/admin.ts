@@ -142,3 +142,50 @@ export interface AdminDashboardStats {
   openProtests: number
   recentForcePublish: boolean
 }
+
+// ── Athlete Management ──
+
+export interface AdminAthleteListItem {
+  id: string
+  name: string
+  countryCode: string
+  dateOfBirth: string | null
+  age: number | null
+  photoUrl: string | null
+  resultsCount: number
+}
+
+export interface AdminAthleteResult {
+  id: string
+  rank: number | null
+  medal: string
+  athleteId: string
+  athleteName: string
+  countryCode: string
+  value: string
+  unit: string
+  eventName: string
+  sportName: string
+  status: string
+}
+
+export interface AdminAthleteDetail extends AdminAthleteListItem {
+  createdAt: string
+  updatedAt: string
+  results: AdminAthleteResult[]
+}
+
+export interface CreateAthleteRequest {
+  name: string
+  countryCode: string
+  dateOfBirth?: string | null
+  photoUrl?: string | null
+}
+
+export interface UpdateAthleteRequest {
+  name?: string
+  countryCode?: string
+  dateOfBirth?: string | null
+  photoUrl?: string | null
+}
+

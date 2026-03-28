@@ -16,6 +16,10 @@ import type {
   AuditLogListItem,
   MedalAssetInfo,
   PaginatedResponse,
+  AdminAthleteListItem,
+  AdminAthleteDetail,
+  CreateAthleteRequest,
+  UpdateAthleteRequest,
 } from "@/types/admin"
 import type { JudgeResultDetail } from "@/types/judge"
 
@@ -217,4 +221,51 @@ export async function updateMedalAsset(token: string, type: string, file: File) 
   })
   if (!res.ok) throw new Error(await res.text())
   return res.json() as Promise<{ message: string; type: string; hasBackup: boolean }>
+}
+
+// ── Athlete Management ──
+
+export async function getAdminAthletes(
+  token: string,
+  params?: { search?: string; country?: string; page?: number; pageSize?: number }
+) {
+  const sp = new URLSearchParams()
+  if (params?.search) sp.set("search", params.search)
+  if (params?.country) sp.set("country", params.country)
+  if (params?.page) sp.set("page", String(params.page))
+  if (params?.pageSize) sp.set("pageSize", String(params.pageSize))
+  const qs = sp.toString()
+  return apiClient<PaginatedResponse<AdminAthleteListItem>>(
+    `/api/admin/athletes${qs ? `?${qs}` : ""}`,
+    { headers: authHeaders(token) }
+  )
+}
+
+export async function getAdminAthlete(token: string, id: string) {
+  return apiClient<AdminAthleteDetail>(`/api/admin/athletes/${id}`, {
+    headers: authHeaders(token),
+  })
+}
+
+export async function createAthlete(token: string, data: CreateAthleteRequest) {
+  return apiClient<AdminAthleteDetail>("/api/admin/athletes", {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateAthlete(token: string, id: string, data: UpdateAthleteRequest) {
+  return apiClient<AdminAthleteDetail>(`/api/admin/athletes/${id}`, {
+    method: "PUT",
+    headers: authHeaders(token),
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteAthlete(token: string, id: string) {
+  return apiClient<{ message: string }>(`/api/admin/athletes/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(token),
+  })
 }
