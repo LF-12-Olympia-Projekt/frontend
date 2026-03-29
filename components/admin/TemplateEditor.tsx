@@ -16,14 +16,13 @@ interface TemplateEditorProps {
   labels?: Record<string, string>
 }
 
-const fieldTypes: Array<{ value: TemplateField["type"]; label: string }> = [
-  { value: "text", label: "Text" },
-  { value: "number", label: "Number" },
-  { value: "time", label: "Time (HH:MM:SS.ms)" },
-  { value: "dropdown", label: "Dropdown" },
-]
-
 export function TemplateEditor({ fields, onChange, labels }: TemplateEditorProps) {
+  const fieldTypes: Array<{ value: TemplateField["type"]; label: string }> = [
+    { value: "text", label: labels?.typeText ?? "Text" },
+    { value: "number", label: labels?.typeNumber ?? "Number" },
+    { value: "time", label: labels?.typeTime ?? "Time (HH:MM:SS.ms)" },
+    { value: "dropdown", label: labels?.typeDropdown ?? "Dropdown" },
+  ]
   const addField = () => {
     onChange([
       ...fields,

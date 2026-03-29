@@ -491,7 +491,11 @@
         "required": "Pflichtfeld",
         "labels": "Bezeichnungen (pro Sprache)",
         "options": "Optionen (kommagetrennt)",
-        "addField": "Feld hinzufügen"
+        "addField": "Feld hinzufügen",
+        "typeText": "Text",
+        "typeNumber": "Zahl",
+        "typeTime": "Zeit (HH:MM:SS.ms)",
+        "typeDropdown": "Dropdown"
       }
     },
     "audit": {

@@ -181,7 +181,7 @@ export default function AdminTemplatesPage() {
               </div>
               <div className="space-y-2">
                 <Label>Felder</Label>
-                <TemplateEditor fields={createFields} onChange={setCreateFields} />
+                <TemplateEditor fields={createFields} onChange={setCreateFields} labels={t.editor} />
               </div>
             </div>
             <DialogFooter className="pt-4">
