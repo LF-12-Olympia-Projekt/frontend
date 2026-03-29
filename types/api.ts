@@ -16,6 +16,7 @@ export interface ResultListItem {
   countryCode: string
   value: string
   unit: string
+  eventId: string
   eventName: string
   sportName: string
   lastModifiedBy: string | null

@@ -45,6 +45,7 @@ export default function ResultsPage() {
   }, [])
 
   // Client-side filtering based on URL search params
+  const eventIdFilter = searchParams.get("eventId") || ""
   const sportFilter = searchParams.get("sport") || ""
   const countryFilter = searchParams.get("country") || ""
   const dateFilter = searchParams.get("date") || ""
@@ -52,6 +53,10 @@ export default function ResultsPage() {
 
   const filteredResults = useMemo(() => {
     let results = allResults
+
+    if (eventIdFilter) {
+      results = results.filter((r) => r.eventId === eventIdFilter)
+    }
 
     if (sportFilter) {
       results = results.filter((r) =>
@@ -91,7 +96,7 @@ export default function ResultsPage() {
   }, [allResults, countries, sportFilter, countryFilter, dateFilter, searchQuery])
 
   // Reset page to 1 when filters change
-  const filterKey = `${sportFilter}|${countryFilter}|${dateFilter}|${searchQuery}`
+  const filterKey = `${eventIdFilter}|${sportFilter}|${countryFilter}|${dateFilter}|${searchQuery}`
   useEffect(() => {
     setPage(1)
   }, [filterKey])
