@@ -29,7 +29,7 @@ export default function ResultsPage() {
   useEffect(() => {
     setLoading(true)
     Promise.all([
-      getResults({ pageSize: 100 }),
+      getResults({ pageSize: 500 }),
       getSports(),
       getCountries(),
     ])

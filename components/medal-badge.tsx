@@ -1,5 +1,4 @@
 // components/medal-badge.tsx | Task: FE-002 | Medal badge SVG component
-import Image from "next/image"
 
 interface MedalBadgeProps {
   medal: string | null | undefined
@@ -19,7 +18,8 @@ export function MedalBadge({ medal, size = 24, className = "" }: MedalBadgeProps
   if (!info) return null
 
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={info.src}
       alt={info.alt}
       width={size}
