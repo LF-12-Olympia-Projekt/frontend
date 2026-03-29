@@ -20,6 +20,7 @@ interface DangerModalProps {
   title: string
   message: string
   confirmPhrase?: string
+  confirmInstruction?: string
   requireReason?: boolean
   reasonLabel?: string
   reasonMinLength?: number
@@ -34,6 +35,7 @@ export function DangerModal({
   title,
   message,
   confirmPhrase = "CONFIRM",
+  confirmInstruction,
   requireReason = false,
   reasonLabel = "Reason",
   reasonMinLength = 0,
@@ -82,7 +84,11 @@ export function DangerModal({
             </div>
           )}
           <div className="space-y-2">
-            <Label>Type <span className="font-mono font-bold text-red-600">{confirmPhrase}</span> to confirm</Label>
+            <Label>
+              {confirmInstruction
+                ? <>{confirmInstruction}: <span className="font-mono font-bold text-red-600">{confirmPhrase}</span></>
+                : <>Type <span className="font-mono font-bold text-red-600">{confirmPhrase}</span> to confirm</>}
+            </Label>
             <Input
               value={typed}
               onChange={(e) => setTyped(e.target.value)}

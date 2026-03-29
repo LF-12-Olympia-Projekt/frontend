@@ -22,6 +22,7 @@ export default function AdminResultDetailPage() {
   const params = useParams()
   const resultId = params.id as string
   const t = dictionary.admin?.results ?? {}
+  const tModal = dictionary.admin?.modal ?? {}
 
   const [result, setResult] = useState<JudgeResultDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -236,9 +237,11 @@ export default function AdminResultDetailPage() {
           title={t.restoreTitle ?? "Restore Result?"}
           message={t.restoreMessage ?? "This will restore the result to Published status."}
           confirmPhrase="RESTORE"
+          confirmInstruction={tModal.confirmPhrase}
           requireReason
           reasonLabel={t.restoreReason ?? "Reason for restoration"}
           confirmLabel={t.restore ?? "Restore"}
+          cancelLabel={tModal.cancel}
           onConfirm={handleRestore}
           onCancel={() => setShowRestore(false)}
         />
@@ -248,10 +251,12 @@ export default function AdminResultDetailPage() {
           title={t.forcePublishTitle ?? "Force Publish?"}
           message={t.forcePublishMessage ?? "This bypasses the normal review process. This action is logged and audited."}
           confirmPhrase="FORCE-PUBLISH"
+          confirmInstruction={tModal.confirmPhrase}
           requireReason
           reasonLabel={t.forcePublishReason ?? "Reason for force publish"}
           reasonMinLength={20}
           confirmLabel={t.forcePublish ?? "Force Publish"}
+          cancelLabel={tModal.cancel}
           onConfirm={handleForcePublish}
           onCancel={() => setShowForcePublish(false)}
         />
@@ -261,9 +266,12 @@ export default function AdminResultDetailPage() {
           title={t.deleteTitle ?? "Permanent Delete?"}
           message={t.deleteMessage ?? "This will PERMANENTLY delete this result and all associated data. This cannot be undone."}
           confirmPhrase="CONFIRM-DELETE"
+          confirmInstruction={tModal.confirmPhrase}
           requireReason
           reasonLabel={t.deleteReason ?? "Reason for deletion"}
+          reasonMinLength={10}
           confirmLabel={t.permanentDelete ?? "Delete Permanently"}
+          cancelLabel={tModal.cancel}
           onConfirm={handleDelete}
           onCancel={() => setShowDelete(false)}
         />
