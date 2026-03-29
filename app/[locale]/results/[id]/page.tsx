@@ -41,7 +41,7 @@ export default async function ResultDetailPage({
   let relatedResults = { data: [] as any[], total: 0, page: 1, pageSize: 20 }
   if (result.event) {
     try {
-      relatedResults = await getResults({ eventId: result.event.id, pageSize: 10, page: currentPage })
+      relatedResults = await getResults({ eventId: result.event.id, pageSize: 10, page: currentPage, revalidate: 0 })
     } catch {
       // ignore
     }

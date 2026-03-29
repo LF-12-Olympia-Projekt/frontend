@@ -41,6 +41,7 @@ export async function getResults(params?: {
   athleteName?: string
   page?: number
   pageSize?: number
+  revalidate?: number
 }): Promise<PaginatedResponse<ResultListItem>> {
   const searchParams = new URLSearchParams()
   if (params?.sport) searchParams.set("sport", params.sport)
@@ -51,7 +52,7 @@ export async function getResults(params?: {
   if (params?.page) searchParams.set("page", String(params.page))
   if (params?.pageSize) searchParams.set("pageSize", String(params.pageSize))
   const qs = searchParams.toString()
-  return fetchApi<PaginatedResponse<ResultListItem>>(`/api/results${qs ? `?${qs}` : ""}`)
+  return fetchApi<PaginatedResponse<ResultListItem>>(`/api/results${qs ? `?${qs}` : ""}`, params?.revalidate ?? 60)
 }
 
 export async function getResultById(id: string): Promise<ResultDetail> {
