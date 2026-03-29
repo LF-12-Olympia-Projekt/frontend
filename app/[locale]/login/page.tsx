@@ -33,7 +33,7 @@ import {
 } from "lucide-react"
 import { useTranslation } from "@/lib/locale-context"
 
-type AuthStep = "login" | "2fa" | "2fa-setup" | "forgot-password" | "reset-sent"
+type AuthStep = "login" | "2fa" | "2fa-setup"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -133,18 +133,6 @@ export default function LoginPage() {
         }
     }
 
-    const handleForgotPassword = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-
-        try {
-            await authApi.forgotPassword(email)
-            setStep("reset-sent")
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
     return (
         <PageWrapper>
             <div className="mx-auto max-w-md px-4 py-16 sm:px-6">
@@ -158,8 +146,6 @@ export default function LoginPage() {
                         <BreadcrumbItem>
                             <BreadcrumbPage>
                                 {step === "login" && t.login}
-                                {step === "forgot-password" && t.forgotPasswordTitle}
-                                {step === "reset-sent" && t.emailSentTitle}
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
@@ -206,13 +192,6 @@ export default function LoginPage() {
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="password">{t.password}</Label>
-                                        <button
-                                            type="button"
-                                            onClick={() => setStep("forgot-password")}
-                                            className="text-sm text-olympic-blue hover:underline"
-                                        >
-                                            {t.forgotPassword}?
-                                        </button>
                                     </div>
                                     <div className="relative">
                                         <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -250,90 +229,6 @@ export default function LoginPage() {
                                     )}
                                 </Button>
                             </form>
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Forgot Password Form */}
-                {step === "forgot-password" && (
-                    <Card className="mt-8 border-0 shadow-lg">
-                        <CardHeader className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-olympic-yellow/20">
-                                <Mail className="h-8 w-8 text-olympic-yellow" />
-                            </div>
-                            <CardTitle className="text-2xl">{t.forgotPasswordTitle}</CardTitle>
-                            <CardDescription>
-                                {t.enterEmailForReset}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleForgotPassword} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="reset-email">{t.email}</Label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                                        <Input
-                                            id="reset-email"
-                                            type="email"
-                                            placeholder="name@beispiel.de"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="pl-9"
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
-                                </div>
-
-                                <Button type="submit" className="w-full" disabled={isLoading}>
-                                    {isLoading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            {t.sending}
-                                        </>
-                                    ) : (
-                                        t.loginAction
-                                    )}
-                                </Button>
-
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    className="w-full"
-                                    onClick={() => {
-                                        setStep("login")
-                                        setError(null)
-                                    }}
-                                >
-                                    {t.backToLogin}
-                                </Button>
-                            </form>
-                        </CardContent>
-                    </Card>
-                )}
-
-                {/* Reset Sent Confirmation */}
-                {step === "reset-sent" && (
-                    <Card className="mt-8 border-0 shadow-lg">
-                        <CardHeader className="text-center">
-                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-olympic-green/10">
-                                <Mail className="h-8 w-8 text-olympic-green" />
-                            </div>
-                            <CardTitle className="text-2xl">{t.emailSentTitle}</CardTitle>
-                            <CardDescription>
-                                {t.resetLinkSent}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <Button
-                                className="w-full"
-                                onClick={() => {
-                                    setStep("login")
-                                    setEmail("")
-                                }}
-                            >
-                                {t.backToLogin}
-                            </Button>
                         </CardContent>
                     </Card>
                 )}

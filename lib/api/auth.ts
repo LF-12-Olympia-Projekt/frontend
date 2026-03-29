@@ -43,22 +43,3 @@ export async function login2Fa(tempToken: string, code: string): Promise<LoginRe
         body: JSON.stringify({ TempToken: tempToken, Code: code }),
     })
 }
-
-export async function forgotPassword(
-    usernameOrEmail: string
-): Promise<void> {
-    await apiClient<void>("/api/auth/forgot-password", {
-        method: "POST",
-        body: JSON.stringify({ "UsernameOrEmail": usernameOrEmail }),
-    })
-}
-
-export async function resetPassword(
-    token: string,
-    newPassword: string
-): Promise<void> {
-    await apiClient<void>("/api/auth/reset-password", {
-        method: "POST",
-        body: JSON.stringify({ token, newPassword }),
-    })
-}
