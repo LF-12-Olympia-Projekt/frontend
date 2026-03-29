@@ -26,6 +26,7 @@ interface DangerModalProps {
   reasonMinLength?: number
   confirmLabel?: string
   cancelLabel?: string
+  error?: string
   onConfirm: (reason?: string) => void
   onCancel: () => void
 }
@@ -41,6 +42,7 @@ export function DangerModal({
   reasonMinLength = 0,
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
+  error,
   onConfirm,
   onCancel,
 }: DangerModalProps) {
@@ -97,6 +99,9 @@ export function DangerModal({
             />
           </div>
         </div>
+        {error && (
+          <p className="text-sm text-red-600 rounded-md bg-red-500/10 px-3 py-2">{error}</p>
+        )}
         <DialogFooter>
           <Button variant="outline" onClick={handleCancel}>
             {cancelLabel}

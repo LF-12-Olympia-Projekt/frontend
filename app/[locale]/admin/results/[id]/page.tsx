@@ -29,6 +29,7 @@ export default function AdminResultDetailPage() {
   const [showRestore, setShowRestore] = useState(false)
   const [showForcePublish, setShowForcePublish] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | undefined>()
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -71,6 +72,7 @@ export default function AdminResultDetailPage() {
   const handleDelete = async (reason?: string) => {
     const token = getToken()
     if (!token || !reason) return
+    setDeleteError(undefined)
     try {
       await adminApi.permanentDelete(token, resultId, {
         confirmationToken: "CONFIRM-DELETE",
@@ -78,7 +80,14 @@ export default function AdminResultDetailPage() {
       })
       setShowDelete(false)
       router.push(`/${locale}/admin/results`)
-    } catch { /* handle */ }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error"
+      try {
+        setDeleteError(JSON.parse(msg)?.message ?? msg)
+      } catch {
+        setDeleteError(msg)
+      }
+    }
   }
 
   if (loading) {
@@ -272,8 +281,9 @@ export default function AdminResultDetailPage() {
           reasonMinLength={10}
           confirmLabel={t.permanentDelete ?? "Delete Permanently"}
           cancelLabel={tModal.cancel}
+          error={deleteError}
           onConfirm={handleDelete}
-          onCancel={() => setShowDelete(false)}
+          onCancel={() => { setShowDelete(false); setDeleteError(undefined) }}
         />
       </div>
     </ProtectedRoute>
