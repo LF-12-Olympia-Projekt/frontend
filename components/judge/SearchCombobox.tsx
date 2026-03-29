@@ -39,15 +39,8 @@ export function SearchCombobox({
     setQuery(initialLabel)
   }, [initialLabel])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const q = e.target.value
-    setQuery(q)
+  const doSearch = (q: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    if (!q.trim()) {
-      setItems([])
-      setOpen(false)
-      return
-    }
     debounceRef.current = setTimeout(async () => {
       setLoading(true)
       try {
@@ -58,6 +51,20 @@ export function SearchCombobox({
         setLoading(false)
       }
     }, 300)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value
+    setQuery(q)
+    doSearch(q)
+  }
+
+  const handleFocus = () => {
+    if (!open && items.length === 0) {
+      doSearch(query)
+    } else {
+      setOpen(items.length > 0)
+    }
   }
 
   const handleSelect = (item: SearchItem) => {
@@ -84,6 +91,7 @@ export function SearchCombobox({
           id={id}
           value={query}
           onChange={handleChange}
+          onFocus={handleFocus}
           placeholder={placeholder}
           required={required}
           autoComplete="off"
