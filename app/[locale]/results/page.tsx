@@ -25,11 +25,17 @@ export default function ResultsPage() {
   const [countries, setCountries] = useState<{ code: string; name: string }[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch all data once on mount
+  // Client-side filtering based on URL search params
+  const eventIdFilter = searchParams.get("eventId") || ""
+
+  // Fetch results — pass eventId to backend if present, else load all
   useEffect(() => {
     setLoading(true)
+    const params = eventIdFilter
+      ? { eventId: eventIdFilter, pageSize: 500 }
+      : { pageSize: 500 }
     Promise.all([
-      getResults({ pageSize: 500 }),
+      getResults(params),
       getSports(),
       getCountries(),
     ])
@@ -42,10 +48,7 @@ export default function ResultsPage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [])
-
-  // Client-side filtering based on URL search params
-  const eventIdFilter = searchParams.get("eventId") || ""
+  }, [eventIdFilter])
   const sportFilter = searchParams.get("sport") || ""
   const countryFilter = searchParams.get("country") || ""
   const dateFilter = searchParams.get("date") || ""
@@ -53,10 +56,6 @@ export default function ResultsPage() {
 
   const filteredResults = useMemo(() => {
     let results = allResults
-
-    if (eventIdFilter) {
-      results = results.filter((r) => r.eventId === eventIdFilter)
-    }
 
     if (sportFilter) {
       results = results.filter((r) =>
