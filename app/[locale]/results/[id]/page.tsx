@@ -17,10 +17,14 @@ export const revalidate = 60
 
 export default async function ResultDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>
+  searchParams: Promise<{ page?: string }>
 }) {
   const { locale, id } = await params
+  const { page: pageParam } = await searchParams
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1)
   const dictionary = await getDictionary(locale as Locale) as any
   const t = dictionary.resultDetail || {}
   const tCommon = dictionary.common || {}
@@ -37,7 +41,7 @@ export default async function ResultDetailPage({
   let relatedResults = { data: [] as any[], total: 0, page: 1, pageSize: 20 }
   if (result.event) {
     try {
-      relatedResults = await getResults({ eventId: result.event.id, pageSize: 10 })
+      relatedResults = await getResults({ eventId: result.event.id, pageSize: 10, page: currentPage })
     } catch {
       // ignore
     }
@@ -146,7 +150,7 @@ export default async function ResultDetailPage({
                   <ResultsTable
                     results={relatedResults.data}
                     total={relatedResults.total}
-                    page={1}
+                    page={currentPage}
                     pageSize={10}
                     locale={locale}
                     dictionary={dictionary}
