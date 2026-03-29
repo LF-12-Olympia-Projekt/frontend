@@ -25,5 +25,5 @@ Die Anwendung ist danach unter [http://localhost:3000](http://localhost:3000) er
 
 ### Backend-Setup
 
-Dieses Frontend erwartet ein laufendes Backend unter `http://localhost:5000`.
+Dieses Frontend erwartet ein laufendes Backend unter `http://localhost:5184`.
 Bitte richte dafür das Backend-Repository gemäß dessen Setup-Dokumentation ein und starte den Service vor dem Frontend.
