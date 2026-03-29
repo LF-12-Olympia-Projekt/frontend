@@ -12,6 +12,13 @@ import type { CreateResultRequest } from "@/types/judge"
 import { SearchCombobox } from "@/components/judge/SearchCombobox"
 import { getAthletes, getSports, getSportEvents } from "@/lib/api/results"
 import type { SportInfo, SportEventInfo } from "@/types/api"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface ResultFormProps {
   initialData?: {
@@ -128,43 +135,59 @@ export function ResultForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="sport">{labels.selectSport ?? "Sport"} *</Label>
-                <select
-                  id="sport"
-                  className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50"
-                  value={sportId}
-                  onChange={(e) => setSportId(e.target.value)}
-                  required
-                >
-                  <option value="">{labels.selectSportPlaceholder ?? "— Sport wählen —"}</option>
-                  {sports.map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
+                  <Select
+                    value={sportId || "__placeholder__"}
+                    onValueChange={(value) => setSportId(value === "__placeholder__" ? "" : value)}
+                  >
+                    <SelectTrigger id="sport" className="w-full">
+                      <SelectValue placeholder={labels.selectSportPlaceholder ?? "— Sport wählen —"} />
+                    </SelectTrigger>
+                    <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+                      <SelectItem value="__placeholder__">
+                        {labels.selectSportPlaceholder ?? "— Sport wählen —"}
+                      </SelectItem>
+                      {sports.map((s) => (
+                        <SelectItem key={s.id} value={s.id}>
+                          {s.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="eventId">{labels.selectEvent ?? "Wettkampf"} *</Label>
-                <select
-                  id="eventId"
-                  className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50"
-                  value={eventId}
-                  onChange={(e) => setEventId(e.target.value)}
-                  disabled={!sportId || eventsLoading}
-                  required
-                >
-                  <option value="">
-                    {eventsLoading
-                      ? (labels.loading ?? "Laden…")
-                      : !sportId
-                        ? (labels.selectSportFirst ?? "— erst Sport wählen —")
-                        : (labels.selectEventPlaceholder ?? "— Wettkampf wählen —")}
-                  </option>
-                  {events.map((e) => (
-                    <option key={e.id} value={e.id}>
-                      {e.title} ({e.date})
-                    </option>
-                  ))}
-                </select>
+                  <Select
+                    value={eventId || "__placeholder__"}
+                    onValueChange={(value) => setEventId(value === "__placeholder__" ? "" : value)}
+                    disabled={!sportId || eventsLoading}
+                  >
+                    <SelectTrigger id="eventId" className="w-full">
+                      <SelectValue
+                        placeholder={
+                          eventsLoading
+                            ? (labels.loading ?? "Laden…")
+                            : !sportId
+                              ? (labels.selectSportFirst ?? "— erst Sport wählen —")
+                              : (labels.selectEventPlaceholder ?? "— Wettkampf wählen —")
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent position="popper" className="max-h-72 overflow-y-auto">
+                      <SelectItem value="__placeholder__">
+                        {eventsLoading
+                          ? (labels.loading ?? "Laden…")
+                          : !sportId
+                            ? (labels.selectSportFirst ?? "— erst Sport wählen —")
+                            : (labels.selectEventPlaceholder ?? "— Wettkampf wählen —")}
+                      </SelectItem>
+                      {events.map((e) => (
+                        <SelectItem key={e.id} value={e.id}>
+                          {e.title} ({e.date})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
               </div>
 
               <div className="space-y-2 sm:col-span-2">
